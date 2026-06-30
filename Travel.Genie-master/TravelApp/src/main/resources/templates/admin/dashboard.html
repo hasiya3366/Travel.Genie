@@ -16,7 +16,7 @@
         }
 
         body {
-            background-color: #f3fbf8; /* ලස්සන ලා කොළ/සුදු පසුබිම */
+            background-color: #f3fbf8; 
             color: #2c3e50;
             display: flex;
             min-height: 100vh;
@@ -25,7 +25,7 @@
         /* --- PREMIUM SIDEBAR STYLE --- */
         .sidebar {
             width: 260px;
-            background-color: #e8f5e9; /* ස්ක්‍රීන්ෂොට් එකේ තියෙන ලා කොළ පාට */
+            background-color: #e8f5e9; 
             padding: 30px 20px;
             display: flex;
             flex-direction: column;
@@ -78,7 +78,7 @@
         }
 
         .menu-links a.active {
-            background-color: #009688; /* තෝරාගෙන ඇති ටැබ් එකේ තද කොළ පාට */
+            background-color: #009688; 
             color: white;
             box-shadow: 0 4px 12px rgba(0, 150, 136, 0.15);
         }
@@ -150,7 +150,6 @@
         /* --- QUICK ACTIONS TOP BUTTONS --- */
         .top-actions {
             display: flex;
-            flex-direction: column;
             gap: 12px;
         }
 
@@ -185,7 +184,6 @@
         }
 
         .stat-card {
-            background-color: white;
             border-radius: 20px;
             padding: 25px;
             display: flex;
@@ -195,10 +193,10 @@
             border: 1px solid rgba(0, 0, 0, 0.02);
         }
 
-        .stat-card:nth-child(1) { background-color: #eafaf1; } /* Users Card Light Green */
-        .stat-card:nth-child(2) { background-color: #f3f0fa; } /* Destinations Card Light Purple */
-        .stat-card:nth-child(3) { background-color: #fef7ec; } /* Packages Card Light Orange */
-        .stat-card:nth-child(4) { background-color: #eaf4f9; } /* Bookings Card Light Blue */
+        .stat-card:nth-child(1) { background-color: #eafaf1; } 
+        .stat-card:nth-child(2) { background-color: #f3f0fa; } 
+        .stat-card:nth-child(3) { background-color: #fef7ec; } 
+        .stat-card:nth-child(4) { background-color: #eaf4f9; } 
 
         .stat-card h3 {
             font-size: 12px;
@@ -247,12 +245,6 @@
             font-size: 46px;
             font-weight: 700;
             letter-spacing: 0.5px;
-        }
-
-        .revenue-info .revenue-sub {
-            font-size: 13px;
-            opacity: 0.8;
-            margin-top: 8px;
         }
 
         .revenue-badge {
@@ -308,10 +300,6 @@
             border-bottom: 1px solid #f1f5f9;
             font-size: 14px;
             color: #334155;
-        }
-
-        .custom-table tr:last-child td {
-            border-bottom: none;
         }
 
         .status-badge {
@@ -404,9 +392,112 @@
             </div>
             <div class="top-actions">
                 <button class="btn-top btn-teal" onclick="exportTableToCSV('recent-bookings-report.csv')">Export report</button>
-                <a th:href="@{/admin/packages/add}" class="btn-top btn-teal" style="text-decoration:none;">Create package</a>
+                <a th:href="@{/admin/packages/add}" class="btn-top btn-teal">Create package</a>
             </div>
         </div>
 
         <div class="stats-grid">
-            <div
+            <div class="stat-card">
+                <h3>Total Users</h3>
+                <p th:text="${totalUsers != null ? totalUsers : '0'}">0</p>
+                <div class="card-sub">Registered travelers</div>
+            </div>
+            <div class="stat-card">
+                <h3>Destinations</h3>
+                <p th:text="${totalDestinations != null ? totalDestinations : '0'}">0</p>
+                <div class="card-sub">Active locations</div>
+            </div>
+            <div class="stat-card">
+                <h3>Tour Packages</h3>
+                <p th:text="${totalPackages != null ? totalPackages : '0'}">0</p>
+                <div class="card-sub">Live offerings</div>
+            </div>
+            <div class="stat-card">
+                <h3>Total Bookings</h3>
+                <p th:text="${totalBookings != null ? totalBookings : '0'}">0</p>
+                <div class="card-sub">Processed orders</div>
+            </div>
+        </div>
+
+        <div class="revenue-card">
+            <div class="revenue-info">
+                <h3>Total Estimated Earnings</h3>
+                <p th:text="${totalRevenue != null ? '$' + totalRevenue : '$0.00'}">$0.00</p>
+            </div>
+            <div class="revenue-badge">
+                <i class="fa-solid fa-arrow-trend-up"></i> Live Status
+            </div>
+        </div>
+
+        <div class="section-container">
+            <div class="section-title">
+                <i class="fa-solid fa-clock-rotate-left"></i> Recent Booking Logs
+            </div>
+            <table class="custom-table" id="bookingsTable">
+                <thead>
+                    <tr>
+                        <th>Booking ID</th>
+                        <th>User ID</th>
+                        <th>Package ID</th>
+                        <th>Travel Date</th>
+                        <th>Travelers</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr th:each="booking : ${bookings}">
+                        <td th:text="${booking.id}">1</td>
+                        <td th:text="${booking.userId}">101</td>
+                        <td th:text="${booking.tourPackageId}">202</td>
+                        <td th:text="${booking.travelDate}">2026-07-15</td>
+                        <td th:text="${booking.travelers}">2</td>
+                        <td>
+                            <span class="status-badge status-success">Approved</span>
+                        </td>
+                    </tr>
+                    <tr th:if="${#lists.isEmpty(bookings)}">
+                        <td colspan="6" style="text-align: center; color: #64748b;">No recent bookings found.</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="quick-actions-grid">
+            <a href="/admin/destinations/add" class="btn-action-card">
+                <i class="fa-solid fa-map-pin"></i>
+                Add New Destination
+            </a>
+            <a href="/admin/users" class="btn-action-card">
+                <i class="fa-solid fa-user-plus"></i>
+                Manage Users
+            </a>
+            <a href="/admin/inbox" class="btn-action-card">
+                <i class="fa-solid fa-reply-all"></i>
+                Check Inquiries
+            </a>
+        </div>
+    </main>
+</div>
+
+<script>
+    function exportTableToCSV(filename) {
+        var csv = [];
+        var rows = document.querySelectorAll("#bookingsTable tr");
+        for (var i = 0; i < rows.length; i++) {
+            var row = [], cols = rows[i].querySelectorAll("td, th");
+            for (var j = 0; j < cols.length; j++) 
+                row.push('"' + cols[j].innerText.trim() + '"');
+            csv.push(row.join(","));        
+        }
+        var csvFile = new Blob([csv.join("\n")], {type: "text/csv"});
+        var downloadLink = document.createElement("a");
+        downloadLink.download = filename;
+        downloadLink.href = window.URL.createObjectURL(csvFile);
+        downloadLink.style.display = "none";
+        document.body.appendChild(downloadLink);
+        downloadLink.click();
+    }
+</script>
+
+</body>
+</html>
