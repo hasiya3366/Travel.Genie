@@ -30,7 +30,7 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/chatbot")
-@CrossOrigin(origins = "*") // Front-end එක කොහේ තිබ්බත් CORS Error එන එක වළක්වන්න
+@CrossOrigin(origins = "*") 
 public class ChatBotController {
 
     @Autowired
@@ -38,11 +38,10 @@ public class ChatBotController {
 
     @PostMapping("/generate-itinerary")
     public ResponseEntity<String> generateItinerary(@RequestBody TravelPlanRequest request) {
-        // Front-end එකෙන් එන JSON එක TravelPlanRequest object එකට auto-map වෙනවා.
-        // එතනින් destination (උදා: "Kandy") එක විතරක් අරන් ChatBotService එකට pass කරනවා.
-        String itinerary = chatBotService.getSmartItinerary(request.getDestination());
+        // 💡 මෙන්න මෙතන request.getDestination() කියලා තිබ්බා නම්, ඒක අයින් කරලා 
+        // කෙලින්ම මුළු 'request' object එකම pass කරන්න:
+        String itinerary = chatBotService.getSmartItinerary(request);
         
-        // Gemini API එකෙන් ආපු පිළිතුර (Itinerary text එක) front-end එකට යවනවා.
         return ResponseEntity.ok(itinerary);
     }
 }
