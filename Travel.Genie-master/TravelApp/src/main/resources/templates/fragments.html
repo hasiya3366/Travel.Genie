@@ -6,33 +6,38 @@
 </head>
 <body>
 
+<!-- ========================================== -->
+<!-- 1. PREMIUM CHATBOT FRAGMENT (100% ICON FIX) -->
+<!-- ========================================== -->
 <div th:fragment="chatbot">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Poppins Font Integration -->
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 
+    <!-- Luxury Trigger Button -->
     <button class="chatbot-trigger-btn" id="openChatBtn" onclick="toggleChat()">
-        <i class="fa-solid fa-robot"></i> ASK AI
+        <span class="custom-icon">🤖</span> ASK AI
     </button>
 
+    <!-- Luxury Chat Window -->
     <div class="chat-window chat-hidden" id="chat-box">
         <div class="chat-header">
             <div class="chat-bot-identity">
-                <i class="fa-solid fa-robot"></i>
+                <span class="custom-icon" style="font-size: 20px;">🤖</span>
                 <div>
                     <h4>Travel Genie</h4>
                     <span class="chat-status">AI Expedition Guide</span>
                 </div>
             </div>
-            <button class="chat-close-btn" onclick="toggleChat()">
-                <i class="fa-solid fa-xmark"></i>
-            </button>
+            <!-- Standard UTF-8 Close Cross Symbol -->
+            <button class="chat-close-btn" onclick="toggleChat()">&times;</button>
         </div>
         
         <div class="chat-messages" id="chat-logs"></div>
         
         <div class="chat-footer">
             <input type="text" id="chat-input" placeholder="Ask about your trip..." onkeypress="if(event.key === 'Enter') sendChatMessage()">
-            <button onclick="sendChatMessage()"><i class="fa-solid fa-paper-plane"></i></button>
+            <!-- Standard Dynamic Paper Plane Vector Character -->
+            <button onclick="sendChatMessage()"><span class="custom-send-icon">➤</span></button>
         </div>
     </div>
 
@@ -43,12 +48,24 @@
         box-sizing: border-box;
     }
 
-    /* JavaScript Toggle Class (Ensures smooth open/close control) */
+    /* JavaScript Toggle Classes */
     .chat-hidden {
         display: none !important;
     }
     .chat-visible {
         display: flex !important;
+    }
+
+    .custom-icon {
+        display: inline-block;
+        line-height: 1;
+    }
+
+    .custom-send-icon {
+        font-size: 16px;
+        color: #0b0f19;
+        display: inline-block;
+        transform: rotate(-15deg); /* ලස්සනට ඊතලය ඇල කරලා පේන්න */
     }
 
     .chatbot-trigger-btn { 
@@ -104,10 +121,6 @@
         gap: 12px !important; 
         color: #d4af37 !important; 
     }
-    .chat-bot-identity i {
-        font-size: 18px !important;
-        color: #d4af37 !important;
-    }
     .chat-bot-identity h4 {
         margin: 0 !important;
         font-size: 14px !important;
@@ -133,14 +146,11 @@
         align-items: center !important; 
         justify-content: center !important; 
         transition: 0.3s !important; 
-        padding: 0 !important;
+        font-size: 18px !important;
+        padding: 0 0 2px 0 !important;
+        line-height: 1 !important;
     }
-    .chat-close-btn i {
-        font-size: 14px !important;
-        color: white !important;
-    }
-    .chat-close-btn:hover { background: #d4af37 !important; }
-    .chat-close-btn:hover i { color: black !important; }
+    .chat-close-btn:hover { background: #d4af37 !important; color: black !important; }
     
     .chat-messages { 
         flex-grow: 1 !important; 
@@ -185,7 +195,6 @@
         border: none !important; 
         padding: 10px 14px !important; 
         border-radius: 8px !important; 
-        color: black !important; 
         cursor: pointer !important; 
         display: flex !important;
         align-items: center !important;
@@ -198,7 +207,6 @@
         function toggleChat() {
             const box = document.getElementById("chat-box");
             
-            // Clean logic using CSS classes to ensure toggle behaves accurately
             if (box.classList.contains("chat-hidden")) {
                 box.classList.remove("chat-hidden");
                 box.classList.add("chat-visible");
@@ -211,7 +219,7 @@
             if (logs.innerHTML.trim() === "") {
                 appendAIMessage(`
                     <div style="text-align: center; width: 100%;">
-                        <i class="fa-solid fa-compass" style="font-size: 20px; color: #d4af37; margin-bottom: 5px; display: block;"></i>
+                        <span style="font-size: 22px; margin-bottom: 5px; display: block;">🧭</span>
                         <h4 style="margin: 0; color: #d4af37; font-size: 15px; font-weight: 600;">Ayubowan! 🌴</h4>
                         <p style="font-size: 12px; color: #e5e7eb; margin: 5px 0; line-height: 1.4;">Welcome to Travel Genie! Ready to explore Sri Lanka?</p>
                     </div>
