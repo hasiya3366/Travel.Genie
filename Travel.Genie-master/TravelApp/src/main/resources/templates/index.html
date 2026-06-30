@@ -5,13 +5,30 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>TravelApp — Sri Lanka Adventures</title>
     <link rel="stylesheet" th:href="@{/css/styles.css}">
-    
+    <!-- Font Awesome ලින්ක් එක -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
     <style>
         /* --- CHATBOT WIDGET RESET --- */
         .need-help, #need-help, .needhelp-btn, [class*="need-help"] {
             display: none !important;
             visibility: hidden !important;
             opacity: 0 !important;
+        }
+
+        /* --- NAVBAR LOGOUT STYLE --- */
+        .nav-logout-btn {
+            margin-left: 15px;
+            color: #2c3e50 !important;
+            font-weight: 600;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            transition: color 0.2s;
+        }
+        .nav-logout-btn:hover {
+            color: #009688 !important;
         }
 
         /* --- 🛠️ FIXING THE HIDDEN CONTACT BUTTON (SPEAK WITH AN EXPERT) --- */
@@ -86,8 +103,14 @@
             <a th:href="@{/packages}">Packages</a>
             <a th:href="@{/about}">About</a>
             <a th:href="@{/contact}">Contact</a>
-            <a th:if="${session.user == null}" th:href="@{/login}">Login</a>
+
+            <!-- Welcome Message සහ Logout Button එක Navbar එකට එකතු කළා -->
             <span th:if="${session.user != null}" class="user-greeting">Welcome, <strong th:text="${session.userName}"></strong></span>
+            <a th:if="${session.user != null}" th:href="@{/logout}" class="nav-logout-btn">
+                <i class="fa-solid fa-right-from-bracket"></i> Logout
+            </a>
+
+            <a th:if="${session.user == null}" th:href="@{/login}">Login</a>
         </nav>
     </div>
 </header>
@@ -95,7 +118,7 @@
 
     <section class="hero" style="position: relative; overflow: hidden; background: none !important; color: #ffffff; min-height: 85vh; display: flex; align-items: center; justify-content: center; text-align: center; padding: 80px 20px;">
 
-       <video autoplay muted loop playsinline style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover; z-index: 0;">
+        <video autoplay muted loop playsinline style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover; z-index: 0;">
             <source src="/videos/srilanka-promo.mp4" type="video/mp4">
         </video>
 
@@ -114,14 +137,15 @@
                 <a class="btn btn-secondary" th:href="@{/destinations}">View Destinations</a>
             </div>
 
-            <div class="search-row" style="display: flex; justify-content: center; width: 100%; max-width: 500px; gap: 8px;">
-                <input id="q" type="text" placeholder="Search Sri Lanka destinations..." aria-label="Search destinations" style="flex: 1; padding: 14px 20px; border-radius: 8px; border: none; outline: none; font-size: 0.95rem; color: #333; box-shadow: 0 4px 20px rgba(0,0,0,0.25);">
-                <button class="btn btn-search" onclick="onSearch()" style="padding: 14px 26px; border-radius: 8px; cursor: pointer; border: none; font-weight: 600;">Search</button>
-            </div>
+<!--            <div class="search-row" style="display: flex; justify-content: center; width: 100%; max-width: 500px; gap: 8px;">-->
+<!--                <input id="q" type="text" placeholder="Search Sri Lanka destinations..." aria-label="Search destinations" style="flex: 1; padding: 14px 20px; border-radius: 8px; border: none; outline: none; font-size: 0.95rem; color: #333; box-shadow: 0 4px 20px rgba(0,0,0,0.25);">-->
+<!--                <button class="btn btn-search" onclick="onSearch()" style="padding: 14px 26px; border-radius: 8px; cursor: pointer; border: none; font-weight: 600;">Search</button>-->
+<!--            </div>-->
 
         </div>
     </section>
 
+    <!-- ඉතිරි කොටස් එහෙම්මම තියෙනවා -->
     <section class="section">
         <div class="container">
             <div class="section-heading">
@@ -165,51 +189,17 @@
                         <div class="card-meta">Sri Lanka · Authentic · Adventure</div>
                     </div>
                 </article>
-                <article class="destination-card" th:if="${destinations == null or #lists.isEmpty(destinations)}">
-                    <img src="/images/dest-bali.svg" alt="Sri Lanka destination" />
-                    <div class="card-body">
-                        <h3>Sigiriya Rock Fortress</h3>
-                        <p>Climb the ancient rock palace and enjoy panoramic views of lush tea country.</p>
-                        <div class="card-meta">Cultural · UNESCO Heritage</div>
-                    </div>
-                </article>
             </div>
         </div>
     </section>
 
-    <section class="section">
-        <div class="container">
-            <div class="stats-grid">
-                <div class="stat-card"><h3>120+</h3><p>Tailored tours</p></div>
-                <div class="stat-card"><h3>98%</h3><p>Traveler satisfaction</p></div>
-                <div class="stat-card"><h3>25+</h3><p>Popular destinations</p></div>
-                <div class="stat-card"><h3>24/7</h3><p>Support available</p></div>
-            </div>
+    <footer class="site-footer">
+        <div class="container footer-inner">
+            <p>© 2026 Travel Genie. Crafted for Sri Lanka explorers.</p>
         </div>
-    </section>
+    </footer>
 
-    <section class="section cta-section">
-        <div class="container cta-inner">
-            <div>
-                <p class="eyebrow">Ready to travel?</p>
-                <h2>Start your Sri Lanka journey today</h2>
-                <p>Plan an unforgettable trip with trusted local expertise, seamless booking, and inspired itineraries.</p>
-            </div>
-            <div class="cta-actions">
-                <a class="btn btn-primary" th:href="@{/packages}">Browse Packages</a>
-                <a class="btn btn-secondary" th:href="@{/contact}">Speak with an Expert</a>
-            </div>
-        </div>
-    </section>
+    <div th:replace="~{fragments :: chatbot}"></div>
 </main>
-
-<footer class="site-footer">
-    <div class="container footer-inner">
-        <p>© 2026 Travel Genie. Crafted for Sri Lanka explorers.</p>
-    </div>
-</footer>
-
-<div th:replace="~{fragments :: chatbot}"></div>
-
 </body>
 </html>
