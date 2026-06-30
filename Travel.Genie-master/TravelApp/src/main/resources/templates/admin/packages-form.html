@@ -1,0 +1,454 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TravelApp — Manage Package</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        body {
+            background-color: #f3fbf8; /* ලස්සන ලා කොළ/සුදු පසුබිම */
+            color: #2c3e50;
+            display: flex;
+            min-height: 100vh;
+        }
+
+        /* --- PREMIUM SIDEBAR STYLE --- */
+        .sidebar {
+            width: 260px;
+            background-color: #e8f5e9;
+            padding: 30px 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 30px;
+            position: fixed;
+            height: 100vh;
+            left: 0;
+            top: 0;
+            border-right: 1px solid #d1e7dd;
+            z-index: 10;
+        }
+
+        .sidebar .logo {
+            font-size: 24px;
+            font-weight: 700;
+            color: #0f5132;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding-left: 10px;
+        }
+
+        .sidebar .logo span {
+            color: #009688;
+        }
+
+        .menu-links {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            list-style: none;
+        }
+
+        .menu-links a {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            padding: 14px 20px;
+            color: #4a5d4e;
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 15px;
+            border-radius: 12px;
+            transition: all 0.3s ease;
+        }
+
+        .menu-links a:hover {
+            background-color: rgba(0, 150, 136, 0.08);
+            color: #009688;
+        }
+
+        /* Tour Packages ටැබ් එක ඇතුළේ නිසා මේක Active කළා */
+        .menu-links a.active {
+            background-color: #009688;
+            color: white;
+            box-shadow: 0 4px 12px rgba(0, 150, 136, 0.15);
+        }
+
+        /* --- MAIN CONTENT LAYOUT --- */
+        .main-content {
+            margin-left: 260px;
+            flex-grow: 1;
+            padding: 40px;
+            background-color: #f3fbf8;
+        }
+
+        /* --- TOP SITE HEADER --- */
+        .site-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 35px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid rgba(0, 150, 136, 0.1);
+        }
+
+        .site-header .brand-title {
+            font-size: 28px;
+            font-weight: 700;
+            color: #1e293b;
+            text-decoration: none;
+        }
+
+        .top-nav {
+            display: flex;
+            gap: 25px;
+        }
+
+        .top-nav a {
+            color: #475569;
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 15px;
+            transition: color 0.2s;
+        }
+
+        .top-nav a:hover {
+            color: #009688;
+        }
+
+        .page-subtitle {
+            font-size: 13px;
+            font-weight: 700;
+            color: #009688;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            margin-bottom: 5px;
+        }
+
+        .page-title-row {
+            margin-bottom: 30px;
+        }
+
+        .page-title-row h2 {
+            font-size: 36px;
+            font-weight: 700;
+            color: #1a3a2a;
+        }
+
+        /* --- MODERN FORM CARD CONTAINER --- */
+        .form-container {
+            max-width: 750px;
+            background: white;
+            padding: 35px;
+            border-radius: 24px;
+            box-shadow: 0 4px 25px rgba(0, 0, 0, 0.02);
+            border: 1px solid #e2e8f0;
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group.full-width {
+            grid-column: span 2;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            font-size: 14px;
+            color: #334155;
+        }
+
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 12px 16px;
+            border: 1px solid #cbd5e1;
+            border-radius: 12px;
+            font-size: 14px;
+            color: #334155;
+            transition: all 0.3s ease;
+            background-color: #f8fafc;
+        }
+
+        .form-group textarea {
+            resize: vertical;
+            font-family: inherit;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: #009688;
+            background-color: white;
+            box-shadow: 0 0 0 4px rgba(0, 150, 136, 0.11);
+        }
+
+        /* --- HOTEL CONFIGURATION EXTRA WIDGET --- */
+        .hotel-card-addon {
+            background-color: #f4faf8;
+            padding: 25px;
+            border-radius: 18px;
+            border: 1px dashed #00a88f;
+            grid-column: span 2;
+            margin: 10px 0 20px 0;
+        }
+
+        .hotel-card-addon h3 {
+            color: #0f5132;
+            font-size: 15px;
+            font-weight: 600;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        /* --- MODERN BUTTONS --- */
+        .form-actions {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-top: 15px;
+        }
+
+        .btn-submit {
+            background-color: #00a88f;
+            color: white;
+            padding: 12px 28px;
+            border: none;
+            border-radius: 12px;
+            cursor: pointer;
+            font-size: 15px;
+            font-weight: 600;
+            transition: all 0.2s ease;
+            box-shadow: 0 4px 12px rgba(0, 168, 143, 0.15);
+        }
+
+        .btn-submit:hover {
+            background-color: #008f7a;
+            transform: translateY(-1px);
+        }
+
+        .btn-cancel {
+            background-color: #64748b;
+            color: white;
+            padding: 12px 28px;
+            border: none;
+            border-radius: 12px;
+            cursor: pointer;
+            text-decoration: none;
+            font-size: 15px;
+            font-weight: 600;
+            transition: all 0.2s ease;
+        }
+
+        .btn-cancel:hover {
+            background-color: #475569;
+            transform: translateY(-1px);
+        }
+
+        @media (max-width: 768px) {
+            .form-grid { grid-template-columns: 1fr; }
+            .form-group.full-width, .hotel-card-addon { grid-column: span 1; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="sidebar">
+        <div class="logo">
+            <i class="fa-solid fa-leaf"></i> Travel<span>Pro</span>
+        </div>
+        <ul class="menu-links">
+            <li><a href="/admin"><i class="fa-solid fa-chart-pie"></i> Dashboard</a></li>
+            <li><a href="/admin/users"><i class="fa-solid fa-users"></i> Users</a></li>
+            <li><a href="/admin/destinations"><i class="fa-solid fa-map-location-dot"></i> Destinations</a></li>
+            <li><a href="/admin/packages" class="active"><i class="fa-solid fa-cubes"></i> Packages</a></li>
+            <li><a href="/admin/bookings"><i class="fa-solid fa-calendar-check"></i> Bookings</a></li>
+            <li><a href="/admin/reviews"><i class="fa-solid fa-star"></i> Reviews</a></li>
+            <li><a href="/admin/inbox"><i class="fa-solid fa-envelope"></i> Inbox</a></li>
+        </ul>
+    </div>
+
+    <div class="main-content">
+        
+        <header class="site-header">
+            <a class="brand-title" th:href="@{/}">TravelApp</a>
+            <nav class="top-nav">
+                <a th:href="@{/}">Home</a>
+                <a th:href="@{/admin}">Dashboard</a>
+                <a th:href="@{/logout}"><i class="fa-solid fa-right-from-bracket"></i> Logout</a>
+            </nav>
+        </header>
+
+        <main>
+            <div class="page-title-row">
+                <p class="page-subtitle">Product Catalog</p>
+                <h2 th:if="${package == null}">Add New Package</h2>
+                <h2 th:if="${package != null}">Edit Tour Package</h2>
+            </div>
+
+            <div class="form-container">
+                
+                <form th:if="${package == null}" th:action="@{/admin/packages/add}" method="post">
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label for="name">Package Display Name</label>
+                            <input type="text" id="name" name="name" placeholder="e.g. 3 Days Kandy Special" required/>
+                        </div>
+                        <div class="form-group">
+                            <label for="category">Category Framework</label>
+                            <input type="text" id="category" name="category" placeholder="e.g. Honeymoon, Adventure" required/>
+                        </div>
+                        <div class="form-group">
+                            <label for="destinationId">Bind Destination Hub</label>
+                            <select id="destinationId" name="destinationId" required>
+                                <option value="">Select Target Destination</option>
+                                <option th:each="dest : ${destinations}" th:value="${dest.id}" th:text="${dest.name}"></option>
+                            </select>
+                        </div>
+                        <div class="form-grid style-inline" style="margin-bottom:0; gap:20px;">
+                            <div class="form-group">
+                                <label for="price">Price (LKR)</label>
+                                <input type="number" id="price" name="price" step="0.01" placeholder="Base Cost Amount" required/>
+                            </div>
+                            <div class="form-group">
+                                <label for="rating">Platform Rating</label>
+                                <input type="number" id="rating" name="rating" min="1" max="5" step="0.1" placeholder="4.8" required/>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="maxTravelers">Max Group Travelers</label>
+                            <input type="number" id="maxTravelers" name="maxTravelers" placeholder="e.g. 10" required/>
+                        </div>
+                        <div class="form-group">
+                            <label for="imageUrl">Promo Image URL</label>
+                            <input type="text" id="imageUrl" name="imageUrl" placeholder="https://example.com/tour.jpg" required/>
+                        </div>
+                        <div class="form-group full-width">
+                            <label for="mapUrl">Google Map Embed Source URL</label>
+                            <input type="text" id="mapUrl" name="mapUrl" placeholder="Paste iframe src dynamic link here"/>
+                        </div>
+                        <div class="form-group full-width">
+                            <label for="description">Detailed Package Description</label>
+                            <textarea id="description" name="description" rows="4" placeholder="Describe the full adventure schedule..." required></textarea>
+                        </div>
+                        <div class="form-group full-width">
+                            <label for="includes">What's Included (One item per line break)</label>
+                            <textarea id="includes" name="includes" rows="4" placeholder="Luxury AC Transportation&#10;Professional Tour Guide&#10;Star Hotel Accommodations"></textarea>
+                        </div>
+
+                        <div class="hotel-card-addon">
+                            <h3><i class="fa-solid fa-hotel"></i> Add Hotel Option for this Package (Optional)</h3>
+                            <div class="form-grid" style="gap:15px;">
+                                <div class="form-group" style="margin-bottom:0;">
+                                    <label>Hotel Luxury Name</label>
+                                    <input type="text" name="hotelName" placeholder="e.g. Grand Kandyan Residence"/>
+                                </div>
+                                <div class="form-group" style="margin-bottom:0;">
+                                    <label>Hotel Extra Supplement Price (LKR)</label>
+                                    <input type="number" step="0.01" name="hotelExtraPrice" value="0.00"/>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-actions">
+                        <button type="submit" class="btn-submit"><i class="fa-solid fa-square-plus"></i> Add Package</button>
+                        <a th:href="@{/admin/packages}" class="btn-cancel">Cancel</a>
+                    </div>
+                </form>
+
+                <form th:if="${package != null}" th:action="@{/admin/packages/edit/{id}(id=${package.id})}" method="post">
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label for="edit_name">Package Display Name</label>
+                            <input type="text" id="edit_name" name="name" th:value="${package.name}" required/>
+                        </div>
+                        <div class="form-group">
+                            <label for="edit_category">Category Framework</label>
+                            <input type="text" id="edit_category" name="category" th:value="${package.category}" required/>
+                        </div>
+                        <div class="form-group">
+                            <label for="edit_destinationId">Bind Destination Hub</label>
+                            <select id="edit_destinationId" name="destinationId" required>
+                                <option th:each="dest : ${destinations}" th:value="${dest.id}" th:text="${dest.name}" th:selected="${dest.id == package.destination.id}"></option>
+                            </select>
+                        </div>
+                        <div class="form-grid style-inline" style="margin-bottom:0; gap:20px;">
+                            <div class="form-group">
+                                <label for="edit_price">Price (LKR)</label>
+                                <input type="number" id="edit_price" name="price" step="0.01" th:value="${package.price}" required/>
+                            </div>
+                            <div class="form-group">
+                                <label for="edit_rating">Platform Rating</label>
+                                <input type="number" id="edit_rating" name="rating" min="1" max="5" step="0.1" th:value="${package.rating}" required/>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="edit_maxTravelers">Max Group Travelers</label>
+                            <input type="number" id="edit_maxTravelers" name="maxTravelers" th:value="${package.maxTravelers}" required/>
+                        </div>
+                        <div class="form-group">
+                            <label for="edit_imageUrl">Promo Image URL</label>
+                            <input type="text" id="edit_imageUrl" name="imageUrl" th:value="${package.imageUrl}" required/>
+                        </div>
+                        <div class="form-group full-width">
+                            <label for="edit_mapUrl">Google Map Embed Source URL</label>
+                            <input type="text" id="edit_mapUrl" name="mapUrl" th:value="${package.mapUrl}"/>
+                        </div>
+                        <div class="form-group full-width">
+                            <label for="edit_description">Detailed Package Description</label>
+                            <textarea id="edit_description" name="description" rows="4" th:text="${package.description}" required></textarea>
+                        </div>
+                        <div class="form-group full-width">
+                            <label for="edit_includes">What's Included (One item per line break)</label>
+                            <textarea id="edit_includes" name="includes" rows="4" th:text="${package.includes}"></textarea>
+                        </div>
+
+                        <div class="hotel-card-addon">
+                            <h3><i class="fa-solid fa-hotel"></i> Add an Extra Hotel Option for this Package (Optional)</h3>
+                            <div class="form-grid" style="gap:15px;">
+                                <div class="form-group" style="margin-bottom:0;">
+                                    <label>Hotel Luxury Name</label>
+                                    <input type="text" name="hotelName" placeholder="e.g. Grand Kandyan Residence"/>
+                                </div>
+                                <div class="form-group" style="margin-bottom:0;">
+                                    <label>Hotel Extra Supplement Price (LKR)</label>
+                                    <input type="number" step="0.01" name="hotelExtraPrice" value="0.00"/>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-actions">
+                        <button type="submit" class="btn-submit"><i class="fa-solid fa-floppy-disk"></i> Update Package</button>
+                        <a th:href="@{/admin/packages}" class="btn-cancel">Cancel</a>
+                    </div>
+                </form>
+                
+            </div>
+        </main>
+    </div>
+
+</body>
+</html>

@@ -1,0 +1,103 @@
+<div th:fragment="chatbot">
+    <!-- Luxury Trigger Button -->
+    <button class="chatbot-trigger-btn" id="openChatBtn" onclick="toggleChat()">
+        <i class="fas fa-robot"></i> ASK AI
+    </button>
+
+    <!-- Luxury Chat Window -->
+    <div class="chat-window" id="chat-box" style="display: none;">
+        <div class="chat-header">
+            <div class="chat-bot-identity">
+                <i class="fas fa-robot"></i>
+                <div>
+                    <h4>Travel Genie</h4>
+                    <span class="chat-status">AI Expedition Guide</span>
+                </div>
+            </div>
+            <button class="chat-close-btn" onclick="toggleChat()">&times;</button>
+        </div>
+        
+        <div class="chat-messages" id="chat-logs"></div>
+        
+        <div class="chat-footer">
+            <input type="text" id="chat-input" placeholder="Ask about your trip..." onkeypress="if(event.key === 'Enter') sendChatMessage()">
+            <button onclick="sendChatMessage()"><i class="fas fa-paper-plane"></i></button>
+        </div>
+    </div>
+
+<style>
+    .chatbot-trigger-btn { position: fixed; bottom: 30px; right: 30px; z-index: 999999; background: linear-gradient(135deg, #0e291b 0%, #06150e 100%); color: #f3f4f6; border: 1px solid #d4af37; padding: 14px 24px; border-radius: 10px; cursor: pointer; display: flex; align-items: center; gap: 10px; box-shadow: 0 8px 32px rgba(0,0,0,0.5); }
+    
+    .chat-window { position: fixed; bottom: 95px; right: 30px; width: 350px; height: 450px; background: #0e1424; border: 1px solid #333; border-radius: 16px; box-shadow: 0 12px 40px rgba(0,0,0,0.7); display: flex; flex-direction: column; overflow: hidden; z-index: 999999; }
+    
+    .chat-header { background: #070a12; padding: 10px 15px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #222; border-top-left-radius: 16px; border-top-right-radius: 16px; }
+    
+    .chat-bot-identity { display: flex; align-items: center; gap: 12px; color: #d4af37; }
+    
+    .chat-close-btn { background: rgba(255, 255, 255, 0.05); border: none; color: white; width: 22px; height: 22px; border-radius: 50%; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 14px; transition: 0.3s; }
+    .chat-close-btn:hover { background: #d4af37; color: black; }
+    
+    .chat-messages { flex-grow: 1; padding: 15px; overflow-y: auto; background: rgba(11,15,25,0.6); display: flex; flex-direction: column; }
+    .message { max-width: 85%; padding: 8px 12px; border-radius: 12px; margin-bottom: 10px; font-size: 12px; color: white; line-height: 1.5; }
+    .bot-msg { background: #141b2d; border: 1px solid #222; align-self: flex-start; white-space: pre-line; }
+    .user-msg { background: #d4af37; color: black; align-self: flex-end; margin-left: auto; font-weight: 500; }
+    
+    .chat-footer { padding: 10px; background: #070a12; display: flex; gap: 8px; border-top: 1px solid #222; border-bottom-left-radius: 16px; border-bottom-right-radius: 16px; }
+    .chat-footer input { flex-grow: 1; background: #141b2d; border: 1px solid #333; padding: 8px; border-radius: 8px; color: white; outline: none; }
+    .chat-footer button { background: #d4af37; border: none; padding: 0 12px; border-radius: 8px; color: black; cursor: pointer; }
+</style>
+
+    <script>
+        function toggleChat() {
+            const box = document.getElementById("chat-box");
+            box.style.display = box.style.display === "none" ? "flex" : "none";
+            const logs = document.getElementById("chat-logs");
+            if (logs.innerHTML.trim() === "") {
+                appendAIMessage(`
+                    <div style="text-align: center;">
+                        <i class="fas fa-compass" style="font-size: 20px; color: #d4af37; margin-bottom: 5px;"></i>
+                        <h4 style="margin: 0; color: #d4af37;">Ayubowan! 🌴</h4>
+                        <p style="font-size: 12px; color: #e5e7eb; margin: 5px 0;">Welcome to Travel Genie! Ready to explore Sri Lanka?</p>
+                    </div>
+                `);
+            }
+        }
+        function appendUserMessage(msg) {
+            document.getElementById("chat-logs").insertAdjacentHTML('beforeend', `<div class="message user-msg">${msg}</div>`);
+            document.getElementById("chat-logs").scrollTop = 10000;
+        }
+        function appendAIMessage(msg) {
+            document.getElementById("chat-logs").insertAdjacentHTML('beforeend', `<div class="message bot-msg">${msg}</div>`);
+            document.getElementById("chat-logs").scrollTop = 10000;
+        }
+        function sendChatMessage() {
+            const input = document.getElementById("chat-input");
+            const msg = input.value.trim();
+            if (!msg) return;
+            
+            if (['fuck', 'bitch', 'huthth', 'pakaya', 'pako', 'huka'].some(word => msg.toLowerCase().includes(word))) {
+                appendAIMessage("Hey Dear, let's keep it clean! Tell me how I can help you with your trip.");
+                input.value = ""; return;
+            }
+
+            appendUserMessage(msg);
+            input.value = "";
+            document.getElementById("chat-logs").insertAdjacentHTML('beforeend', `<div id="loading" class="message bot-msg">Thinking... 🤔</div>`);
+            
+            fetch('https://travel-genie-wokv.onrender.com/api/chatbot/generate-itinerary', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ destination: msg, durationDays: 4 })
+            })
+            .then(res => res.text())
+            .then(data => {
+                document.getElementById("loading").remove();
+                appendAIMessage(data);
+            })
+            .catch(() => {
+                document.getElementById("loading").remove();
+                appendAIMessage("Error: Check server connection.");
+            });
+        }
+    </script>
+</div>

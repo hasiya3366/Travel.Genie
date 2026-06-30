@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" th:href="@{/css/styles.css}">
+    <title>Destinations - TravelApp</title>
+</head>
+<body>
+<header class="site-header">
+    <div class="container header-inner">
+        <h1><a th:href="@{/}">TravelApp</a></h1>
+        <nav>
+            <a th:href="@{/}">Home</a>
+            <a th:href="@{/destinations}">Destinations</a>
+            <a th:href="@{/packages}">Packages</a>
+            <a th:href="@{/about}">About</a>
+            <a th:href="@{/contact}">Contact</a>
+            <a th:href="@{/admin}">Admin</a>
+        </nav>
+    </div>
+</header>
+<main class="container">
+    <section class="page-heading">
+        <h2>Destinations</h2>
+        <form method="get" action="/destinations" class="filter-form">
+            <input type="text" name="country" placeholder="Search by country"/>
+            <input type="text" name="category" placeholder="Category"/>
+            <input type="number" name="minPrice" placeholder="Min price" step="0.01"/>
+            <input type="number" name="maxPrice" placeholder="Max price" step="0.01"/>
+            <button type="submit">Filter</button>
+        </form>
+    </section>
+    <section class="card-grid">
+        <div class="card" th:each="destination : ${destinations}">
+            <img th:src="${destination.imageUrl}" alt="Destination image"/>
+            <div class="card-body">
+                <h4 th:text="${destination.name}"></h4>
+                <p><strong th:text="${destination.country}"></strong> • <span th:text="${destination.category}"></span></p>
+                <p th:text="${destination.description}"></p>
+                <p>From <strong th:text="${destination.price}"></strong> USD</p>
+
+                <a th:href="@{'/destination/' + ${destination.id}}" style="display: inline-block; background-color: #0f766e; color: white; padding: 8px 16px; border-radius: 6px; text-decoration: none; font-size: 14px; font-weight: 600; margin-top: 10px;">View Details</a>
+            </div>
+        </div>
+    </section>
+</main>
+<footer class="site-footer">
+    <div class="container">
+        <p>© 2026 TravelApp. All Rights Reserved.</p>
+    </div>
+    <div th:replace="fragments :: chatbot"></div>
+</footer>
+</body>
+</html>

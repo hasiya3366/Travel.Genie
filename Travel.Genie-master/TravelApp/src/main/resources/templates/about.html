@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" th:href="@{/css/styles.css}">
+</head>
+<body>
+<header class="site-header">
+    <div class="container header-inner">
+        <h1><a th:href="@{/}">TravelGenie</a></h1>
+        <nav>
+            <a th:href="@{/}">Home</a>
+            <a th:href="@{/destinations}">Destinations</a>
+            <a th:href="@{/packages}">Packages</a>
+            <a th:href="@{/about}">About</a>
+            <a th:href="@{/contact}">Contact</a>
+        </nav>
+    </div>
+</header>
+<main class="container">
+    <section class="page-heading">
+        <h2>About TravelGenie</h2>
+        <p>TravelGenie is a modern travel and tour booking platform that allows users to explore breathtaking destinations, browse a wide range of travel packages, make secure online bookings, track booking history, read authentic traveler reviews, and enjoy a seamless experience while planning unforgettable journeys across Sri Lanka.</p>
+    </section>
+    <section class="content-card">
+        <h3>Why choose us?</h3>
+        <ul>
+            <li>Easy and secure online booking with a simple, user-friendly reservation process.</li>
+            <li>Personalized travel package recommendations based on user preferences, budget, and destination interests.</li>
+            <li>Authentic ratings and reviews from verified travelers to help users make informed booking decisions.</li>
+            <li>Comprehensive destination information, including attractions, activities, travel tips, and local highlights.</li>
+            <li>Real-time weather updates for destinations, helping travelers plan their trips according to current conditions.</li>
+            <li>Convenient booking history that allows users to view, manage, and track their previous and upcoming reservations.</li>
+            <li>Responsive and modern interface optimized for desktops, tablets, and mobile devices for a seamless browsing experience.</li>
+            <li>Advanced search and filtering options to quickly find travel packages based on location, price, duration, and category.</li>
+            <li>Secure user account management with profile customization and easy access to personal travel information.</li>
+            <li>Detailed tour package pages featuring high-quality images, itineraries, pricing, inclusions, and travel schedules.</li>
+            <li>Quick and reliable customer inquiry system that enables travelers to contact the support team whenever assistance is needed.</li>
+            <li>Interactive destination exploration with visually appealing content that helps users discover the best places to visit in Sri Lanka.</li>
+        </ul>
+    </section>
+</main>
+<footer class="site-footer">
+    <div class="container">
+        <p>© 2026 TravelGenie. All Rights Reserved.</p>
+    </div>
+    <div th:replace="fragments :: chatbot"></div>
+</footer>
+</body>
+</html>

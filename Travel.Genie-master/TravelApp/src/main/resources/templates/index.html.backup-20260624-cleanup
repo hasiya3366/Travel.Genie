@@ -1,0 +1,1385 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TravelX</title>
+    <link rel="stylesheet" th:href="@{/css/styles.css}">
+    <style>
+        :root {
+            --accent: #f39c12;
+            --primary: #1abc9c;
+            --dark: #0b3f34;
+            --surface: #ffffff;
+            --surface-soft: #f7faf7;
+            --muted: #5f6f7b;
+        }
+        .site-header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            background: rgba(255, 255, 255, 0.94);
+            backdrop-filter: blur(12px);
+            z-index: 1000;
+            box-shadow: 0 18px 40px rgba(0, 0, 0, 0.08);
+        }
+        .site-header .container {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 16px 6%;
+        }
+        .logo {
+            font-weight: 900;
+            color: var(--primary);
+            font-size: 1.45rem;
+            letter-spacing: -0.03em;
+        }
+        nav a {
+            margin-left: 20px;
+            color: #163639;
+            font-weight: 600;
+        }
+        nav a:hover {
+            color: var(--accent);
+        }
+        .hero {
+            position: relative;
+            min-height: 78vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 120px 6% 80px;
+            background: linear-gradient(135deg, rgba(16, 70, 50, 0.92), rgba(9, 32, 24, 0.92)), url('/images/hero-bg.svg');
+            background-size: cover;
+            background-position: center;
+            border-radius: 22px;
+            overflow: hidden;
+            color: white;
+        }
+        .hero::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(180deg, rgba(0, 0, 0, 0.15), rgba(0, 0, 0, 0.45));
+            pointer-events: none;
+        }
+        .hero .hero-inner {
+            position: relative;
+            z-index: 1;
+            max-width: 900px;
+            text-align: center;
+        }
+        .hero h1 {
+            font-size: clamp(3rem, 6vw, 4.4rem);
+            margin-bottom: 20px;
+            line-height: 1.03;
+        }
+        .hero p {
+            font-size: 1.05rem;
+            margin-bottom: 28px;
+            color: rgba(255, 255, 255, 0.94);
+            line-height: 1.75;
+        }
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 14px 28px;
+            border-radius: 999px;
+            font-weight: 700;
+            text-decoration: none;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+        .btn:hover {
+            transform: translateY(-2px);
+        }
+        .btn.alt {
+            background: rgba(255, 255, 255, 0.16);
+            border: 1px solid rgba(255, 255, 255, 0.24);
+            color: white;
+        }
+        .btn {
+            background: var(--accent);
+            color: #0d2c25;
+        }
+        .search-row {
+            margin-top: 24px;
+            display: flex;
+            gap: 12px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+        .search-row input {
+            padding: 14px 18px;
+            border-radius: 999px;
+            border: none;
+            min-width: 320px;
+            max-width: 520px;
+            box-shadow: 0 18px 40px rgba(0, 0, 0, 0.14);
+        }
+        .search-row button {
+            padding: 14px 18px;
+            border-radius: 999px;
+            border: none;
+            cursor: pointer;
+            background: white;
+            color: var(--accent);
+            font-weight: 700;
+            box-shadow: 0 16px 32px rgba(0, 0, 0, 0.12);
+        }
+        @media (max-width:720px) {
+            .hero {
+                padding: 90px 5% 56px;
+            }
+            .hero h1 {
+                font-size: 2.5rem;
+            }
+            .search-row input {
+                min-width: 220px;
+            }
+            nav {
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+            .site-header .container {
+                gap: 12px;
+            }
+        }
+    </style>
+    <script>
+        function onSearch(){const q=document.getElementById('q').value; if(q) window.location.href='/destinations?search='+encodeURIComponent(q)}
+    </script>
+</head>
+<body>
+<header class="site-header">
+    <div class="container">
+        <div class="logo">TravelX</div>
+        <nav>
+            <a th:href="@{/}">Home</a>
+            <a th:href="@{/destinations}">Destinations</a>
+            <a th:href="@{/packages}">Packages</a>
+            <a th:href="@{/blog}">Blog</a>
+            <a th:href="@{/contact}">Contact</a>
+            <a th:if="${session.user == null}" th:href="@{/login}">Login</a>
+            <span th:if="${session.user != null}" style="margin-left:12px">Welcome, <strong th:text="${session.userName}"></strong></span>
+        </nav>
+    </div>
+</header>
+
+<main>
+    <section class="hero">
+        <div class="hero-inner">
+            <p class="eyebrow">Sri Lanka Travel Guide</p>
+            <h1>Experience Sri Lanka’s Best Beaches, Temples & Wildlife</h1>
+            <p>Discover curated Sri Lanka tours with unforgettable seaside stays, ancient cultural sites, and wildlife safaris.</p>
+            <div style="display:flex;gap:16px;justify-content:center;flex-wrap:wrap;margin-bottom:16px">
+                <a class="btn" th:href="@{/packages}">Book a Package</a>
+                <a class="btn alt" th:href="@{/destinations}">View Destinations</a>
+            </div>
+            <div class="search-row">
+                <input id="q" type="text" placeholder="Search Sri Lanka destinations">
+                <button onclick="onSearch()">Search</button>
+            </div>
+        </div>
+    </section>
+
+    <section class="section" aria-labelledby="popular-title">
+        <h2 id="popular-title" class="section-title">Popular Destinations</h2>
+        <div class="cards">
+            <div class="card" th:each="d : ${destinations}">
+                <img th:src="${d.imageUrl}" th:alt="${d.name}" onerror="this.src='/static/images/dest-bali.svg'"/>
+                <div class="card-body">
+                    <h3 th:text="${d.name}">Destination</h3>
+                    <p th:text="${d.description}">Description</p>
+                </div>
+            </div>
+            <div class="card" th:if="${destinations == null or #lists.isEmpty(destinations)}">
+                <img src="/images/dest-bali.svg" alt="Sri Lanka sample"/>
+                <div class="card-body"><h3>Sigiriya Rock Fortress</h3><p>Climb the ancient rock palace and enjoy scenic views of lush tea country.</p></div>
+            </div>
+        </div>
+    </section>
+
+    <section class="section" aria-labelledby="why-title">
+        <h2 id="why-title" class="section-title">Why Choose Us?</h2>
+        <div class="card-grid">
+            <div class="card"><div class="card-body"><h3>Curated Packages</h3><p>Handpicked trips crafted by experts.</p></div></div>
+            <div class="card"><div class="card-body"><h3>Local Guides</h3><p>Authentic local experiences and knowledge.</p></div></div>
+            <div class="card"><div class="card-body"><h3>Best Prices</h3><p>Competitive rates and great value.</p></div></div>
+        </div>
+    </section>
+
+    <section class="section" aria-labelledby="stats-title">
+        <h2 id="stats-title" class="section-title">Why Travelers Love Us</h2>
+        <div class="stats-grid">
+            <div class="stat-card"><h3>50K+</h3><p>Happy Travelers</p></div>
+            <div class="stat-card"><h3>500+</h3><p>Destinations</p></div>
+            <div class="stat-card"><h3>15K+</h3><p>Bookings</p></div>
+            <div class="stat-card"><h3>24/7</h3><p>Support</p></div>
+        </div>
+    </section>
+</main>
+
+<footer class="site-footer">
+    <div class="container">
+        <p>© 2026 TravelX. All Rights Reserved.</p>
+    </div>
+</footer>
+
+</body>
+</html>
+
+       .features-section::after {
+           content: '';
+           position: absolute;
+           bottom: -30%;
+           left: -5%;
+           width: 300px;
+           height: 300px;
+           background: radial-gradient(circle, rgba(14,98,81,0.08) 0%, transparent 70%);
+           border-radius: 50%;
+           pointer-events: none;
+       }
+       
+       .section-heading {
+           text-align: center;
+           margin-bottom: 60px;
+           animation: fadeInUp 0.8s ease-out;
+       }
+       
+       .section-heading h2 {
+           font-size: 2.5rem;
+           margin-bottom: 15px;
+           color: #263238;
+           position: relative;
+           padding-bottom: 20px;
+       }
+
+       .section-heading h2::after {
+           content: '';
+           position: absolute;
+           bottom: 0;
+           left: 50%;
+           transform: translateX(-50%);
+           width: 80px;
+           height: 4px;
+           background: linear-gradient(90deg, #1abc9c, #0e6251);
+           border-radius: 2px;
+       }
+       
+       .section-heading p {
+           font-size: 1.1rem;
+           color: #607d8b;
+           max-width: 600px;
+           margin: 0 auto;
+       }all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+           animation: scaleIn 0.6s ease-out;
+           position: relative;
+           overflow: hidden;
+       }
+
+       .feature-card::before {
+           content: '';
+           position: absolute;
+           top: 0;
+           left: -100%;
+           width: 100%;
+           height: 100%;
+           background: linear-gradient(90deg, transparent, rgba(26,188,156,0.1), transparent);
+           transition: left 0.5s;
+       }
+
+       .feature-card:hover::before {
+           left: 100%;
+       }
+       
+       .feature-card:hover {
+           transform: translateY(-12px) scale(1.02);
+           box-shadow: 0 20px 50px rgba(26,188,156,0.
+           margin-top: 40px;
+       }
+       
+       .feature-card {
+           background: white;
+           padding: 40px 30px;
+           border-radius: 16px;
+           text-align: center;
+           box-shadow: 0 8px 20px rgba(0,0,0,0.08);
+           animation: scaleIn 0.8s ease-out;
+           transition: all 0.3s;
+           box-shadow: 0 8px 20px rgba(26,188,156,0.3);
+       }
+
+       .feature-card:hover .feature-icon {
+           transform: scale(1.15) rotate(5deg);
+           box-shadow: 0 12px 30px rgba(26,188,156,0.4);
+           transition: transform 0.3s, box-shadow 0.3s;
+       }
+       
+       .feature-card:hover {
+           transform: translateY(-8px);
+           box-shadow: 0 16px 40px rgba(0,0,0,0.12);
+       }
+       
+       .feature-icon {
+           width: 70px;
+           height: 70px;
+           background: linear-gradient(135deg, #1abc9c, #0e6251);
+           border-radius: 16px;
+           display: flex;
+           align-items: center;
+           justify-content: center;
+           margin: 0 auto 20px;
+           font-size: 2.5rem;
+       }
+       
+       .feature-card h3 {
+           font-size: 1.4rem;
+           margin: 15px 0;
+           color: #263238;
+       }
+       
+           background: linear-gradient(180deg, rgba(26,188,156,0.05) 0%, rgba(14,98,81,0.05) 100%);
+           padding: 60px 40px;
+           border-radius: 20px;
+           position: relative;
+       .feature-card p {
+           color: #607d8b;
+           line-height: 1.7;
+       }
+       
+       /* Destinations Section */
+       .destinations-showcase {
+           margin: 80px 0;
+       }
+       
+       .showcase-header {
+           display: flex;
+           justify-content: space-between;
+           align-items: center;
+           margin-bottom: 40px;
+           flex-wrap: wrap;
+           gap: 20px;
+       }
+       
+       .showcase-header h2 {
+           font-size: 2rem;
+           margin: 0;
+       }
+       
+       .showcase-header a {
+           background: #1abc9c;
+           color: white;
+           padding: 12px 28px;
+           border-radius: 50px;
+           font-weight: 600;
+           transition: background 0.3s;
+       }
+       
+       .showcase-header a:hover {
+           background: #0e6251;
+       }
+       
+       .destination-card {
+           background: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+           animation: slideInUp 0.6s ease-out;
+           position: relative;
+       }
+       
+       .destination-card:hover {
+           transform: translateY(-10px) scale(1.02);
+           box-shadow: 0 20px 50px rgba(26,188,156,0.25);
+       }
+       
+       .destination-card img {
+           width: 100%;
+           height: 200px;
+           object-fit: cover;
+           transition: transform 0.4s ease-out;
+       }
+
+       .destination-card:hover img {
+           transform: scale(1.1)
+       .destination-card img {
+           width: 100%;
+           height: 200px;
+           object-fit: cover;
+       }
+       
+       .destination-info {
+           padding: 25px;
+       }
+       
+       .destination-info h4 {
+           margin: 0 0 8px;
+           font-size: 1.3rem;
+           color: #263238;
+       }
+       
+       .destination-country {
+           display: inline-block;
+           background: #e0f7f4;
+           color: #1abc9c;
+           padding: 6px 12px;
+           border-radius: 20px;
+           font-size: 0.85rem;
+           font-weight: 600;
+           margin-bottom: 12px;
+       }
+       
+       .destination-description {
+           color: #607d8b;
+           background: linear-gradient(180deg, rgba(14,98,81,0.03) 0%, rgba(26,188,156,0.05) 100%);
+           padding: 60px 40px;
+           border-radius: 20px;
+       }
+       
+       .package-card {
+           background: white;
+           border-radius: 16px;
+           overflow: hidden;
+           box-shadow: 0 8px 20px rgba(0,0,0,0.08);
+           transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+           animation: slideInUp 0.6s ease-out;
+           position: relative;
+       }
+       
+       .package-card:hover {
+           transform: translateY(-15px) scale(1.03);
+           box-shadow: 0 25px 60px rgba(26,188,156,0.3
+           box-shadow: 0 8px 20px rgba(0,0,0,0.08);
+           transition: transform 0.3s, box-shadow 0.3s;
+       }
+       
+       .package-card:hover {
+           transform: translateY(-6px);
+           box-shadow: 0 16px 40px rgba(0,0,0,0.12);
+           transition: transform 0.5s ease-out;
+       }
+
+       .package-card:hover img {
+           transform: scale(1.15) rotate(2deg);
+       }
+       
+       .package-image {
+           position: relative;
+           overflow: hidden;
+           height: 220px;
+       }
+       
+       .package-card img {
+           width: 100%;
+           height: 100%;
+           object-fit: cover;
+       }
+       
+       .price-badge {
+           position: absolute;
+           top: 15px;
+           right: 15px;
+           background: #1abc9c;
+           color: white;
+           padding: 10px 16px;
+           border-radius: 50px;
+           font-weight: 700;
+           font-size: 0.95rem;
+       }
+       
+       .package-details {
+           padding: 25px;
+       }
+       
+       .package-category {
+           display: inline-block;
+           background: #fff4e6;
+           color: #e65100;
+           padding: 6px 12px;
+           border-radius: 20px;
+           font-size: 0.8rem;
+           font-weight: 600;
+           margin-bottom: 10px;
+       }
+       
+       .package-details h4 {
+           margin: 0 0 8px;
+           font-size: 1.3rem;
+           color: #263238;
+       }
+       
+       .package-description {
+           color: #607d8b;
+           line-height: 1.6;
+           margin: 12px 0;
+           font-size: 0.95rem;
+       }
+       
+       .package-footer {
+           display: flex;
+           justify-content: space-between;
+           align-items: center;
+           margin-top: 15px;
+           padding-top: 15px;
+           border-top: 1px solid #e3e9f2;
+       }
+       
+       .package-rating {
+           color: #ffa500;
+           font-weight: 600;
+       }
+       
+       .package-btn {
+           background: #1abc9c;
+           color: white;
+           padding: 10px 20px;
+           border-radius: 8px;
+           font-weight: 600;
+           text-decoration: none;
+           transition: background 0.3s;
+       }
+       
+       .package-btn:hover {
+           background: #0e6251;
+       }
+       
+       /* Stats Section */
+       .stats-section {
+           background: 
+               linear-gradient(135deg, #1abc9c 0%, #0e6251 50%, #094236 100%);
+           color: white;
+           padding: 80px 40px;
+           border-radius: 20px;
+           margin: 80px 0;
+           position: relative;
+           overflow: hidden;
+           background-attachment: fixed;
+       }
+
+       .stats-section::before {
+           content: '';
+           position: absolute;
+           top: 0;
+           left: 0;
+           right: 0;
+           bottom: 0;
+           background: linear-gradient(135deg, rgba(26,188,156,0.6), rgba(14,98,81,0.7));
+           z-index: 0;
+       }
+
+       /* Best Time to Visit Section */
+       .season-card {
+           background: white;
+           padding: 30px;
+           border-radius: 16px;
+           box-shadow: 0 8px 20px rgba(0,0,0,0.08);
+           transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+           border: 2px solid transparent;
+           animation: slideInUp 0.6s ease-out;
+           position: relative;
+           overflow: hidden;
+       }
+
+       .season-card::before {
+           content: '';
+           position: absolute;
+           top: -50%;
+           right: -50%;
+           width: 200px;
+           height: 200px;
+           background: radial-gradient(circle, rgba(26,188,156,0.1) 0%, transparent 70%);
+           border-radius: 50%;
+           transition: all 0.6s;
+       }
+
+       .season-card:hover::before {
+           top: -25%;
+           right: -25%;
+       }
+
+       .season-card:hover {
+           transform: translateY(-15px) scale(1.03);
+           border-color: #1abc9c;
+           box-shadow: 0 25px 50px rgba(26,188,156,0.2);
+       }
+
+       /* Testimonials Section */
+       .testimonial-card {
+           background: white;
+           padding: 30px;
+           border-radius: 16px;
+           box-shadow: 0 8px 20px rgba(0,0,0,0.08);
+           transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+           animation: slideInUp 0.6s ease-out;
+           position: relative;
+           overflow: hidden;
+       }
+
+       .testimonial-card::after {
+           content: '❝';
+           position: absolute;
+           top: -30px;
+           right: -20px;
+           font-size: 8rem;
+           opacity: 0.05;
+           pointer-events: none;
+       }
+
+       .testimonial-card:hover {
+           transform: translateY(-12px) scale(1.02);
+           box-shadow: 0 20px 50px rgba(26,188,156,0.15);
+       }
+
+       /* Newsletter Section */
+       .newsletter-section {
+           background: linear-gradient(135deg, #1abc9c 0%, #0e6251 50%, #094236 100%);
+           color: white;
+           margin: 80px 0;
+           padding: 80px 40px;
+           border-radius: 20px;
+           text-align: center;
+           position: relative;
+           overflow: hidden;
+           background-attachment: fixed;
+       }
+
+       .newsletter-section::before {
+           content: '';
+           position: absolute;
+           top: 0;
+           left: 0;
+           right: 0;
+           bottom: 0;
+           background: 
+               radial-gradient(circle at 30% 70%, rgba(255,255,255,0.1) 0%, transparent 50%),
+               radial-gradient(circle at 70% 30%, rgba(255,255,255,0.08) 0%, transparent 50%);
+           z-index: 0;
+       }
+
+       .newsletter-section > * {
+           position: relative;
+           z-index: 1;
+       }
+
+       .newsletter-section h2 {
+           font-size: 2.2rem;
+           margin-bottom: 15px;
+           animation: slideInDown 0.8s ease-out;
+           text-shadow: 2px 2px 8px rgba(0,0,0,0.3);
+       }
+
+       .newsletter-section p {
+           font-size: 1.1rem;
+           margin-bottom: 30px;
+           opacity: 0.95;
+           animation: fadeInUp 1s ease-out;
+       }
+
+       .newsletter-form {
+           display: flex;
+           gap: 10px;
+           justify-content: center;
+           flex-wrap: wrap;
+           max-width: 500px;
+           margin: 0 auto;
+           animation: slideInUp 1.2s ease-out;
+       }
+
+       .newsletter-form input {
+           flex: 1;
+           min-width: 250px;
+           padding: 14px 20px;
+           border: none;
+           border-radius: 8px;
+           font-size: 1rem;
+           transition: all 0.3s;
+       }
+
+       .newsletter-form input:focus {
+           outline: none;
+           box-shadow: 0 0 0 3px rgba(255,255,255,0.2);
+           transform: scale(1.02);
+       }
+
+       .newsletter-form button {
+           padding: 14px 36px;
+           background: white;
+           color: #1abc9c;
+           border: none;
+           border-radius: 8px;
+           font-weight: 700;
+           cursor: pointer;
+           transition: all 0.3s;
+       }
+
+       .newsletter-form button:hover {
+           transform: translateY(-2px);
+           box-shadow: 0 10px 25px rgba(0,0,0,0.2
+
+       .newsletter-form button {
+           padding: 14px 36px;
+           background: white;
+           color: #1abc9c;
+           border: none;
+           border-radius: 8px;
+           font-weight: 700;
+           cursor: pointer;
+           transition: transform 0.3s;
+       }
+
+       .newsletter-form button:hover {
+           transform: translateY(-2px);
+       }
+
+       /* Trust Badges Section */
+       .trust-badges-section {
+           margin: 60px 0;
+           padding: 40px;
+           background: #f8fafb;
+           border-radius: 20px;
+           text-align: center;
+       }
+
+       .badges-grid {
+           display: flex;
+           justify-content: center;
+           gap: 30px;
+           flex-wrap: wrap;
+           align-items: center;
+       }
+
+       .badge-item {
+           text-align: center;
+       }
+
+       /* Trust Badges Section */
+       .trust-badges-section {
+           margin: 60px 0;
+           padding: 40px;
+           background: linear-gradient(135deg, #f0f8f6 0%, #e8f5f3 100%);
+           border-radius: 20px;
+           text-align: center;
+           animation: fadeInUp 0.8s ease-out;
+       }
+
+       .badges-grid {
+           display: flex;
+           justify-content: center;
+           gap: 30px;
+           flex-wrap: wrap;
+           align-items: center;
+       }
+
+       .badge-item {
+           text-align: center;
+           animation: scaleIn 0.6s ease-out;
+           transition: all 0.3s;
+       }
+
+       .badge-item:nth-child(1) { animation-delay: 0.1s; }
+       .badge-item:nth-child(2) { animation-delay: 0.2s; }
+       .badge-item:nth-child(3) { animation-delay: 0.3s; }
+       .badge-item:nth-child(4) { animation-delay: 0.4s; }
+
+       .badge-item:hover {
+           transform: scale(1.1);
+       }
+
+       .badge-icon {
+           font-size: 2.5rem;
+           margin-bottom: 10px;
+           transition: transform 0.3s;
+       }
+
+       .badge-item:hover .badge-icon {
+           transform: scale(1.2) rotate(10deg);
+       }
+
+       .badge-item p {
+           font-weight: 600;
+           color: #263238;
+           margin: 0;
+       }
+
+       /* Must-Do Activities Section */
+       .activities-grid {
+           display: grid;
+           grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+           gap: 30px;
+           margin-top: 40px;
+       }
+
+       /* Activities Grid */
+       .activities-grid {
+           display: grid;
+           grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+           gap: 30px;
+           margin-top: 40px;
+       }
+
+       .activity-card {
+           background: rgba(255,255,255,0.1);
+           padding: 30px;
+           border-radius: 16px;
+           text-align: center;
+           border: 2px solid rgba(255,255,255,0.2);
+           transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+           animation: slideInUp 0.6s ease-out;
+           backdrop-filter: blur(10px);
+       }
+
+       .activity-card:nth-child(1) { animation-delay: 0.1s; }
+       .activity-card:nth-child(2) { animation-delay: 0.2s; }
+       .activity-card:nth-child(3) { animation-delay: 0.3s; }
+       .activity-card:nth-child(4) { animation-delay: 0.4s; }
+       .activity-card:nth-child(5) { animation-delay: 0.5s; }
+
+       .activity-card:hover {
+           background: rgba(255,255,255,0.15);
+           border-color: rgba(255,255,255,0.4);
+           transform: translateY(-10px) scale(1.05);
+       }
+
+       .activity-card h4 {
+           margin: 15px 0;
+           font-size: 1.2rem;
+           animation: slideInUp 0.8s ease-out;
+       }
+
+       .activity-card p {
+           font-size: 0.95rem;
+           opacity: 0.9;
+       }
+
+       /* Sri Lankan Cuisine Section */
+       /* Cuisine Cards */
+       .cuisine-card {
+           background: white;
+           padding: 30px;
+           border-radius: 16px;
+           text-align: center;
+           box-shadow: 0 8px 20px rgba(0,0,0,0.08);
+           animation: slideInUp 0.6s ease-out;
+           transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+       }
+
+       .cuisine-card:nth-child(1) { animation-delay: 0.1s; }
+       .cuisine-card:nth-child(2) { animation-delay: 0.2s; }
+       .cuisine-card:nth-child(3) { animation-delay: 0.3s; }
+       .cuisine-card:nth-child(4) { animation-delay: 0.4s; }
+
+       .cuisine-card:hover {
+           transform: translateY(-15px) scale(1.05);
+           box-shadow: 0 20px 50px rgba(26,188,156,0.25);
+       }
+
+       .cuisine-card h4 {
+           margin: 15px 0;
+           font-size: 1.2rem;
+           color: #263238;
+           transition: color 0.3s;
+       }
+
+       .cuisine-card:hover h4 {
+           color: #1abc9c;
+       }
+
+       .cuisine-card p {
+           color: #607d8b;
+           margin: 0;
+           transition: color 0.3s;
+       }
+
+       .cuisine-card:hover p {
+           color: #0e6251;
+       }
+       
+       .stats-grid-home {
+           display: grid;
+           grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+           gap: 40px;
+           text-align: center;
+           position: relative;
+           z-index: 1;
+       }
+       
+       .stat-item {
+           animation: slideInUp 0.8s ease-out;
+       }
+
+       .stat-item:nth-child(1) { animation-delay: 0.1s; }
+       .stat-item:nth-child(2) { animation-delay: 0.2s; }
+       .stat-item:nth-child(3) { animation-delay: 0.3s; }
+       .stat-item:nth-child(4) { animation-delay: 0.4s; }
+
+       .stat-item h3 {
+           font-size: 2.5rem;
+           margin: 0 0 10px;
+           font-weight: 800;
+           text-shadow: 2px 2px 8px rgba(0,0,0,0.3);
+           animation: scaleIn 1s ease-out;
+       }
+       
+       .stat-item p {
+           font-size: 1.1rem;
+           margin: 0;
+           opacity: 0.9;
+       }
+       
+       /* Call to Action */
+       .cta-section {
+           background: linear-gradient(135deg, #1abc9c 0%, #0e6251 100%);
+           padding: 80px 40px;
+           border-radius: 20px;
+           text-align: center;
+           margin: 80px 0;
+           position: relative;
+           overflow: hidden;
+           background-attachment: fixed;
+       }
+
+       .cta-section::before {
+           content: '';
+           position: absolute;
+           top: 0;
+           left: 0;
+           right: 0;
+           bottom: 0;
+           background: 
+               radial-gradient(circle at 20% 80%, rgba(255,255,255,0.1) 0%, transparent 50%),
+               radial-gradient(circle at 80% 20%, rgba(255,255,255,0.08) 0%, transparent 50%);
+           z-index: 0;
+       }
+
+       .cta-section > * {
+           position: relative;
+           z-index: 1;
+       }
+
+       .cta-section h2 {
+           font-size: 2.2rem;
+           margin-bottom: 15px;
+           color: #263238;
+           animation: slideInDown 0.8s ease-out;
+       }
+       
+       .cta-section p {
+           font-size: 1.1rem;
+           color: #607d8b;
+           margin-bottom: 30px;
+           animation: fadeInUp 1s ease-out;
+       }
+       
+       .grid-2 {
+           display: grid;
+           grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+           gap: 30px;
+           margin: 60px 0;
+       }
+
+       .grid-2 > * {
+           animation: slideInUp 0.6s ease-out;
+       }
+
+       .grid-2 > :nth-child(1) { animation-delay: 0.1s; }
+       .grid-2 > :nth-child(2) { animation-delay: 0.2s; }
+       .grid-2 > :nth-child(3) { animation-delay: 0.3s; }
+       .grid-2 > :nth-child(4) { animation-delay: 0.4s; }
+       .grid-2 > :nth-child(5) { animation-delay: 0.5s; }
+       .grid-2 > :nth-child(6) { animation-delay: 0.6s; }
+       </style>
+   </head>
+<body>
+<header class="site-header">
+    <div class="container header-inner">
+               <h1><a th:href="@{/}">🌍 TravelApp</a></h1>
+        <nav>
+            <a th:href="@{/}">Home</a>
+            <a th:href="@{/destinations}">Destinations</a>
+            <a th:href="@{/packages}">Packages</a>
+            <a th:href="@{/about}">About</a>
+            <a th:href="@{/contact}">Contact</a>
+            <a th:if="${session.userRole == 'ADMIN'}" th:href="@{/admin}">Admin</a>
+            <span th:if="${session.user != null}" class="user-info">
+                Welcome, <strong th:text="${session.userName}"></strong> 
+                (<span th:text="${session.userRole}"></span>) | 
+                <a th:href="@{/logout}">Logout</a>
+            </span>
+            <a th:if="${session.user == null}" th:href="@{/login}">Login</a>
+        </nav>
+    </div>
+</header>
+
+<main>
+    <!-- Premium Hero Section - Sri Lanka Theme -->
+    <section class="hero-premium">
+        <div class="hero-content">
+            <h2>🏝️ Discover the Pearl of the Indian Ocean</h2>
+            <p>Experience Sri Lanka's pristine beaches, ancient temples, lush tea plantations, and vibrant culture. Your tropical adventure awaits!</p>
+            <div class="hero-buttons">
+                <button class="btn-primary" onclick="window.location.href='/packages'">Plan Your Journey</button>
+                <button class="btn-secondary" onclick="window.location.href='/destinations'">Explore Destinations</button>
+            </div>
+        </div>
+    </section>
+
+    <div class="container">
+        <!-- Features Section -->
+        <section class="features-section">
+            <div class="section-heading">
+                <h2>Why Choose TravelApp?</h2>
+                <p>Experience travel planning like never before with our premium services and expert recommendations</p>
+            </div>
+            
+            <div class="features-grid">
+                <div class="feature-card">
+                    <div class="feature-icon">✈️</div>
+                    <h3>Curated Packages</h3>
+                    <p>Handpicked travel packages designed by travel experts to ensure the best experiences at amazing prices.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">🗺️</div>
+                    <h3>Expert Guides</h3>
+                    <p>Local expert guides at every destination to show you the hidden gems and cultural highlights.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">💰</div>
+                    <h3>Best Prices</h3>
+                    <p>Get the best value for your money with our competitive pricing and special deals year-round.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">🛡️</div>
+                    <h3>100% Safe</h3>
+                    <p>Travel with confidence knowing all trips are fully insured and backed by our security guarantee.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">⭐</div>
+                    <h3>5-Star Reviews</h3>
+                    <p>Join thousands of satisfied travelers who rated TravelApp 5 stars for exceptional service.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">📱</div>
+                    <h3>24/7 Support</h3>
+                    <p>Our dedicated support team is available round the clock to assist you during your journey.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Popular Destinations Section -->
+        <section class="destinations-showcase">
+            <div class="showcase-header">
+                <h2>🏖️ Popular Destinations</h2>
+                <a th:href="@{/destinations}">View All →</a>
+            </div>
+            
+            <div class="grid-2">
+                <div class="destination-card" th:each="destination : ${destinations}">
+                    <img th:src="${destination.imageUrl}" th:alt="${destination.name}"/>
+                    <div class="destination-info">
+                        <h4 th:text="${destination.name}"></h4>
+                        <span class="destination-country" th:text="${destination.country}"></span>
+                        <p class="destination-description" th:text="${destination.description}"></p>
+                        <p style="color: #667eea; font-weight: 700; margin: 10px 0 0;">$<span th:text="${destination.price}"></span></p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Featured Packages Section -->
+        <section class="packages-showcase">
+            <div class="showcase-header">
+                <h2>✨ Featured Travel Packages</h2>
+                <a th:href="@{/packages}">Explore More →</a>
+            </div>
+            
+            <div class="grid-2">
+                <div class="package-card" th:each="pkg : ${packages}">
+                    <div class="package-image">
+                        <img th:src="${pkg.imageUrl}" th:alt="${pkg.name}"/>
+                        <div class="price-badge">$<span th:text="${pkg.price}"></span></div>
+                    </div>
+                    <div class="package-details">
+                        <span class="package-category" th:text="${pkg.category}"></span>
+                        <h4 th:text="${pkg.name}"></h4>
+                        <p class="package-description" th:text="${pkg.description}"></p>
+                        <div class="package-footer">
+                            <span class="package-rating">⭐ <span th:text="${pkg.rating}"></span></span>
+                            <a th:href="@{/packages/{id}(id=${pkg.id})}" class="package-btn">Book Now</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Best Time to Visit Sri Lanka Section -->
+        <section style="margin: 80px 0; padding: 60px 40px; background: linear-gradient(135deg, #fff5f0, #fff9e6); border-radius: 20px;">
+            <div class="section-heading">
+                <h2>📅 Best Time to Visit Sri Lanka</h2>
+                <p>Choose your perfect season for the ultimate Sri Lankan experience</p>
+            </div>
+            
+            <div class="grid-2">
+                <div class="season-card">
+                    <div style="font-size: 3rem; margin-bottom: 15px;">☀️</div>
+                    <h3 style="color: #1abc9c; margin: 15px 0;">Dry Season (Dec-Mar)</h3>
+                    <p><strong>Best for: West & South Coasts</strong></p>
+                    <p>Perfect weather for beach relaxation and water sports. Ideal for Mirissa, Unawatuna, and Arugambe.</p>
+                    <span style="display: inline-block; background: #fff3cd; padding: 8px 16px; border-radius: 20px; margin-top: 10px; color: #333;">✓ Highly Recommended</span>
+                </div>
+                
+                <div class="season-card">
+                    <div style="font-size: 3rem; margin-bottom: 15px;">🌊</div>
+                    <h3 style="color: #1abc9c; margin: 15px 0;">Monsoon Season (May-Sep)</h3>
+                    <p><strong>Best for: East Coast & Mountains</strong></p>
+                    <p>Green landscapes, fewer crowds, and perfect for tea plantations and hiking adventures.</p>
+                    <span style="display: inline-block; background: #e3f2fd; padding: 8px 16px; border-radius: 20px; margin-top: 10px; color: #333;">✓ Budget Friendly</span>
+                </div>
+                
+                <div class="season-card">
+                    <div style="font-size: 3rem; margin-bottom: 15px;">🌺</div>
+                    <h3 style="color: #1abc9c; margin: 15px 0;">January Festival</h3>
+                    <p><strong>Best for: Cultural Events</strong></p>
+                    <p>Experience Duruthu Perahera, Negombo festival, and authentic Sri Lankan celebrations.</p>
+                    <span style="display: inline-block; background: #f3e5f5; padding: 8px 16px; border-radius: 20px; margin-top: 10px; color: #333;">✓ Cultural Immersion</span>
+                </div>
+                
+                <div class="season-card">
+                    <div style="font-size: 3rem; margin-bottom: 15px;">🌴</div>
+                    <h3 style="color: #1abc9c; margin: 15px 0;">Year-Round</h3>
+                    <p><strong>Best for: All Adventurers</strong></p>
+                    <p>Sri Lanka's tropical climate means you can visit anytime. Each season has its own charm!</p>
+                    <span style="display: inline-block; background: #e8f5e9; padding: 8px 16px; border-radius: 20px; margin-top: 10px; color: #333;">✓ Always Amazing</span>
+                </div>
+            </div>
+        </section>
+
+        <!-- Authentic Sri Lankan Experiences Section -->
+        <section style="margin: 80px 0; background: #f8f9fa; padding: 60px 40px; border-radius: 20px;">
+            <div class="section-heading">
+                <h2>🌿 Authentic Sri Lankan Experiences</h2>
+                <p>Immerse yourself in the real Sri Lanka beyond the tourist trail</p>
+            </div>
+            
+            <div class="features-grid">
+                <div class="feature-card">
+                    <div class="feature-icon" style="background: linear-gradient(135deg, #8b6914, #d4af37);">☕</div>
+                    <h3>Tea Plantation Tours</h3>
+                    <p>Pick fresh tea leaves on misty Nuwara Eliya slopes, visit factories, and learn centuries-old tradition from local tea makers.</p>
+                </div>
+                
+                <div class="feature-card">
+                    <div class="feature-icon" style="background: linear-gradient(135deg, #d4af37, #c9a961);">🚂</div>
+                    <h3>Mountain Train Rides</h3>
+                    <p>Ride the legendary colonial train through dramatic highlands, pine forests, and stunning viewpoints with locals.</p>
+                </div>
+                
+                <div class="feature-card">
+                    <div class="feature-icon" style="background: linear-gradient(135deg, #f39c12, #e67e22);">🏰</div>
+                    <h3>Ancient Temple Tours</h3>
+                    <p>Explore sacred Buddhist temples like Sigiriya, Temple of Tooth, and medieval cave monasteries with expert historians.</p>
+                </div>
+                
+                <div class="feature-card">
+                    <div class="feature-icon" style="background: linear-gradient(135deg, #27ae60, #229954);">🐘</div>
+                    <h3>Wildlife Safari</h3>
+                    <p>Spot elephants, leopards, and exotic birds in Yala National Park and Udawalawe on thrilling safari adventures.</p>
+                </div>
+                
+                <div class="feature-card">
+                    <div class="feature-icon" style="background: linear-gradient(135deg, #e74c3c, #c0392b);">🎭</div>
+                    <h3>Cultural Immersion</h3>
+                    <p>Stay with local families, learn traditional cuisine, wear sarongs, and experience genuine Sri Lankan hospitality.</p>
+                </div>
+                
+                <div class="feature-card">
+                    <div class="feature-icon" style="background: linear-gradient(135deg, #3498db, #2980b9);">🌊</div>
+                    <h3>Surfing & Water Sports</h3>
+                    <p>Catch world-class waves in Arugambe, Mirissa, and Hikkaduwa with professional instructors and beachside camps.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Sri Lankan Cuisine Delights Section -->
+        <section style="margin: 80px 0; padding: 60px 40px; background: linear-gradient(135deg, #fff3e0, #ffe0b2); border-radius: 20px;">
+            <div class="section-heading">
+                <h2>🍛 Taste Authentic Sri Lankan Cuisine</h2>
+                <p>Indulge in flavors that will make your journey unforgettable</p>
+            </div>
+            
+            <div class="grid-2">
+                <div class="cuisine-card">
+                    <div style="font-size: 3rem; margin-bottom: 15px;">🥘</div>
+                    <h4>Kottu Roti</h4>
+                    <p>Chopped roti stir-fried with curry, vegetables, and spices - a street food legend</p>
+                </div>
+                
+                <div class="cuisine-card">
+                    <div style="font-size: 3rem; margin-bottom: 15px;">🦐</div>
+                    <h4>Deviled Spices</h4>
+                    <p>Prawns & vegetables cooked with chili and spices - perfect for seafood lovers</p>
+                </div>
+                
+                <div class="cuisine-card">
+                    <div style="font-size: 3rem; margin-bottom: 15px;">🍲</div>
+                    <h4>Lamprais</h4>
+                    <p>Spiced rice & meat wrapped in banana leaves - a royal delicacy</p>
+                </div>
+                
+                <div class="cuisine-card">
+                    <div style="font-size: 3rem; margin-bottom: 15px;">🥥</div>
+                    <h4>Wambatu Curry</h4>
+                    <p>Eggplant in aromatic coconut curry - vegetarian paradise</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Must-Do Activities Section -->
+        <section style="margin: 80px 0; background: linear-gradient(135deg, #1abc9c, #0e6251); color: white; padding: 60px 40px; border-radius: 20px;">
+            <div class="section-heading" style="color: white;">
+                <h2>🎯 5 Must-Do Adventures</h2>
+                <p style="color: rgba(255,255,255,0.9);">Essential experiences that define a Sri Lankan journey</p>
+            </div>
+            
+            <div class="activities-grid">
+                <div class="activity-card">
+                    <div style="font-size: 2.5rem; margin-bottom: 15px;">🏔️</div>
+                    <h4 style="margin: 15px 0;">Climb Sigiriya Rock</h4>
+                    <p style="font-size: 0.95rem;">Hike to the top of this 5th-century rock fortress for panoramic views</p>
+                </div>
+                
+                <div class="activity-card">
+                    <div style="font-size: 2.5rem; margin-bottom: 15px;">🌅</div>
+                    <h4 style="margin: 15px 0;">Watch Sunrise at Ella</h4>
+                    <p style="font-size: 0.95rem;">Trek to Little Adam's Peak for breathtaking sunrise views</p>
+                </div>
+                
+                <div class="activity-card">
+                    <div style="font-size: 2.5rem; margin-bottom: 15px;">🏖️</div>
+                    <h4 style="margin: 15px 0;">Stilt Fishing Tour</h4>
+                    <p style="font-size: 0.95rem;">Experience traditional stilt fishing at Koggala with a local fisherman</p>
+                </div>
+                
+                <div class="activity-card">
+                    <div style="font-size: 2.5rem; margin-bottom: 15px;">🏄</div>
+                    <h4 style="margin: 15px 0;">Learn to Surf</h4>
+                    <p style="font-size: 0.95rem;">Take lessons at world-famous beach breaks with certified instructors</p>
+                </div>
+                
+                <div class="activity-card">
+                    <div style="font-size: 2.5rem; margin-bottom: 15px;">🌺</div>
+                    <h4 style="margin: 15px 0;">Temple & Ritual</h4>
+                    <p style="font-size: 0.95rem;">Participate in Buddhist ceremonies and temple rituals with monks</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Testimonials Section -->
+        <section style="margin: 80px 0; background: #f5f7fa; padding: 60px 40px; border-radius: 20px;">
+            <div class="section-heading">
+                <h2>💬 What Our Travelers Say</h2>
+                <p>Real stories from real adventurers who fell in love with Sri Lanka</p>
+            </div>
+            
+            <div class="grid-2">
+                <div class="testimonial-card">
+                    <p style="color: #ffa500; font-weight: bold; margin-bottom: 15px;">⭐⭐⭐⭐⭐ 5/5</p>
+                    <p style="font-style: italic; color: #607d8b; line-height: 1.8;">"An absolutely magical experience! The team organized everything perfectly. The tea plantation tour was unforgettable!"</p>
+                    <p style="font-weight: 600; color: #263238; margin-top: 15px;">- Sarah Mitchell, USA</p>
+                </div>
+                
+                <div class="testimonial-card">
+                    <p style="color: #ffa500; font-weight: bold; margin-bottom: 15px;">⭐⭐⭐⭐⭐ 5/5</p>
+                    <p style="font-style: italic; color: #607d8b; line-height: 1.8;">"Best vacation ever! The safari in Yala was incredible. Can't wait to go back!"</p>
+                    <p style="font-weight: 600; color: #263238; margin-top: 15px;">- James Chen, Singapore</p>
+                </div>
+                
+                <div class="testimonial-card">
+                    <p style="color: #ffa500; font-weight: bold; margin-bottom: 15px;">⭐⭐⭐⭐⭐ 5/5</p>
+                    <p style="font-style: italic; color: #607d8b; line-height: 1.8;">"Incredible guides, amazing food, breathtaking views. TravelApp made our dream Sri Lankan vacation real!"</p>
+                    <p style="font-weight: 600; color: #263238; margin-top: 15px;">- Emma Wilson, UK</p>
+                </div>
+                
+                <div class="testimonial-card">
+                    <p style="color: #ffa500; font-weight: bold; margin-bottom: 15px;">⭐⭐⭐⭐⭐ 5/5</p>
+                    <p style="font-style: italic; color: #607d8b; line-height: 1.8;">"The attention to detail was amazing. Every moment was perfectly planned. Highly recommend!"</p>
+                    <p style="font-weight: 600; color: #263238; margin-top: 15px;">- Marco Rossi, Italy</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Newsletter Signup Section -->
+        <section class="newsletter-section">
+            <h2>✉️ Get Exclusive Sri Lanka Travel Tips</h2>
+            <p>Receive insider guides, hidden gems, and special offers to your inbox!</p>
+            
+            <div class="newsletter-form">
+                <input type="email" placeholder="Enter your email" required>
+                <button>Subscribe</button>
+            </div>
+        </section>
+
+        <!-- Trust Badges Section -->
+        <section class="trust-badges-section">
+            <p style="color: #607d8b; margin-bottom: 30px; font-weight: 600;">Trusted by Thousands • Award-Winning Service</p>
+            
+            <div class="badges-grid">
+                <div class="badge-item">
+                    <div class="badge-icon">✓</div>
+                    <p>Sri Lanka Tourism Board Certified</p>
+                </div>
+                
+                <div class="badge-item">
+                    <div class="badge-icon">🏆</div>
+                    <p>Best Travel Agency 2025</p>
+                </div>
+                
+                <div class="badge-item">
+                    <div class="badge-icon">🔒</div>
+                    <p>100% Secure Booking</p>
+                </div>
+                
+                <div class="badge-item">
+                    <div class="badge-icon">🌍</div>
+                    <p>ISO 9001 Certified</p>
+                </div>
+            </div>
+        </section>
+        <section class="stats-section">
+            <div class="stats-grid-home">
+                <div class="stat-item">
+                    <h3>50+</h3>
+                    <p>Destinations</p>
+                </div>
+                <div class="stat-item">
+                    <h3>100+</h3>
+                    <p>Travel Packages</p>
+                </div>
+                <div class="stat-item">
+                    <h3>10,000+</h3>
+                    <p>Happy Travelers</p>
+                </div>
+                <div class="stat-item">
+                    <h3>4.9★</h3>
+                    <p>Average Rating</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- CTA Section -->
+        <section class="cta-section">
+            <h2>Ready for Your Next Adventure?</h2>
+            <p>Join thousands of travelers discovering amazing destinations with TravelApp</p>
+            <div style="display: flex; gap: 15px; justify-content: center; flex-wrap: wrap;">
+                <button class="btn-primary" style="background: #1abc9c; color: white;" onclick="window.location.href='/packages'">Browse Packages</button>
+                <button class="btn-secondary" style="background: #1abc9c; color: white; border: none;" onclick="window.location.href='/destinations'">Discover Destinations</button>
+            </div>
+        </section>
+    </div>
+</main>
+<footer class="site-footer">
+    <div class="container">
+        <p>© 2026 TravelApp. All Rights Reserved.</p>
+    </div>
+</footer>
+</body>
+</html>

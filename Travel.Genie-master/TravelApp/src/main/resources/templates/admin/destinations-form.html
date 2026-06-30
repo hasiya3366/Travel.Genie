@@ -1,0 +1,383 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TravelApp — Manage Destination</title>
+    <!-- Google Fonts & FontAwesome Icons -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        body {
+            background-color: #f3fbf8; /* ලස්සන ලා කොළ/සුදු පසුබිම */
+            color: #2c3e50;
+            display: flex;
+            min-height: 100vh;
+        }
+
+        /* --- PREMIUM SIDEBAR STYLE --- */
+        .sidebar {
+            width: 260px;
+            background-color: #e8f5e9;
+            padding: 30px 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 30px;
+            position: fixed;
+            height: 100vh;
+            left: 0;
+            top: 0;
+            border-right: 1px solid #d1e7dd;
+            z-index: 10;
+        }
+
+        .sidebar .logo {
+            font-size: 24px;
+            font-weight: 700;
+            color: #0f5132;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding-left: 10px;
+        }
+
+        .sidebar .logo span {
+            color: #009688;
+        }
+
+        .menu-links {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            list-style: none;
+        }
+
+        .menu-links a {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            padding: 14px 20px;
+            color: #4a5d4e;
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 15px;
+            border-radius: 12px;
+            transition: all 0.3s ease;
+        }
+
+        .menu-links a:hover {
+            background-color: rgba(0, 150, 136, 0.08);
+            color: #009688;
+        }
+
+        /* Destinations ටැබ් එක ඇතුළේ වැඩ කරන නිසා මේක Active කළා */
+        .menu-links a.active {
+            background-color: #009688;
+            color: white;
+            box-shadow: 0 4px 12px rgba(0, 150, 136, 0.15);
+        }
+
+        /* --- MAIN CONTENT LAYOUT --- */
+        .main-content {
+            margin-left: 260px;
+            flex-grow: 1;
+            padding: 40px;
+            background-color: #f3fbf8;
+        }
+
+        /* --- TOP SITE HEADER --- */
+        .site-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 35px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid rgba(0, 150, 136, 0.1);
+        }
+
+        .site-header .brand-title {
+            font-size: 28px;
+            font-weight: 700;
+            color: #1e293b;
+            text-decoration: none;
+        }
+
+        .top-nav {
+            display: flex;
+            gap: 25px;
+        }
+
+        .top-nav a {
+            color: #475569;
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 15px;
+            transition: color 0.2s;
+        }
+
+        .top-nav a:hover {
+            color: #009688;
+        }
+
+        .page-subtitle {
+            font-size: 13px;
+            font-weight: 700;
+            color: #009688;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            margin-bottom: 5px;
+        }
+
+        .page-title-row {
+            margin-bottom: 30px;
+        }
+
+        .page-title-row h2 {
+            font-size: 36px;
+            font-weight: 700;
+            color: #1a3a2a;
+        }
+
+        /* --- MODERN FORM CARD CONTAINER --- */
+        .form-container {
+            max-width: 700px;
+            background: white;
+            padding: 35px;
+            border-radius: 24px;
+            box-shadow: 0 4px 25px rgba(0, 0, 0, 0.02);
+            border: 1px solid #e2e8f0;
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
+        }
+
+        .form-group {
+            margin-bottom: 22px;
+        }
+
+        .form-group.full-width {
+            grid-column: span 2;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            font-size: 14px;
+            color: #334155;
+        }
+
+        .form-group input,
+        .form-group textarea {
+            width: 100%;
+            padding: 12px 16px;
+            border: 1px solid #cbd5e1;
+            border-radius: 12px;
+            font-size: 14px;
+            color: #334155;
+            transition: all 0.3s ease;
+            background-color: #f8fafc;
+        }
+
+        .form-group textarea {
+            resize: vertical;
+            font-family: inherit;
+        }
+
+        .form-group input:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: #009688;
+            background-color: white;
+            box-shadow: 0 0 0 4px rgba(0, 150, 136, 0.11);
+        }
+
+        /* --- MODERN BUTTONS --- */
+        .form-actions {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-top: 20px;
+        }
+
+        .btn-submit {
+            background-color: #00a88f;
+            color: white;
+            padding: 12px 28px;
+            border: none;
+            border-radius: 12px;
+            cursor: pointer;
+            font-size: 15px;
+            font-weight: 600;
+            transition: all 0.2s ease;
+            box-shadow: 0 4px 12px rgba(0, 168, 143, 0.15);
+        }
+
+        .btn-submit:hover {
+            background-color: #008f7a;
+            transform: translateY(-1px);
+        }
+
+        .btn-cancel {
+            background-color: #64748b;
+            color: white;
+            padding: 12px 28px;
+            border: none;
+            border-radius: 12px;
+            cursor: pointer;
+            text-decoration: none;
+            font-size: 15px;
+            font-weight: 600;
+            transition: all 0.2s ease;
+        }
+
+        .btn-cancel:hover {
+            background-color: #475569;
+            transform: translateY(-1px);
+        }
+
+        @media (max-width: 768px) {
+            .form-grid { grid-template-columns: 1fr; }
+            .form-group.full-width { grid-column: span 1; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- 🌿 LEFT PREMIUM SIDEBAR MENU -->
+    <div class="sidebar">
+        <div class="logo">
+            <i class="fa-solid fa-leaf"></i> Travel<span>Pro</span>
+        </div>
+        <ul class="menu-links">
+            <li><a href="/admin"><i class="fa-solid fa-chart-pie"></i> Dashboard</a></li>
+            <li><a href="/admin/users"><i class="fa-solid fa-users"></i> Users</a></li>
+            <li><a href="/admin/destinations" class="active"><i class="fa-solid fa-map-location-dot"></i> Destinations</a></li>
+            <li><a href="/admin/packages"><i class="fa-solid fa-cubes"></i> Packages</a></li>
+            <li><a href="/admin/bookings"><i class="fa-solid fa-calendar-check"></i> Bookings</a></li>
+            <li><a href="/admin/reviews"><i class="fa-solid fa-star"></i> Reviews</a></li>
+            <li><a href="/admin/inbox"><i class="fa-solid fa-envelope"></i> Inbox</a></li>
+        </ul>
+    </div>
+
+    <!-- 💻 MAIN CONTENT DISPLAY CONTAINER -->
+    <div class="main-content">
+        
+        <!-- TOP NAVIGATION HEADER -->
+        <header class="site-header">
+            <a class="brand-title" th:href="@{/}">TravelApp</a>
+            <nav class="top-nav">
+                <a th:href="@{/}">Home</a>
+                <a th:href="@{/admin}">Dashboard</a>
+                <a th:href="@{/logout}"><i class="fa-solid fa-right-from-bracket"></i> Logout</a>
+            </nav>
+        </header>
+
+        <main>
+            <!-- DYNAMIC FORM HEADER TITLE -->
+            <div class="page-title-row">
+                <p class="page-subtitle">Inventory Control</p>
+                <h2 th:if="${destination == null}">Add New Destination</h2>
+                <h2 th:if="${destination != null}">Edit Destination Detail</h2>
+            </div>
+
+            <!-- FORM CARD BLOCK -->
+            <div class="form-container">
+                
+                <!-- ➕ FORM: ADD NEW DESTINATION -->
+                <form th:if="${destination == null}" th:action="@{/admin/destinations/add}" method="post">
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label for="name">Destination Name</label>
+                            <input type="text" id="name" name="name" placeholder="e.g. Ella, Kandy" required/>
+                        </div>
+                        <div class="form-group">
+                            <label for="country">Country</label>
+                            <input type="text" id="country" name="country" placeholder="e.g. Sri Lanka" required/>
+                        </div>
+                        <div class="form-grid full-width" style="margin-bottom:0; gap:20px;">
+                            <div class="form-group">
+                                <label for="category">Category</label>
+                                <input type="text" id="category" name="category" placeholder="Beach, Mountain, Cultural" required/>
+                            </div>
+                            <div class="form-group">
+                                <label for="price">Price (LKR)</label>
+                                <input type="number" id="price" name="price" step="0.01" placeholder="Value Amount" required/>
+                            </div>
+                        </div>
+                        <div class="form-group full-width">
+                            <label for="imageUrl">Image Display URL</label>
+                            <input type="text" id="imageUrl" name="imageUrl" placeholder="https://example.com/image.jpg" required/>
+                        </div>
+                        <div class="form-group">
+                            <label for="rating">Platform Rating (1.0 - 5.0)</label>
+                            <input type="number" id="rating" name="rating" min="1" max="5" step="0.1" placeholder="4.5" required/>
+                        </div>
+                        <div class="form-group full-width">
+                            <label for="description">Detailed Description</label>
+                            <textarea id="description" name="description" rows="4" placeholder="Write a catchy description about this hub..." required></textarea>
+                        </div>
+                    </div>
+                    <div class="form-actions">
+                        <button type="submit" class="btn-submit"><i class="fa-solid fa-map-pin"></i> Add Destination</button>
+                        <a th:href="@{/admin/destinations}" class="btn-cancel">Cancel</a>
+                    </div>
+                </form>
+
+                <!-- 📝 FORM: EDIT EXISTING DESTINATION -->
+                <form th:if="${destination != null}" th:action="@{/admin/destinations/edit/{id}(id=${destination.id})}" method="post">
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label for="edit_name">Destination Name</label>
+                            <input type="text" id="edit_name" name="name" th:value="${destination.name}" required/>
+                        </div>
+                        <div class="form-group">
+                            <label for="edit_country">Country</label>
+                            <input type="text" id="edit_country" name="country" th:value="${destination.country}" required/>
+                        </div>
+                        <div class="form-grid full-width" style="margin-bottom:0; gap:20px;">
+                            <div class="form-group">
+                                <label for="edit_category">Category</label>
+                                <input type="text" id="edit_category" name="category" th:value="${destination.category}" required/>
+                            </div>
+                            <div class="form-group">
+                                <label for="edit_price">Price (LKR)</label>
+                                <input type="number" id="edit_price" name="price" step="0.01" th:value="${destination.price}" required/>
+                            </div>
+                        </div>
+                        <div class="form-group full-width">
+                            <label for="edit_imageurl">Image Display URL</label>
+                            <input type="text" id="edit_imageurl" name="imageUrl" th:value="${destination.imageUrl}" required/>
+                        </div>
+                        <div class="form-group">
+                            <label for="edit_rating">Platform Rating (1.0 - 5.0)</label>
+                            <input type="number" id="edit_rating" name="rating" min="1" max="5" step="0.1" th:value="${destination.rating}" required/>
+                        </div>
+                        <div class="form-group full-width">
+                            <label for="edit_description">Detailed Description</label>
+                            <textarea id="edit_description" name="description" rows="4" th:text="${destination.description}" required></textarea>
+                        </div>
+                    </div>
+                    <div class="form-actions">
+                        <button type="submit" class="btn-submit"><i class="fa-solid fa-floppy-disk"></i> Update Destination</button>
+                        <a th:href="@{/admin/destinations}" class="btn-cancel">Cancel</a>
+                    </div>
+                </form>
+                
+            </div>
+        </main>
+    </div>
+
+</body>
+</html>

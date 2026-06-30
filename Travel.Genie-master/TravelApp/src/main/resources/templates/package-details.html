@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" th:href="@{/css/styles.css}">
+    <title>Package Details - TravelApp</title>
+</head>
+<body>
+<header class="site-header">
+    <div class="container header-inner">
+        <h1><a th:href="@{/}">TravelApp</a></h1>
+        <nav>
+            <a th:href="@{/}">Home</a>
+            <a th:href="@{/destinations}">Destinations</a>
+            <a th:href="@{/packages}">Packages</a>
+            <a th:href="@{/about}">About</a>
+            <a th:href="@{/contact}">Contact</a>
+            <a th:href="@{/admin}">Admin</a>
+        </nav>
+    </div>
+</header>
+<main class="container">
+    <section class="page-heading">
+        <h2 th:text="${package.name}"></h2>
+        <p th:text="${package.category}"></p>
+    </section>
+    <section class="split-grid">
+        <div class="package-detail-card">
+
+            <div class="photo-map-container" style="display: flex; gap: 20px; flex-wrap: wrap; margin-bottom: 20px; align-items: stretch;">
+
+                <!-- වම් පැත්තේ පින්තූරය (උස 280px දක්වා වැඩි කළා) -->
+                <div style="flex: 1; min-width: 300px;">
+                    <img th:src="${package.imageUrl}" alt="Package image" style="width: 100%; height: 280px; object-fit: cover; border-radius: 8px; display: block;"/>
+                </div>
+
+                <!-- ଦකුණු පැත්තේ මැප් එක (උස සහ Zoom එක ලස්සනට හැදුවා) -->
+                <div style="flex: 1; min-width: 300px; border: 1px solid #e3e6f0; padding: 15px; border-radius: 8px; background: white; display: flex; flex-direction: column; justify-content: space-between;">
+                    <h4 style="margin-top: 0; color: #0f766e; font-size: 16px; margin-bottom: 10px; font-weight: bold;">Location Map</h4>
+                    <div style="width: 100%; overflow: hidden; border-radius: 6px; flex-grow: 1; margin-bottom: 8px;">
+
+                        <!-- 🎯 🛑 Iframe එකේ height එක 200px කළා, සූම් එක ගාණට හැදුවා (z=11) සාගරය අයින් වෙන්න -->
+                        <iframe 
+                            th:src="${package.mapUrl != null and package.mapUrl != ''} ? ${package.mapUrl} : 'https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3960.7985775405076!2d79.9708!3d6.9147!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zNsKwNTQnNTIuOSJOIDc5wrA1OCcxNC45IkU!5e0!3m2!1sen!2slk!4v1611111111111'"
+                            width="100%" 
+                            height="200" 
+                            style="border:0; border-radius: 6px;" 
+                            allowfullscreen="" 
+                            loading="lazy" 
+                            referrerpolicy="strict-origin-when-cross-origin">
+                        </iframe>
+                    </div>
+
+                    <div style="text-align: left; padding-left: 2px;">
+                        <a th:href="${package.mapUrl != null and package.mapUrl != ''} ? ${package.mapUrl} : 'https://maps.google.com/?q=Sri+Lanka'"
+                           target="_blank"
+                           style="color: #0f766e; text-decoration: none; font-size: 13px; font-weight: bold;">
+                            🗺️ View on Google Maps
+                        </a>
+                    </div>
+                </div>
+
+            </div>
+
+            <p th:text="${package.description}"></p>
+            <p>Price: LKR <strong th:text="${package.price}"></strong> / Per Person</p>
+            <p>Rating: ⭐ <strong th:text="${package.rating}"></strong>/5</p>
+
+            <div class="weather-card" th:if="${weather != null}" id="weather-card"
+                 th:attr="data-destination=${weather.locationName},data-country=${weather.countryName}">
+                <div class="weather-compact">
+                    <div class="weather-icon" id="weather-icon" th:text="${weather.icon}">☀️</div>
+                    <div class="weather-info">
+                        <div class="weather-header">
+                            <strong id="weather-location" th:text="${weather.locationName}">Destination</strong>
+                            <span id="weather-temp" th:text="${weather.temperature}">26°C</span>
+                        </div>
+                        <div class="weather-meta">
+                            <span id="weather-condition" th:text="${weather.condition}">Pleasant</span>
+                            <span class="weather-sep">•</span>
+                            <span id="weather-humidity">--%</span>
+                            <span class="weather-sep">•</span>
+                            <span id="weather-wind">-- km/h</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="includes-section" th:if="${package.includes != null and package.includes != ''}" style="background-color: #f8f9fa; border: 1px solid #e3e6f0; border-left: 4px solid #0f766e; padding: 15px; border-radius: 5px; margin: 20px 0; color: #333;">
+                <h4 style="margin-top: 0; color: #0f766e; font-size: 16px;">What's Included in this Package:</h4>
+                <ul style="margin: 0; padding-left: 20px; line-height: 1.6;">
+                    <li th:each="point : ${#strings.arraySplit(package.includes, '
+')}" th:text="${point}"></li>
+                </ul>
+            </div>
+
+            <a th:href="@{/book/{id}(id=${package.id})}" class="button">Book Now</a>
+        </div>
+
+        <div>
+            <div class="add-review-section" style="background: white; border: 1px solid #e3e6f0; padding: 20px; border-radius: 8px; margin-bottom: 30px;">
+                <h3 style="color: #0f766e; margin-top: 0; font-size: 18px;">Leave a Review</h3>
+
+                <form th:if="${session.userRole != null}" th:action="@{/packages/review/add}" method="post">
+                    <input type="hidden" name="packageId" th:value="${package.id}" />
+
+                    <div style="margin-bottom: 15px;">
+                        <label for="rating" style="display: block; font-weight: bold; margin-bottom: 5px;">Your Rating:</label>
+                        <select id="rating" name="rating" required style="width: 100%; padding: 8px; border: 1px solid #ccc; border-radius: 4px;">
+                            <option value="5">⭐⭐⭐⭐⭐ (5/5)</option>
+                            <option value="4">⭐⭐⭐⭐ (4/5)</option>
+                            <option value="3">⭐⭐⭐ (3/5)</option>
+                            <option value="2">⭐⭐ (2/5)</option>
+                            <option value="1">⭐ (1/5)</option>
+                        </select>
+                    </div>
+
+                    <div style="margin-bottom: 15px;">
+                        <label for="comment" style="display: block; font-weight: bold; margin-bottom: 5px;">Your Comment:</label>
+                        <textarea id="comment" name="comment" rows="3" required placeholder="Write your experience here..." style="width: 100%; padding: 8px; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box;"></textarea>
+                    </div>
+
+                    <button type="submit" class="button" style="background-color: #0f766e; color: white; padding: 10px 20px; border: none; border-radius: 4px; cursor: pointer; font-weight: bold;">Submit Review</button>
+                </form>
+
+                <div th:if="${session.userRole == null}" style="color: #666; font-style: italic;">
+                    Please <a th:href="@{/login}" style="color: #0f766e; font-weight: bold; text-decoration: underline;">Login</a> to leave a review.
+                </div>
+            </div>
+
+            <div class="reviews-display-section" style="background: white; border: 1px solid #e3e6f0; padding: 20px; border-radius: 8px;">
+                <h3 style="color: #333; margin-top: 0; font-size: 18px; border-bottom: 2px solid #f1f3f9; padding-bottom: 10px;">User Reviews</h3>
+
+                <div th:if="${reviews != null and !reviews.isEmpty()}">
+                    <div class="review-card" th:each="review : ${reviews}" style="border-bottom: 1px solid #eee; padding: 15px 0;">
+                        <p style="margin: 0 0 5px 0;">
+                            <strong th:text="${review.user != null ? review.user.name : 'Anonymous'}">Anonymous</strong>
+                            <span style="color: #f6c23e; margin-left: 10px;">
+                                <span th:each="i : ${#numbers.sequence(1, review.rating)}">⭐</span>
+                            </span>
+                        </p>
+                        <p th:text="${review.comment}" style="color: #555; margin: 0; font-size: 14px;"></p>
+                    </div>
+                </div>
+
+                <div th:if="${reviews == null || reviews.isEmpty()}" style="color: #888; font-style: italic; padding: 10px 0;">
+                    No reviews yet for this package. Be the first to review!
+                </div>
+            </div>
+        </div>
+
+    </section>
+</main>
+<footer class="site-footer">
+    <div class="container">
+        <p>© 2026 TravelApp. All Rights Reserved.</p>
+    </div>
+    <div th:replace="fragments :: chatbot"></div>
+</footer>
+<script>
+    document.addEventListener('DOMContentLoaded', async () => {
+        const card = document.getElementById('weather-card');
+        if (!card) {
+            return;
+        }
+
+        const destination = card.dataset.destination || 'Sri Lanka';
+        const country = card.dataset.country || '';
+        const query = `${destination}${country ? ', ' + country : ''}`;
+
+        const setFallback = () => {
+            const temp = document.getElementById('weather-temp');
+            const condition = document.getElementById('weather-condition');
+            const icon = document.getElementById('weather-icon');
+            const location = document.getElementById('weather-location');
+            const humidity = document.getElementById('weather-humidity');
+            const wind = document.getElementById('weather-wind');
+
+            if (location) {
+                location.textContent = destination;
+            }
+            if (temp) {
+                temp.textContent = '--°C';
+            }
+            if (condition) {
+                condition.textContent = 'Unknown';
+            }
+            if (humidity) {
+                humidity.textContent = '--%';
+            }
+            if (wind) {
+                wind.textContent = '-- km/h';
+            }
+            if (icon) {
+                icon.textContent = '🌦️';
+            }
+        };
+
+        async function findGeoResult(queries) {
+            for (const searchText of queries) {
+                if (!searchText) { continue; }
+                const response = await fetch(`https://geocoding-api.open-meteo.com/v1/search?name=${encodeURIComponent(searchText)}&count=1&language=en&format=json`);
+                if (!response.ok) {
+                    continue;
+                }
+                const data = await response.json();
+                const result = data.results && data.results[0];
+                if (result) {
+                    return result;
+                }
+            }
+            return null;
+        }
+
+        try {
+            const geoQueries = [
+                `${destination}, ${country}`.trim(),
+                destination,
+                country,
+                'Sri Lanka',
+                'Asia',
+            ].filter((value, index, array) => value && array.indexOf(value) === index);
+
+            const result = await findGeoResult(geoQueries);
+            if (!result) {
+                throw new Error('No coordinates found');
+            }
+
+            const weatherResponse = await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${result.latitude}&longitude=${result.longitude}&current=temperature_2m,relative_humidity_2m,wind_speed_10m,weather_code&timezone=auto`);
+            if (!weatherResponse.ok) {
+                throw new Error('Weather request failed');
+            }
+            const weatherData = await weatherResponse.json();
+            const current = weatherData.current;
+            const code = current?.weather_code;
+            const weatherLabel = getWeatherLabel(code);
+            const temperature = `${Math.round(current?.temperature_2m ?? 0)}°C`;
+            const humidity = `${Math.round(current?.relative_humidity_2m ?? 0)}%`;
+            const wind = `${Math.round(current?.wind_speed_10m ?? 0)} km/h`;
+
+            document.getElementById('weather-location').textContent = result.name || destination;
+            document.getElementById('weather-temp').textContent = temperature;
+            document.getElementById('weather-condition').textContent = weatherLabel;
+            document.getElementById('weather-humidity').textContent = humidity;
+            document.getElementById('weather-wind').textContent = wind;
+            document.getElementById('weather-icon').textContent = getWeatherIcon(code);
+        } catch (error) {
+            setFallback();
+        }
+    });
+
+    function getWeatherLabel(code) {
+        const map = {
+            0: 'Clear sky',
+            1: 'Mostly clear',
+            2: 'Partly cloudy',
+            3: 'Overcast',
+            45: 'Foggy',
+            48: 'Rime fog',
+            51: 'Light drizzle',
+            53: 'Moderate drizzle',
+            55: 'Heavy drizzle',
+            61: 'Light rain',
+            63: 'Moderate rain',
+            65: 'Heavy rain',
+            71: 'Light snow',
+            73: 'Moderate snow',
+            75: 'Heavy snow',
+            95: 'Thunderstorm'
+        };
+        return map[code] || 'Pleasant';
+    }
+
+    function getWeatherIcon(code) {
+        const map = {
+            0: '☀️',
+            1: '🌤️',
+            2: '⛅',
+            3: '☁️',
+            45: '🌫️',
+            48: '🌫️',
+            51: '🌦️',
+            53: '🌦️',
+            55: '🌧️',
+            61: '🌦️',
+            63: '🌧️',
+            65: '🌧️',
+            71: '❄️',
+            73: '❄️',
+            75: '❄️',
+            95: '⛈️'
+        };
+        return map[code] || '🌦️';
+    }
+</script>
+</body>
+</html>

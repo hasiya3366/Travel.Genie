@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" th:href="@{/css/styles.css}">
+    <title th:text="${destination.name} + ' - TravelApp'">Destination Details</title>
+</head>
+<body>
+<header class="site-header">
+    <div class="container header-inner">
+        <h1><a th:href="@{/}">TravelApp</a></h1>
+        <nav>
+            <a th:href="@{/}">Home</a>
+            <a th:href="@{/destinations}">Destinations</a>
+            <a th:href="@{/packages}">Packages</a>
+            <a th:href="@{/about}">About</a>
+            <a th:href="@{/contact}">Contact</a>
+            <a th:href="@{/admin}">Admin</a>
+        </nav>
+    </div>
+</header>
+
+<main class="container" style="margin-top: 30px; display: grid; grid-template-columns: 1.2fr 0.8fr; gap: 40px;">
+
+    <div>
+        <img th:src="${destination.imageUrl}" alt="Destination image" style="width: 100%; max-height: 400px; object-fit: cover; border-radius: 12px; box-shadow: 0 4px 10px rgba(0,0,0,0.05);"/>
+        <h1 style="color: #1e293b; margin-top: 20px; margin-bottom: 5px;" th:text="${destination.name}">Sigiriya</h1>
+        <p style="margin: 0; color: #64748b; font-size: 16px;"><strong th:text="${destination.country}">Sri Lanka</strong> • <span th:text="${destination.category}">Cultural</span></p>
+
+        <hr style="border: 0; border-top: 1px solid #e2e8f0; margin: 20px 0;">
+
+        <h3 style="color: #334155;">About this destination</h3>
+        <p style="color: #475569; line-height: 1.7; font-size: 15px;" th:text="${destination.description}">Beautiful historical place.</p>
+        <p style="font-size: 18px; color: #0f766e; font-weight: bold; margin-top: 20px;">Starting Price: <span th:text="${destination.price}"></span> USD</p>
+    </div>
+
+    <div>
+        <h3 style="color: #334155; margin-bottom: 15px;">Local Weather Forecast</h3>
+
+        <div th:if="${weather}" style="background-color: #f0fdf4; border: 1px solid #bbf7d0; border-radius: 12px; padding: 24px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.02);">
+            <div style="display: flex; align-items: center; gap: 20px;">
+                <span th:text="${weather.icon}" style="font-size: 55px; margin: 0;">☀️</span>
+
+                <div>
+                    <h3 style="margin: 0; font-size: 32px; color: #166534; font-weight: 800;" th:text="${weather.temperature}">31°C</h3>
+                    <p style="margin: 2px 0 0 0; font-size: 13px; font-weight: 700; color: #15803d; text-transform: uppercase; letter-spacing: 0.5px;" th:text="${weather.condition}">Sunny</p>
+                </div>
+            </div>
+
+            <p style="margin: 16px 0 0 0; font-size: 14px; color: #1e3a1e; line-height: 1.6;" th:text="${weather.summary}">
+                Bright skies and warm temperatures make this a perfect day for outdoor exploration.
+            </p>
+
+            <hr style="border: 0; border-top: 1px solid #bbf7d0; margin: 15px 0;">
+
+            <div style="font-size: 12px; color: #166534; font-weight: 600; display: flex; align-items: center; gap: 4px;">
+                📍 Current condition in <span th:text="${weather.locationName}">Sigiriya</span>
+            </div>
+        </div>
+    </div>
+
+</main>
+
+<footer class="site-footer" style="margin-top: 60px;">
+    <div class="container">
+        <p>© 2026 TravelApp. All Rights Reserved.</p>
+    </div>
+</footer>
+</body>
+</html>

@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="800" height="500" viewBox="0 0 800 500">
+  <linearGradient id="m" x1="0" x2="1">
+    <stop offset="0%" stop-color="#89f7fe"/>
+    <stop offset="100%" stop-color="#66a6ff"/>
+  </linearGradient>
+  <rect width="800" height="500" fill="url(#m)"/>
+  <text x="50%" y="50%" dominant-baseline="middle" text-anchor="middle" font-size="36" fill="#024" font-family="Arial">Image Placeholder</text>
+</svg>

@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" th:href="@{/css/styles.css}">
+    <title>Admin Dashboard - TravelApp</title>
+</head>
+<body>
+<header class="site-header">
+    <div class="container header-inner">
+        <h1><a th:href="@{/}">TravelApp Admin</a></h1>
+        <nav>
+            <a th:href="@{/}">Home</a>
+            <a th:href="@{/destinations}">Destinations</a>
+            <a th:href="@{/packages}">Packages</a>
+            <a th:href="@{/admin/hotels/add}" style="color: #f6c23e; font-weight: bold;">🏨 ➕ Add Hotel</a>
+            <a th:href="@{/about}">About</a>
+            <a th:href="@{/contact}">Contact</a>
+            <a th:href="@{/admin}">Admin</a>
+        </nav>
+    </div>
+</header>
+<main class="container">
+    <section class="page-heading">
+        <h2>Admin Dashboard</h2>
+    </section>
+    <section class="stats-grid">
+        <div class="stat-card">
+            <h3>Total Users</h3>
+            <p th:text="${totalUsers}"></p>
+        </div>
+        <div class="stat-card">
+            <h3>Total Bookings</h3>
+            <p th:text="${totalBookings}"></p>
+        </div>
+        <div class="stat-card">
+            <h3>Total Revenue</h3>
+            <p th:text="${totalRevenue}"></p>
+        </div>
+        <div class="stat-card">
+            <h3>Destinations</h3>
+            <p th:text="${totalDestinations}"></p>
+        </div>
+    </section>
+    <section class="table-card">
+        <h3>Recent Bookings</h3>
+        <table>
+            <thead>
+            <tr>
+                <th>User</th>
+                <th>Package</th>
+                <th>Total</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="booking : ${recentBookings}">
+                <td th:text="${booking.user != null ? booking.user.name : 'Anonymous'}"></td>
+                <td th:text="${booking.tourPackage != null ? booking.tourPackage.name : 'N/A'}"></td>
+                <td th:text="'LKR ' + ${booking.totalPrice}"></td>
+            </tr>
+            </tbody>
+        </table>
+    </section>
+</main>
+<footer class="site-footer">
+    <div class="container">
+        <p>© 2026 TravelApp. All Rights Reserved.</p>
+    </div>
+    <div th:replace="fragments :: chatbot"></div>
+</footer>
+</body>
+</html>

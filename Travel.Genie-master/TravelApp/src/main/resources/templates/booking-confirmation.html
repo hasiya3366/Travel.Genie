@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" th:href="@{/css/styles.css}">
+    <title>Booking Confirmation - TravelApp</title>
+    <style>
+        .btn-pdf {
+            display: inline-block;
+            background-color: #0f766e;
+            color: white;
+            padding: 12px 24px;
+            border: none;
+            border-radius: 8px;
+            font-size: 15px;
+            font-weight: 600;
+            text-decoration: none;
+            transition: background-color 0.2s;
+            margin-top: 20px;
+            box-shadow: 0 4px 6px -1px rgba(15, 118, 110, 0.2);
+        }
+        .btn-pdf:hover {
+            background-color: #0d615a;
+            color: white;
+        }
+        .text-center {
+            text-align: center;
+        }
+        .action-area {
+            margin-top: 25px;
+            padding-top: 20px;
+            border-top: 1px dashed #cbd5e1;
+        }
+        .info-row {
+            margin-bottom: 12px;
+            font-size: 15px;
+        }
+    </style>
+</head>
+<body>
+<header class="site-header">
+    <div class="container header-inner">
+        <h1><a th:href="@{/}">TravelApp</a></h1>
+        <nav>
+            <a th:href="@{/}">Home</a>
+            <a th:href="@{/destinations}">Destinations</a>
+            <a th:href="@{/packages}">Packages</a>
+            <a th:href="@{/about}">About</a>
+            <a th:href="@{/contact}">Contact</a>
+            <a th:href="@{/admin}">Admin</a>
+        </nav>
+    </div>
+</header>
+
+<main class="container">
+    <section class="page-heading">
+        <h2>Booking Confirmation</h2>
+    </section>
+
+    <section class="card-grid" style="max-width: 600px; margin: 0 auto;">
+        <div class="card">
+            <div class="card-body">
+                <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 20px;">
+                    <span style="font-size: 24px;">✅</span>
+                    <h3 style="margin: 0; color: #0f766e;">Booking Successfully Confirmed!</h3>
+                </div>
+                
+                <div class="info-row"><strong>Package:</strong> <span th:text="${booking.tourPackage.name}"></span></div>
+                <div class="info-row"><strong>Email:</strong> <span th:text="${booking.user.email}"></span></div>
+                <div class="info-row"><strong>Travel Date:</strong> <span th:text="${booking.travelDate}"></span></div>
+                <div class="info-row"><strong>Travelers:</strong> <span th:text="${booking.travelers}"></span></div>
+                
+                <div class="info-row"><strong>Selected Hotel:</strong> <span th:text="${hotelName}"></span> <span th:if="${hotelName != 'No Hotel'}" th:text="'(' + ${hotelNights} + ' Days)'"></span></div>
+                <div class="info-row"><strong>Transport Facility:</strong> <span th:text="${vehicle}"></span></div>
+                
+                <div class="info-row" style="margin-top: 15px; padding-top: 10px; border-top: 1px solid #e2e8f0;">
+                    <strong style="font-size: 16px;">Total Price:</strong> 
+                    <span th:text="'LKR ' + ${#numbers.formatDecimal(booking.totalPrice, 1, 2)}" style="font-size: 20px; font-weight: 800; color: #0f766e;"></span>
+                </div>
+
+                <div class="action-area text-center">
+                    <p style="margin: 0; color: #64748b; font-size: 14px;">You can now download your digital invoice breakdown.</p>
+                    <a th:href="@{/booking/download-receipt(
+                        email=${booking.user.email}, 
+                        date=${booking.travelDate}, 
+                        travelers=${booking.travelers}, 
+                        packageName=${booking.tourPackage.name}, 
+                        hotelName=${hotelName}, 
+                        vehicle=${vehicle}, 
+                        totalPrice=${booking.totalPrice}
+                    )}" class="btn-pdf">
+                        📥 Download PDF Receipt
+                    </a>
+                </div>
+
+            </div>
+        </div>
+    </section>
+</main>
+
+<footer class="site-footer" style="margin-top: 60px;">
+    <div class="container">
+        <p>© 2026 TravelApp. All Rights Reserved.</p>
+    </div>
+    <div th:replace="fragments :: chatbot"></div>
+</footer>
+</body>
+</html>

@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TravelApp — Admin Inbox</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        body {
+            background-color: #f3fbf8;
+            color: #2c3e50;
+            display: flex;
+            min-height: 100vh;
+        }
+
+        /* --- PREMIUM SIDEBAR STYLE --- */
+        .sidebar {
+            width: 260px;
+            background-color: #e8f5e9;
+            padding: 30px 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 30px;
+            position: fixed;
+            height: 100vh;
+            left: 0;
+            top: 0;
+            border-right: 1px solid #d1e7dd;
+            z-index: 10;
+        }
+
+        .sidebar .logo {
+            font-size: 24px;
+            font-weight: 700;
+            color: #0f5132;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding-left: 10px;
+        }
+
+        .sidebar .logo span {
+            color: #009688;
+        }
+
+        .menu-links {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            list-style: none;
+        }
+
+        .menu-links a {
+            display: flex;
+            align-items: center;
+            justify-content: space-between; /* Inbox badge එක දකුණට කරන්න */
+            padding: 14px 20px;
+            color: #4a5d4e;
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 15px;
+            border-radius: 12px;
+            transition: all 0.3s ease;
+        }
+
+        .menu-link-content {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .menu-links a:hover {
+            background-color: rgba(0, 150, 136, 0.08);
+            color: #009688;
+        }
+
+        .menu-links a.active {
+            background-color: #009688;
+            color: white;
+            box-shadow: 0 4px 12px rgba(0, 150, 136, 0.15);
+        }
+
+        /* Inbox Notification Badge */
+        .badge-count {
+            background-color: #f59e0b;
+            color: white;
+            font-size: 11px;
+            font-weight: 700;
+            padding: 2px 8px;
+            border-radius: 20px;
+        }
+
+        /* --- MAIN CONTENT LAYOUT --- */
+        .main-content {
+            margin-left: 260px;
+            flex-grow: 1;
+            padding: 40px;
+            background-color: #f3fbf8;
+        }
+
+        /* --- TOP SITE HEADER --- */
+        .site-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 35px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid rgba(0, 150, 136, 0.1);
+        }
+
+        .site-header .brand-title {
+            font-size: 28px;
+            font-weight: 700;
+            color: #1e293b;
+            text-decoration: none;
+        }
+
+        .top-nav {
+            display: flex;
+            gap: 25px;
+        }
+
+        .top-nav a {
+            color: #475569;
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 15px;
+            transition: color 0.2s;
+        }
+
+        .top-nav a:hover {
+            color: #009688;
+        }
+
+        .page-subtitle {
+            font-size: 13px;
+            font-weight: 700;
+            color: #009688;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            margin-bottom: 5px;
+        }
+
+        .page-title-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 30px;
+        }
+
+        .page-title-row h2 {
+            font-size: 36px;
+            font-weight: 700;
+            color: #1a3a2a;
+        }
+
+        /* --- MODERN TABLE CARD --- */
+        .section-container {
+            background-color: white;
+            border-radius: 24px;
+            padding: 30px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.015);
+            border: 1px solid #e2e8f0;
+            margin-bottom: 40px;
+        }
+
+        .section-title {
+            font-size: 20px;
+            font-weight: 600;
+            color: #1e293b;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .section-title i {
+            color: #009688;
+        }
+
+        .custom-table {
+            width: 100%;
+            border-collapse: collapse;
+            text-align: left;
+        }
+
+        .custom-table th {
+            background-color: #f8fafc;
+            color: #64748b;
+            font-weight: 600;
+            font-size: 14px;
+            padding: 16px;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        .custom-table td {
+            padding: 16px;
+            border-bottom: 1px solid #f1f5f9;
+            font-size: 14px;
+            color: #334155;
+            vertical-align: top;
+        }
+
+        .custom-table tr:last-child td {
+            border-bottom: none;
+        }
+
+        /* Message Text Highlight Style */
+        .msg-body {
+            background-color: #f8fafc;
+            padding: 10px 14px;
+            border-radius: 8px;
+            color: #475569;
+            font-size: 13.5px;
+            line-height: 1.5;
+            border-left: 3px solid #009688;
+        }
+
+        .msg-date {
+            font-size: 12px;
+            color: #64748b;
+            font-weight: 500;
+        }
+    </style>
+</head>
+<body>
+
+<div class="sidebar">
+    <div class="logo">
+        <i class="fa-solid fa-leaf"></i> Travel<span>Pro</span>
+    </div>
+    <ul class="menu-links">
+        <li>
+            <a th:href="@{/admin}"><span class="menu-link-content"><i class="fa-solid fa-chart-pie"></i> Dashboard</span></a>
+        </li>
+        <li>
+            <a th:href="@{/admin/users}"><span class="menu-link-content"><i class="fa-solid fa-users"></i> Users</span></a>
+        </li>
+        <li>
+            <a th:href="@{/admin/destinations}"><span class="menu-link-content"><i class="fa-solid fa-map-location-dot"></i> Destinations</span></a>
+        </li>
+        <li>
+            <a th:href="@{/admin/packages}"><span class="menu-link-content"><i class="fa-solid fa-cubes"></i> Packages</span></a>
+        </li>
+        <li>
+            <a th:href="@{/admin/bookings}"><span class="menu-link-content"><i class="fa-solid fa-calendar-check"></i> Bookings</span></a>
+        </li>
+        <li>
+            <a th:href="@{/admin/reviews}"><span class="menu-link-content"><i class="fa-solid fa-star"></i> Reviews</span></a>
+        </li>
+        <li>
+            <a th:href="@{/admin/inbox}" class="active">
+                <span class="menu-link-content"><i class="fa-solid fa-envelope"></i> Inbox</span>
+                <span class="badge-count" th:if="${messages != null and !messages.isEmpty()}" th:text="${messages.size()}">0</span>
+            </a>
+        </li>
+    </ul>
+</div>
+
+<div class="main-content">
+
+    <header class="site-header">
+        <a class="brand-title" th:href="@{/}">TravelApp</a>
+        <nav class="top-nav">
+            <a th:href="@{/}">Home</a>
+            <a th:href="@{/admin}">Dashboard</a>
+            <a th:href="@{/logout}"><i class="fa-solid fa-right-from-bracket"></i> Logout</a>
+        </nav>
+    </header>
+
+    <main>
+        <div class="page-title-row">
+            <div>
+                <p class="page-subtitle">Communications</p>
+                <h2>Customer Inbox</h2>
+            </div>
+        </div>
+
+        <div class="section-container">
+            <div class="section-title"><i class="fa-solid fa-inbox"></i> Contact Messages</div>
+
+            <table class="custom-table" th:if="${messages != null and !messages.isEmpty()}">
+                <thead>
+                <tr>
+                    <th style="width: 15%;">Date & Time</th>
+                    <th style="width: 20%;">Sender Name</th>
+                    <th style="width: 20%;">Email Address</th>
+                    <th style="width: 45%;">Message Body</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="msg : ${messages}">
+                    <td class="msg-date" th:text="${#temporals.format(msg.submittedAt, 'yyyy-MM-dd HH:mm')}">2026-06-29 14:20</td>
+                    <td th:text="${msg.name}" style="font-weight: 600; color: #1a3a2a;">Hasindu Indusara</td>
+                    <td>
+                        <a th:href="'mailto:' + ${msg.email}" th:text="${msg.email}" style="color: #009688; text-decoration: none; font-weight: 500;">user@example.com</a>
+                    </td>
+                    <td>
+                        <div class="msg-body" th:text="${msg.message}">The tour package UI looks beautiful. Can I custom book?</div>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+
+            <div th:if="${messages == null || messages.isEmpty()}" style="color: #64748b; font-size: 14px; text-align: center; padding: 40px 0;">
+                <i class="fa-solid fa-envelope-open-text" style="display:block; font-size: 32px; margin-bottom: 15px; color: #cbd5e1;"></i> No new contact messages found.
+            </div>
+        </div>
+    </main>
+</div>
+
+</body>
+</html>

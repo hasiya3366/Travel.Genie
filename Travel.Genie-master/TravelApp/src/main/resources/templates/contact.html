@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" th:href="@{/css/styles.css}">
+    <title>Contact Us - TravelApp</title>
+</head>
+<body>
+<header class="site-header">
+    <div class="container header-inner">
+        <h1><a th:href="@{/}">TravelApp</a></h1>
+        <nav>
+            <a th:href="@{/}">Home</a>
+            <a th:href="@{/destinations}">Destinations</a>
+            <a th:href="@{/packages}">Packages</a>
+            <a th:href="@{/about}">About</a>
+            <a th:href="@{/contact}">Contact</a>
+            <a th:href="@{/admin}">Admin</a>
+        </nav>
+    </div>
+</header>
+<main class="container">
+    <section class="page-heading">
+        <h2>Contact Us</h2>
+    </section>
+
+    <section class="form-card">
+        <div th:if="${success}" style="color: #155724; background-color: #d4edda; border: 1px solid #c3e6cb; padding: 12px; border-radius: 5px; margin-bottom: 20px; text-align: center;" th:text="${success}"></div>
+
+        <div th:if="${error}" style="color: #721c24; background-color: #f8d7da; border: 1px solid #f5c6cb; padding: 12px; border-radius: 5px; margin-bottom: 20px; text-align: center;" th:text="${error}"></div>
+
+        <form class="contact-form" th:action="@{/contact/send}" method="post">
+            <label>Name</label>
+            <input type="text" name="name" placeholder="Your name" required/>
+
+            <label>Email</label>
+            <input type="email" name="email" placeholder="Your email" required/>
+
+            <label>Message</label>
+            <textarea name="message" placeholder="How can we help?" required></textarea>
+
+            <button type="submit" class="button">Send Message</button>
+        </form>
+    </section>
+
+    <section class="content-card">
+        <h3>FAQ</h3>
+        <p><strong>How do I book?</strong> Browse packages and use the Book Now button.</p>
+        <p><strong>How do I cancel?</strong> Contact support with your booking details.</p>
+    </section>
+</main>
+<footer class="site-footer">
+    <div class="container">
+        <p>© 2026 TravelApp. All Rights Reserved.</p>
+    </div>
+    <div th:replace="fragments :: chatbot"></div>
+</footer>
+</body>
+</html>

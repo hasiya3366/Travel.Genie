@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" th:href="@{/css/styles.css}">
+</head>
+<body>
+<header class="site-header">
+    <div class="container header-inner">
+        <h1><a th:href="@{/}">TravelApp</a></h1>
+        <nav>
+            <a th:href="@{/}">Home</a>
+            <a th:href="@{/destinations}">Destinations</a>
+            <a th:href="@{/packages}">Packages</a>
+            <a th:href="@{/about}">About</a>
+            <a th:href="@{/contact}">Contact</a>
+            <a th:href="@{/admin}">Admin</a>
+        </nav>
+    </div>
+</header>
+<main class="container">
+    <section class="page-heading">
+        <h2>Booking History</h2>
+        <form method="get" action="/bookings" class="filter-form">
+            <input type="email" name="userEmail" placeholder="Enter your email" required/>
+            <button type="submit">Find Bookings</button>
+        </form>
+    </section>
+    <section class="table-card">
+        <table>
+            <thead>
+                <tr>
+                    <th>Package</th>
+                    <th>Date</th>
+                    <th>Travelers</th>
+                    <th>Total</th>
+                    <th>Status</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr th:each="booking : ${bookings}">
+                    <td th:text="${booking.tourPackage.name}"></td>
+                    <td th:text="${booking.travelDate}"></td>
+                    <td th:text="${booking.travelers}"></td>
+                    <td th:text="${booking.totalPrice}"></td>
+                    <td th:text="${booking.status}"></td>
+                </tr>
+            </tbody>
+        </table>
+    </section>
+</main>
+<footer class="site-footer">
+    <div class="container">
+        <p>© 2026 TravelApp. All Rights Reserved.</p>
+    </div>
+    <div th:replace="fragments :: chatbot"></div>
+</footer>
+</body>
+</html>

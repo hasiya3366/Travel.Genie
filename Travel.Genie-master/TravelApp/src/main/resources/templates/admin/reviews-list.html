@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TravelApp — Reviews Management</title>
+    <!-- Google Fonts & FontAwesome Icons -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        body {
+            background-color: #f3fbf8; /* ලස්සන ලා කොළ/සුදු පසුබිම */
+            color: #2c3e50;
+            display: flex;
+            min-height: 100vh;
+        }
+
+        /* --- PREMIUM SIDEBAR STYLE --- */
+        .sidebar {
+            width: 260px;
+            background-color: #e8f5e9;
+            padding: 30px 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 30px;
+            position: fixed;
+            height: 100vh;
+            left: 0;
+            top: 0;
+            border-right: 1px solid #d1e7dd;
+            z-index: 10;
+        }
+
+        .sidebar .logo {
+            font-size: 24px;
+            font-weight: 700;
+            color: #0f5132;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding-left: 10px;
+        }
+
+        .sidebar .logo span {
+            color: #009688;
+        }
+
+        .menu-links {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            list-style: none;
+        }
+
+        .menu-links a {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            padding: 14px 20px;
+            color: #4a5d4e;
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 15px;
+            border-radius: 12px;
+            transition: all 0.3s ease;
+        }
+
+        .menu-links a:hover {
+            background-color: rgba(0, 150, 136, 0.08);
+            color: #009688;
+        }
+
+        /* Reviews ටැබ් එක ඇතුළේ වැඩ කරන නිසා මේක Active කළා */
+        .menu-links a.active {
+            background-color: #009688;
+            color: white;
+            box-shadow: 0 4px 12px rgba(0, 150, 136, 0.15);
+        }
+
+        /* --- MAIN CONTENT LAYOUT --- */
+        .main-content {
+            margin-left: 260px;
+            flex-grow: 1;
+            padding: 40px;
+            background-color: #f3fbf8;
+        }
+
+        /* --- TOP SITE HEADER --- */
+        .site-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 35px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid rgba(0, 150, 136, 0.1);
+        }
+
+        .site-header .brand-title {
+            font-size: 28px;
+            font-weight: 700;
+            color: #1e293b;
+            text-decoration: none;
+        }
+
+        .top-nav {
+            display: flex;
+            gap: 25px;
+        }
+
+        .top-nav a {
+            color: #475569;
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 15px;
+            transition: color 0.2s;
+        }
+
+        .top-nav a:hover {
+            color: #009688;
+        }
+
+        .page-subtitle {
+            font-size: 13px;
+            font-weight: 700;
+            color: #009688;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            margin-bottom: 5px;
+        }
+
+        .page-title-row {
+            margin-bottom: 30px;
+        }
+
+        .page-title-row h2 {
+            font-size: 36px;
+            font-weight: 700;
+            color: #1a3a2a;
+        }
+
+        /* --- MODERN TABLE CARD CONTAINER --- */
+        .table-container {
+            background-color: white;
+            border-radius: 24px;
+            padding: 30px;
+            box-shadow: 0 4px 25px rgba(0, 0, 0, 0.02);
+            border: 1px solid #e2e8f0;
+        }
+
+        .custom-table {
+            width: 100%;
+            border-collapse: collapse;
+            text-align: left;
+        }
+
+        .custom-table th {
+            background-color: #f8fafc;
+            color: #64748b;
+            font-weight: 600;
+            font-size: 14px;
+            padding: 18px 16px;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        .custom-table td {
+            padding: 18px 16px;
+            border-bottom: 1px solid #f1f5f9;
+            font-size: 14px;
+            color: #334155;
+            vertical-align: middle;
+        }
+
+        .custom-table tr:last-child td {
+            border-bottom: none;
+        }
+
+        .custom-table tr:hover {
+            background-color: #f8fafc;
+        }
+
+        .rating-display {
+            font-weight: 600;
+            color: #ff9800;
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .comment-text {
+            color: #475569;
+            font-style: italic;
+            max-width: 350px;
+            word-wrap: break-word;
+        }
+
+        /* --- CUSTOM ROUNDED ACTION BUTTONS --- */
+        .btn-action {
+            padding: 8px 18px;
+            border-radius: 20px;
+            font-size: 13px;
+            font-weight: 500;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            border: none;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .btn-delete {
+            background-color: #ef4444;
+            color: white;
+        }
+
+        .btn-delete:hover {
+            background-color: #dc2626;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- 🌿 LEFT PREMIUM SIDEBAR MENU -->
+    <div class="sidebar">
+        <div class="logo">
+            <i class="fa-solid fa-leaf"></i> Travel<span>Pro</span>
+        </div>
+        <ul class="menu-links">
+            <li><a href="/admin"><i class="fa-solid fa-chart-pie"></i> Dashboard</a></li>
+            <li><a href="/admin/users"><i class="fa-solid fa-users"></i> Users</a></li>
+            <li><a href="/admin/destinations"><i class="fa-solid fa-map-location-dot"></i> Destinations</a></li>
+            <li><a href="/admin/packages"><i class="fa-solid fa-cubes"></i> Packages</a></li>
+            <li><a href="/admin/bookings"><i class="fa-solid fa-calendar-check"></i> Bookings</a></li>
+            <li><a href="/admin/reviews" class="active"><i class="fa-solid fa-star"></i> Reviews</a></li>
+            <li><a href="/admin/inbox"><i class="fa-solid fa-envelope"></i> Inbox</a></li>
+        </ul>
+    </div>
+
+    <!-- 💻 MAIN CONTENT DISPLAY CONTAINER -->
+    <div class="main-content">
+        
+        <!-- TOP NAVIGATION HEADER -->
+        <header class="site-header">
+            <a class="brand-title" th:href="@{/}">TravelApp</a>
+            <nav class="top-nav">
+                <a th:href="@{/}">Home</a>
+                <a th:href="@{/admin}">Dashboard</a>
+                <a th:href="@{/logout}"><i class="fa-solid fa-right-from-bracket"></i> Logout</a>
+            </nav>
+        </header>
+
+        <main>
+            <!-- SECTION TITLE ROW -->
+            <div class="page-title-row">
+                <p class="page-subtitle">User Feedback</p>
+                <h2>Review Management</h2>
+            </div>
+
+            <!-- DATA TABLE BLOCK -->
+            <div class="table-container">
+                <table class="custom-table">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>User Customer</th>
+                            <th>Tour Package</th>
+                            <th>Rating Status</th>
+                            <th>User Comment</th>
+                            <th>Operational Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <!-- Thymeleaf Dynamic Row Loop -->
+                        <tr th:each="review : ${reviews}">
+                            <td th:text="${review.id}" style="font-weight: 600; color: #64748b;">#1</td>
+                            <td th:text="${review.user != null ? review.user.name : 'Anonymous'}" style="font-weight: 500;">Udith Asasanka</td>
+                            <td th:text="${review.tourPackage != null ? review.tourPackage.name : 'N/A'}">Ella Adventure Tour</td>
+                            <td>
+                                <div class="rating-display">
+                                    <i class="fa-solid fa-star"></i>
+                                    <span th:text="${review.rating}">5.0</span>
+                                    <span style="color: #cbd5e1; font-weight: 400; font-size: 12px;">/ 5</span>
+                                </div>
+                            </td>
+                            <td>
+                                <div class="comment-text" th:text="${review.comment}">"Amazing experience! Highly recommended."</div>
+                            </td>
+                            <td>
+                                <!-- Delete Button Form Cover -->
+                                <form th:action="@{/admin/reviews/delete/{id}(id=${review.id})}" method="post" style="display: inline;">
+                                    <button type="submit" class="btn-action btn-delete" onclick="return confirm('Are you sure you want to permanently delete this user review?');">
+                                        <i class="fa-solid fa-trash"></i> Delete
+                                    </button>
+                                </form>
+                            </td>
+                        </tr>
+                        
+                        <!-- Empty Data Fallback Row -->
+                        <tr th:if="${reviews == null or #lists.isEmpty(reviews)}">
+                            <td colspan="6" style="text-align: center; color: #64748b; padding: 30px 0;">
+                                <i class="fa-solid fa-comment-slash" style="display:block; font-size: 28px; margin-bottom: 10px; color: #cbd5e1;"></i>
+                                No customer reviews shared on the platform yet.
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </main>
+    </div>
+
+</body>
+</html>

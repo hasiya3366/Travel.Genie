@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Travel Genie | Premium Expedition Planner</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <div class="luxury-grid">
+        <aside class="sidebar">
+            <div class="brand-block">
+                <h2>Travel Genie</h2>
+                <p>Advanced Island Architect</p>
+            </div>
+            
+            <hr class="separator">
+
+            <div class="filter-group">
+                <label class="section-title">Select Travel Mindset</label>
+                <div class="custom-selector-container">
+                    <select id="categorySelector">
+                        <option value="All">🌌 Explore Everything</option>
+                        <option value="Heritage">🏛️ Heritage & Citadels</option>
+                        <option value="Wildlife">🐆 Wilderness & Savannas</option>
+                        <option value="Alpine">🌿 Alpine Highlands</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="filter-group">
+                <label class="section-title">Expedition Variables</label>
+                <div class="slider-wrapper">
+                    <span class="slider-label">Travelers: <strong id="passengerCountDisplay">2</strong></span>
+                    <input type="range" id="passengerSlider" min="1" max="10" value="2">
+                </div>
+            </div>
+
+            <div class="pricing-ledger">
+                <h4>Estimated Cost Matrix</h4>
+                <div class="ledger-row"><span>Base Fees:</span> <span id="ledgerBase">$0.00</span></div>
+                <div class="ledger-row"><span>Experiences:</span> <span id="ledgerExp">$0.00</span></div>
+                <hr>
+                <div class="ledger-row total"><span>Total Gross Cost:</span> <span id="ledgerTotal">$0.00</span></div>
+            </div>
+        </aside>
+
+        <main class="main-display">
+            <header class="display-header">
+                <div class="header-text">
+                    <h1>Curated Expeditions</h1>
+                    <p>Select paths and experiences to dynamically build your customized Sri Lankan itinerary.</p>
+                </div>
+                <div class="status-badge live">System Active</div>
+            </header>
+
+            <section id="cardContainer" class="card-grid">
+            </section>
+        </main>
+    </div>
+
+    <div class="chat-window" id="chatWindow">
+        <div class="chat-header">
+            <div class="chat-bot-identity">
+                <i class="fas fa-robot"></i>
+                <div>
+                    <h4>Travel Genie</h4>
+                    <span class="chat-status">AI Expedition Guide</span>
+                </div>
+            </div>
+            <button class="chat-close-btn" id="closeChatBtn">&times;</button>
+        </div>
+        
+        <div class="chat-messages" id="chatMessages">
+            <div class="message bot-msg">
+                Greetings from Travel Genie! I am your Premium Expedition Planner. How may I assist you today?
+            </div>
+        </div>
+        
+        <div class="chat-footer">
+            <input type="text" id="chatInput" placeholder="Ask about destinations, duration, budget..." autocomplete="off">
+            <button id="sendChatBtn"><i class="fas fa-paper-plane"></i></button>
+        </div>
+    </div>
+
+    <button class="chatbot-trigger-btn" id="openChatBtn">
+        <i class="fas fa-robot"></i> ASK AI
+    </button>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const openChatBtn = document.getElementById('openChatBtn');
+            const closeChatBtn = document.getElementById('closeChatBtn');
+            const chatWindow = document.getElementById('chatWindow');
+
+            if (openChatBtn && closeChatBtn && chatWindow) {
+                openChatBtn.addEventListener('click', () => {
+                    chatWindow.style.display = 'flex';
+                    openChatBtn.style.display = 'none'; 
+                });
+
+                closeChatBtn.addEventListener('click', () => {
+                    chatWindow.style.display = 'none';
+                    openChatBtn.style.display = 'flex'; 
+                });
+            }
+        });
+    </script>
+
+    <script src="app.js"></script>
+</body>
+</html>

@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" th:href="@{/css/styles.css}">
+    <title>Add New Hotel - Admin</title>
+</head>
+<body>
+<header class="site-header">
+    <div class="container header-inner">
+        <h1><a th:href="@{/}">TravelApp Admin</a></h1>
+        <nav>
+            <a th:href="@{/admin}">Dashboard</a>
+            <a th:href="@{/packages}">View Packages</a>
+        </nav>
+    </div>
+</header>
+<main class="container">
+    <section class="page-heading">
+        <h2>Add New Hotel Option</h2>
+    </section>
+    <section class="form-card" style="max-width: 500px; margin: 0 auto; background: white; padding: 20px; border-radius: 8px; border: 1px solid #e3e6f0;">
+        <form th:action="@{/admin/hotels/add}" method="post" th:object="${hotel}">
+
+            <div style="margin-bottom: 15px;">
+                <label style="display:block; font-weight:bold; margin-bottom:5px;">Hotel Name</label>
+                <input type="text" th:field="*{name}" required placeholder="e.g. Cinnamon Bey" style="width:100%; padding:8px; border:1px solid #ccc; border-radius:4px; box-sizing: border-box;"/>
+            </div>
+
+            <div style="margin-bottom: 15px;">
+                <label style="display:block; font-weight:bold; margin-bottom:5px;">Extra Price (LKR)</label>
+                <input type="number" step="0.01" th:field="*{extraPrice}" required placeholder="0.00" style="width:100%; padding:8px; border:1px solid #ccc; border-radius:4px; box-sizing: border-box;"/>
+            </div>
+
+            <div style="margin-bottom: 20px;">
+                <label style="display:block; font-weight:bold; margin-bottom:5px;">Select Tour Package</label>
+                <select name="packageId" required style="width:100%; padding:8px; border:1px solid #ccc; border-radius:4px;">
+                    <option value="">-- Choose Package --</option>
+                    <option th:each="pkg : ${packages}" th:value="${pkg.id}" th:text="${pkg.name}"></option>
+                </select>
+            </div>
+
+            <button type="submit" class="button" style="width:100%; background-color:#0f766e; color:white; font-weight:bold;">Add Hotel</button>
+        </form>
+    </section>
+</main>
+</body>
+</html>
