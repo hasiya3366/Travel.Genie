@@ -51,6 +51,7 @@
 </footer>
 </body>
 </html> -->
+
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org" lang="en">
 <head>
@@ -70,7 +71,7 @@
         }
 
         body {
-            background-color: #f3fbf8; /* Premium ලා කොළ/සුදු පසුබිම */
+            background-color: #f3fbf8; 
             color: #2c3e50;
         }
 
@@ -101,7 +102,7 @@
             gap: 8px;
         }
         .brand-icon { color: #009688; }
-        nav th\:block, nav a {
+        nav a {
             color: #475569;
             text-decoration: none;
             font-weight: 500;
@@ -111,33 +112,35 @@
         }
         nav a:hover { color: #009688; }
 
-        /* --- HERO HEADER SECTION --- */
+        /* --- HERO HEADER SECTION (FIXED BACKGROUND FOR PRODUCTION) --- */
         .packages-hero {
-            background: linear-gradient(rgba(0, 74, 66, 0.85), rgba(0, 150, 136, 0.7)), url('/images/srilanka-bg.jpg') center/cover no-repeat;
+            background: linear-gradient(rgba(0, 74, 66, 0.85), rgba(0, 150, 136, 0.7));
             color: white;
             text-align: center;
             padding: 60px 20px;
             margin-bottom: 40px;
+            width: 100%;
         }
         .packages-hero h2 {
-            font-size: 2.5rem;
+            font-size: clamp(1.8rem, 4vw, 2.5rem);
             font-weight: 700;
             margin-bottom: 10px;
         }
         .packages-hero p {
-            font-size: 1.1rem;
+            font-size: clamp(0.95rem, 2vw, 1.1rem);
             opacity: 0.9;
             max-width: 600px;
             margin: 0 auto;
         }
 
-        /* --- FILTER FORM STYLE --- */
+        /* --- FILTER FORM STYLE (RESPONSIVE GRID) --- */
         .filter-section {
             max-width: 1200px;
             margin: -30px auto 40px auto;
             padding: 0 20px;
             position: relative;
             z-index: 10;
+            width: 100%;
         }
         .filter-form {
             background: white;
@@ -145,15 +148,16 @@
             border-radius: 16px;
             box-shadow: 0 10px 30px rgba(0, 150, 136, 0.08);
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)) 120px;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
             gap: 15px;
-            align-items: center;
+            align-items: end;
             border: 1px solid rgba(0, 150, 136, 0.1);
         }
         .filter-group {
             display: flex;
             flex-direction: column;
             gap: 5px;
+            width: 100%;
         }
         .filter-group label {
             font-size: 12px;
@@ -168,34 +172,41 @@
             font-size: 14px;
             color: #334155;
             outline: none;
+            width: 100%;
             transition: border 0.2s;
         }
         .filter-form input:focus {
             border-color: #009688;
         }
         .btn-filter {
-            background-color: #e67e22; /* Premium Orange */
+            background-color: #e67e22; 
             color: white;
             border: none;
-            padding: 14px;
+            padding: 12px 24px;
             border-radius: 8px;
             font-weight: 600;
             cursor: pointer;
             transition: background 0.2s;
-            margin-top: 17px;
+            width: 100%;
+            height: 47px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
         .btn-filter:hover { background-color: #d35400; }
 
-        /* --- CARDS GRID PATTERN --- */
+        /* --- FIXED CARDS GRID PATTERN (CRITICAL FIX FOR 1 CARD VIEW) --- */
         .main-container {
             max-width: 1200px;
             margin: 0 auto;
             padding: 0 20px 60px 20px;
+            width: 100%;
         }
         .card-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
             gap: 30px;
+            width: 100%;
         }
         .package-card {
             background: white;
@@ -206,6 +217,8 @@
             transition: transform 0.3s ease, box-shadow 0.3s ease;
             display: flex;
             flex-direction: column;
+            width: 100%;
+            height: 100%;
         }
         .package-card:hover {
             transform: translateY(-5px);
@@ -215,6 +228,7 @@
             position: relative;
             height: 240px;
             overflow: hidden;
+            width: 100%;
         }
         .package-card img {
             width: 100%;
@@ -231,17 +245,20 @@
             left: 15px;
             background-color: rgba(0, 150, 136, 0.9);
             color: white;
-            padding: 4px 12px;
+            padding: 6px 14px;
             border-radius: 20px;
             font-size: 12px;
             font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 5px;
         }
         .card-body {
             padding: 25px;
             display: flex;
             flex-direction: column;
             flex-grow: 1;
-            gap: 10px;
+            gap: 12px;
         }
         .card-tagline {
             font-size: 13px;
@@ -256,6 +273,7 @@
             font-size: 20px;
             color: #1e293b;
             font-weight: 600;
+            margin: 0;
         }
         .card-desc {
             font-size: 14px;
@@ -299,14 +317,10 @@
             text-align: center;
             padding: 60px 20px;
             color: #64748b;
-        }
-        .empty-state i {
-            font-size: 40px;
-            color: #009688;
-            margin-bottom: 15px;
+            width: 100%;
         }
 
-        /* --- FOOTER & CHATBOT WIDGET RESET --- */
+        /* --- FOOTER STYLE --- */
         .site-footer {
             background-color: white;
             padding: 30px 0;
@@ -314,10 +328,25 @@
             border-top: 1px solid rgba(0, 150, 136, 0.1);
             font-size: 14px;
             color: #64748b;
+            width: 100%;
         }
-        .need-help, #need-help, .needhelp-btn, [class*="need-help"] {
-            display: none !important;
-            visibility: hidden !important;
+
+        /* --- MOBILE RESPONSIVENESS FIXES --- */
+        @media (max-width: 768px) {
+            .header-inner {
+                flex-direction: column;
+                gap: 10px;
+                text-align: center;
+            }
+            nav a {
+                margin: 0 10px;
+            }
+            .filter-form {
+                grid-template-columns: 1fr;
+            }
+            .btn-filter {
+                margin-top: 5px;
+            }
         }
     </style>
 </head>
@@ -342,7 +371,7 @@
 <main>
     <section class="packages-hero">
         <h2>Curated Sri Lanka Tour Packages</h2>
-        <p>Choose your dream dynamic plan layout, specially designed with luxury itineraries, routes, and verified stays.</p>
+        <p>Choose your dream plan layout, specially designed with luxury itineraries, routes, and verified stays.</p>
     </section>
 
     <section class="filter-section">
@@ -371,7 +400,7 @@
         <section class="card-grid">
             <article class="package-card" th:each="package : ${packages}">
                 <div class="card-image-wrapper">
-                    <img th:src="${package.imageUrl}" alt="Package image" onerror="this.src='/images/dest-bali.svg'"/>
+                    <img th:src="${package.imageUrl}" alt="Package image" onerror="this.src='https://images.unsplash.com/photo-1546708973-b339540b5162?w=600&auto=format&fit=crop&q=60'"/>
                     <span class="duration-badge">
                         <i class="fa-regular fa-clock"></i> <span th:text="${package.durationDays}">4</span> Days
                     </span>
@@ -381,7 +410,7 @@
                         <i class="fa-solid fa-plane-departure"></i> Sri Lanka Adventure
                     </div>
                     <h4 th:text="${package.name}">Signature Tour Package</h4>
-                    <p class="card-desc" th:text="${package.description}">Experience an unforgettable dynamic premium journey tailored for your absolute comfort.</p>
+                    <p class="card-desc" th:text="${package.description}">Experience an unforgettable journey tailored for your absolute comfort.</p>
                     
                     <div class="card-footer-row">
                         <div class="card-price">
@@ -394,7 +423,7 @@
         </section>
 
         <div class="empty-state" th:if="${#lists.isEmpty(packages)}">
-            <i class="fa-solid fa-cubes"></i>
+            <i class="fa-solid fa-cubes" style="font-size: 40px; color: #009688; margin-bottom: 15px; display: block;"></i>
             <p>No custom packages found matching your criteria. Try adjusting the filters!</p>
         </div>
     </div>
