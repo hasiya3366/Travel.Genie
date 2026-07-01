@@ -7,7 +7,7 @@
     <!-- Google Fonts & FontAwesome Icons -->
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    
+
     <style>
         * {
             margin: 0;
@@ -188,6 +188,27 @@
             box-shadow: 0 0 0 4px rgba(0, 150, 136, 0.11);
         }
 
+        /* 🎯 Invalid field state */
+        .form-group input.invalid,
+        .form-group select.invalid {
+            border-color: #ef4444;
+            background-color: #fef2f2;
+        }
+        .form-group input.valid-ok {
+            border-color: #22c55e;
+        }
+
+        /* 🎯 Field එක යටින්ම පේන validation message එක */
+        .field-msg {
+            font-size: 12px;
+            margin-top: 6px;
+            min-height: 14px;
+            color: #ef4444;
+        }
+        .field-msg.valid {
+            color: #16a34a;
+        }
+
         /* --- MODERN BUTTONS --- */
         .form-actions {
             display: flex;
@@ -253,7 +274,7 @@
 
     <!-- 💻 MAIN CONTENT DISPLAY CONTAINER -->
     <div class="main-content">
-        
+
         <!-- TOP NAVIGATION HEADER -->
         <header class="site-header">
             <a class="brand-title" th:href="@{/}">TravelApp</a>
@@ -274,31 +295,37 @@
 
             <!-- FORM CARD BLOCK -->
             <div class="form-container">
-                
+
                 <!-- ➕ FORM: ADD NEW USER -->
-                <form th:if="${user == null}" th:action="@{/admin/users/add}" method="post">
+                <form th:if="${user == null}" th:action="@{/admin/users/add}" method="post" id="addUserForm" novalidate>
                     <div class="form-group">
                         <label for="name">Full Name</label>
                         <input type="text" id="name" name="name" placeholder="e.g. Hasindu Indusara" required/>
+                        <div class="field-msg" data-msg-for="name"></div>
                     </div>
                     <div class="form-group">
                         <label for="email">Email Address</label>
                         <input type="email" id="email" name="email" placeholder="e.g. user@example.com" required/>
+                        <div class="field-msg" data-msg-for="email"></div>
                     </div>
                     <div class="form-group">
                         <label for="password">Account Password</label>
-                        <input type="password" id="password" name="password" placeholder="Enter secure password" required/>
+                        <input type="password" id="password" name="password" placeholder="Enter secure password" required minlength="8"/>
+                        <div class="field-msg" data-msg-for="password">Minimum 8 characters, with at least 1 letter and 1 number.</div>
                     </div>
                     <div class="form-group">
                         <label for="phone">Phone Number</label>
                         <input type="tel" id="phone" name="phone" placeholder="e.g. 0705826971"/>
+                        <div class="field-msg" data-msg-for="phone"></div>
                     </div>
                     <div class="form-group">
                         <label for="role">System Access Role</label>
-                        <select id="role" name="role">
+                        <select id="role" name="role" required>
+                            <option value="">-- Select Role --</option>
                             <option value="USER">User Status</option>
                             <option value="ADMIN">Admin Authority</option>
                         </select>
+                        <div class="field-msg" data-msg-for="role"></div>
                     </div>
                     <div class="form-actions">
                         <button type="submit" class="btn-submit"><i class="fa-solid fa-user-plus"></i> Add User</button>
@@ -307,35 +334,135 @@
                 </form>
 
                 <!-- 📝 FORM: EDIT EXISTING USER -->
-                <form th:if="${user != null}" th:action="@{/admin/users/edit/{id}(id=${user.id})}" method="post">
+                <form th:if="${user != null}" th:action="@{/admin/users/edit/{id}(id=${user.id})}" method="post" id="editUserForm" novalidate>
                     <div class="form-group">
                         <label for="edit_name">Full Name</label>
                         <input type="text" id="edit_name" name="name" th:value="${user.name}" required/>
+                        <div class="field-msg" data-msg-for="edit_name"></div>
                     </div>
                     <div class="form-group">
                         <label for="edit_email">Email Address</label>
                         <input type="email" id="edit_email" name="email" th:value="${user.email}" required/>
+                        <div class="field-msg" data-msg-for="edit_email"></div>
                     </div>
                     <div class="form-group">
                         <label for="edit_phone">Phone Number</label>
                         <input type="tel" id="edit_phone" name="phone" th:value="${user.phone}"/>
+                        <div class="field-msg" data-msg-for="edit_phone"></div>
                     </div>
                     <div class="form-group">
                         <label for="edit_role">System Access Role</label>
-                        <select id="edit_role" name="role">
+                        <select id="edit_role" name="role" required>
                             <option value="USER" th:selected="${user.role == 'USER'}">User Status</option>
                             <option value="ADMIN" th:selected="${user.role == 'ADMIN'}">Admin Authority</option>
                         </select>
+                        <div class="field-msg" data-msg-for="edit_role"></div>
                     </div>
                     <div class="form-actions">
                         <button type="submit" class="btn-submit"><i class="fa-solid fa-floppy-disk"></i> Update User</button>
                         <a th:href="@{/admin/users}" class="btn-cancel">Cancel</a>
                     </div>
                 </form>
-                
+
             </div>
         </main>
     </div>
+
+<script>
+    // 🎯 Sri Lankan phone format: 07XXXXXXXX (10 digits, starts with 0) — optional field
+    const PHONE_REGEX = /^0\d{9}$/;
+    const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    const NAME_REGEX = /^[A-Za-z\s.'-]{3,60}$/;
+
+    function setState(input, msgEl, valid, message) {
+        if (!input.value.trim() && !input.required) {
+            input.classList.remove('invalid', 'valid-ok');
+            if (msgEl) { msgEl.textContent = ''; msgEl.classList.remove('valid'); }
+            return true;
+        }
+        input.classList.toggle('invalid', !valid);
+        input.classList.toggle('valid-ok', valid);
+        if (msgEl) {
+            msgEl.textContent = valid ? (message.validMsg || '') : message;
+            msgEl.classList.toggle('valid', valid);
+        }
+        return valid;
+    }
+
+    function validateName(input, msgEl) {
+        const value = input.value.trim();
+        if (!value) return setState(input, msgEl, false, 'Full name is required.');
+        const valid = NAME_REGEX.test(value);
+        return setState(input, msgEl, valid, valid ? { validMsg: 'Looks good ✓' } : 'Enter a valid name (letters only, min 3 characters).');
+    }
+
+    function validateEmail(input, msgEl) {
+        const value = input.value.trim();
+        if (!value) return setState(input, msgEl, false, 'Email address is required.');
+        const valid = EMAIL_REGEX.test(value);
+        return setState(input, msgEl, valid, valid ? { validMsg: 'Valid email ✓' } : 'Enter a valid email address.');
+    }
+
+    function validatePhone(input, msgEl) {
+        const value = input.value.trim();
+        if (!value) { setState(input, msgEl, true, {}); return true; } // optional field
+        const valid = PHONE_REGEX.test(value);
+        return setState(input, msgEl, valid, valid ? { validMsg: 'Valid phone number ✓' } : 'Enter a valid 10-digit phone number (e.g. 0705826971).');
+    }
+
+    function validatePassword(input, msgEl) {
+        const value = input.value;
+        if (!value) return setState(input, msgEl, false, 'Password is required.');
+        const hasMinLength = value.length >= 8;
+        const hasLetterAndNumber = /[A-Za-z]/.test(value) && /[0-9]/.test(value);
+        const valid = hasMinLength && hasLetterAndNumber;
+        let msg = 'Minimum 8 characters, with at least 1 letter and 1 number.';
+        if (!hasMinLength) msg = 'Password must be at least 8 characters.';
+        else if (!hasLetterAndNumber) msg = 'Password must include both letters and numbers.';
+        return setState(input, msgEl, valid, valid ? { validMsg: 'Strong password ✓' } : msg);
+    }
+
+    function validateRole(select, msgEl) {
+        const valid = !!select.value;
+        return setState(select, msgEl, valid, valid ? { validMsg: '' } : 'Please select a role.');
+    }
+
+    function wireForm(formId, opts) {
+        const form = document.getElementById(formId);
+        if (!form) return;
+
+        const fields = [];
+
+        function bind(inputId, validator) {
+            const input = document.getElementById(inputId);
+            if (!input) return;
+            const msgEl = form.querySelector(`[data-msg-for="${inputId}"]`);
+            const run = () => validator(input, msgEl);
+            input.addEventListener('input', run);
+            input.addEventListener('blur', run);
+            fields.push(run);
+        }
+
+        bind(opts.name, validateName);
+        bind(opts.email, validateEmail);
+        bind(opts.phone, validatePhone);
+        if (opts.password) bind(opts.password, validatePassword);
+        bind(opts.role, validateRole);
+
+        form.addEventListener('submit', function (e) {
+            const results = fields.map(fn => fn());
+            if (results.includes(false)) {
+                e.preventDefault();
+            }
+        });
+    }
+
+    // Add User form
+    wireForm('addUserForm', { name: 'name', email: 'email', phone: 'phone', password: 'password', role: 'role' });
+
+    // Edit User form (no password field here)
+    wireForm('editUserForm', { name: 'edit_name', email: 'edit_email', phone: 'edit_phone', role: 'edit_role' });
+</script>
 
 </body>
 </html>
