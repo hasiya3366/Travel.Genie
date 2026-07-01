@@ -1,7 +1,7 @@
 package com.example.TravelApp.controller;
 
 import com.example.TravelApp.model.User;
-import com.example.TravelApp.service.EmailService; // 🎯 EmailService එක Import කළා
+import com.example.TravelApp.service.EmailService; 
 import com.example.TravelApp.service.UserService;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.stereotype.Controller;
@@ -12,9 +12,8 @@ import org.springframework.web.bind.annotation.*;
 public class AuthController {
 
     private final UserService userService;
-    private final EmailService emailService; // 🎯 JavaMailSender වෙනුවට අපේ EmailService එක Inject කරන්න Field එක හැදුවා
+    private final EmailService emailService; 
 
-    // Constructor එක හරහා අපේ EmailService එක ලස්සනට Inject කරගන්නවා
     public AuthController(UserService userService, EmailService emailService) {
         this.userService = userService;
         this.emailService = emailService;
@@ -75,7 +74,7 @@ public class AuthController {
     }
 
     // ==========================================
-    // REAL WORLD EMAIL FORGOT PASSWORD OPTION
+    // REAL WORLD EMAIL FORGOT PASSWORD OPTION (FIXED FOR NO SMTP)
     // ==========================================
 
     @GetMapping("/forgot-password")
@@ -90,24 +89,25 @@ public class AuthController {
         if (userOptional.isPresent()) {
             User user = userOptional.get();
 
-            // රහස්‍ය ටෝකන් එකක් සහ විනාඩි 15ක Expiry කාලයක් දීම
+            // රහස්‍ය ටෝකන් එකක් සහ Expiry කාලයක් දීම
             String token = java.util.UUID.randomUUID().toString();
             user.setResetToken(token);
             user.setTokenExpiry(java.time.LocalDateTime.now().plusMinutes(15));
             userService.save(user);
 
-            // මුලින්ම Localhost ලින්ක් එක සාදාගන්නවා
-            String resetLink = "http://localhost:8080/reset-password?token=" + token;
+            // 💡 Production එකේදීත් ලින්ක් එක වැඩ කරන්න සාපේක්ෂ (Relative) පාරක් හදමු
+            String resetLink = "/reset-password?token=" + token;
 
-            // 🚀 🎯 අපේ පට්ට ලස්සන Dark Mode HTML Theme එකෙන් ඊමේල් එක ෂූට් කරන කොටස:
             try {
-                // ⚡ පරණ SimpleMailMessage එක වෙනුවට අපේ EmailService එකේ තියෙන HTML මෙතඩ් එක කෝල් කළා
+                // 🎯 ඊමේල් සර්විස් එකට ඩේටා පාස් කරනවා (හැබැයි මේල් යන්නේ නැහැ, ක්‍රෑෂ් වෙන්නෙත් නැහැ)
                 emailService.sendForgotPasswordEmail(email, user.getName(), resetLink);
 
-                model.addAttribute("success", "Reset link has been sent to your email address successfully!");
+                // 🌿 ඊමේල් යන්නේ නැති නිසා, යූසර්ට කෙලින්ම ස්ක්‍රීන් එකේ ක්ලික් කරලා පාස්වර්ඩ් මාරු කරන්න ලින්ක් එක පෙන්වනවා:
+                model.addAttribute("success", "Password reset generation successful! [Bypass Mode]");
+                model.addAttribute("bypassLink", resetLink);
+                
             } catch (Exception e) {
-                model.addAttribute("error", "Failed to send email. Please check your SMTP settings.");
-                e.printStackTrace();
+                model.addAttribute("error", "System error handling request.");
             }
 
         } else {
