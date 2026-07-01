@@ -5,11 +5,10 @@ import com.example.TravelApp.model.Hotel;
 import com.example.TravelApp.model.TourPackage;
 import com.example.TravelApp.model.User;
 import com.example.TravelApp.service.BookingService;
-import com.example.TravelApp.service.EmailService;
 import com.example.TravelApp.service.HotelService;
 import com.example.TravelApp.service.TourPackageService;
 import com.example.TravelApp.service.UserService;
-import com.example.TravelApp.service.PdfService; // 🎯 PDF Service එක Import කරගන්න
+import com.example.TravelApp.service.PdfService; 
 
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.core.io.InputStreamResource;
@@ -32,18 +31,15 @@ public class BookingController {
     private final BookingService bookingService;
     private final TourPackageService tourPackageService;
     private final UserService userService;
-    private final EmailService emailService;
     private final HotelService hotelService;
-    private final PdfService pdfService; // 🎯 1. මෙතන ක්ලාස් විචල්‍යය නිවැරදිව තියෙනවා මචං
+    private final PdfService pdfService; 
 
-    // 🎯 2. Constructor එක ඇතුළට PdfService එක දමා Dependencies ඔක්කොම Inject කිරීම
+    // 🎯 EmailService එක Dependency Injection එකෙන් සම්පූර්ණයෙන්ම ඉවත් කළා මචං
     public BookingController(BookingService bookingService, TourPackageService tourPackageService,
-                             UserService userService, EmailService emailService,
-                             HotelService hotelService, PdfService pdfService) {
+                             UserService userService, HotelService hotelService, PdfService pdfService) {
         this.bookingService = bookingService;
         this.tourPackageService = tourPackageService;
         this.userService = userService;
-        this.emailService = emailService;
         this.hotelService = hotelService;
         this.pdfService = pdfService;
     }
@@ -60,7 +56,7 @@ public class BookingController {
         return "book-package";
     }
 
-    // 🎯 බුකින් එක Form එකෙන් සබ්මිට් කරද්දී මිල ගණන් හදලා සේව් කරන තැන
+    // 🎯 බුකින් එක Form එකෙන් සබ්මිට් කරද්දී මිල ගණන් හදලා සේဝ် කරන තැන
     @PostMapping("/book")
     public String placeBooking(@ModelAttribute Booking booking,
                                @RequestParam Long packageId,
@@ -106,7 +102,7 @@ public class BookingController {
         int days = (hotelNights != null && hotelNights > 0) ? hotelNights : 1;
         double totalFoodCost = 0.0;
 
-        // 🍔 🧠 DAY-BY-DAY MEAL PRICE CALCULATION LOGIC (BACKEND LOOP)
+        // 🍔 DAY-BY-DAY MEAL PRICE CALCULATION LOGIC
         if (hotelId != null) {
             if ("hotel".equals(foodSource)) {
                 for (int i = 1; i <= days; i++) {
@@ -152,22 +148,15 @@ public class BookingController {
             }
         }
 
-        // 🧮 💸 අවසාන සුපිරි සූත්‍රය:
+        // 🧮 අවසාන මිල ගණන් සූත්‍රය
         double extraHotelAndTransCost = (extraPricePerNight + transPrice) * booking.getTravelers() * days;
         double extraFoodCostTotal = totalFoodCost * booking.getTravelers();
         double totalPrice = (basePrice * booking.getTravelers()) + extraHotelAndTransCost + extraFoodCostTotal;
 
         booking.setTotalPrice(totalPrice);
 
-        // 💾 Booking එක Database එකට සේව් කිරීම
+        // 💾 Booking එක Database එකට සේව් කිරීම (මේක විතරක් ක්‍රියාත්මක වෙනවා 🌿)
         bookingService.save(booking);
-
-        // 📧 Automated Success Email එක යැවීම
-        try {
-            emailService.sendBookingSuccessEmail(user.getEmail(), user.getName(), tourPackage.getName(), totalPrice);
-        } catch (Exception e) {
-            System.out.println("❌ Email Sending Bypassed: " + e.getMessage());
-        }
 
         // 📄 Confirmation පිටුවට අදාළ ඩේටා පාස් කිරීම
         model.addAttribute("booking", booking);
@@ -178,7 +167,7 @@ public class BookingController {
         return "booking-confirmation";
     }
 
-    // 📄 🎯 INVOICE PDF DOWNLOAD ENDPOINT (අලුතින්ම එකතු කළ කොටස)
+    // 📄 🎯 INVOICE PDF DOWNLOAD ENDPOINT (මෙය එලෙසම සුරක්ෂිතව පවතී)
     @GetMapping("/booking/download-receipt")
     public ResponseEntity<InputStreamResource> downloadReceipt(
             @RequestParam String email,
