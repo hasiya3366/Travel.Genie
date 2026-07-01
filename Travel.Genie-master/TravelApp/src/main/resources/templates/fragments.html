@@ -4,32 +4,40 @@
     <meta charset="UTF-8">
     <title>TravelGenie — Shared Fragments</title>
     <style>
-        /* 🎨 බොට් එක සයිට් එකේ ලස්සනට පේන්න ඕන සයිස් එක මෙතනින් පාලනය කරනවා මචං */
-        .botpress-embedded-container {
-            width: 380px;
-            height: 500px;
+        /* 🎨 චැට් වින්ඩෝ එක සයිට් එකේ පේන්න ඕන තැන සහ සයිස් එක */
+        .travelgenie-chat-wrapper {
+            width: 400px;
+            height: 550px;
             position: fixed;
             bottom: 30px;
             right: 30px;
-            z-index: 999999;
+            z-index: 999999 !important;
             border-radius: 16px;
             overflow: hidden;
             box-shadow: 0 12px 40px rgba(0,0,0,0.5);
             border: 1px solid #1a2e29;
+            background-color: #0d1614;
+        }
+        
+        /* Botpress එකෙන් ඉබේම හදන පරණ Floating Bubble එක සදහටම හංගන්න */
+        #bp-webchat-container, .bpw-widget-button {
+            display: none !important;
         }
     </style>
 </head>
 <body>
 
 <!-- ========================================== -->
-<!-- 1. LIVE PRODUCTION EMBEDDED CHATBOT FRAGMENT -->
+<!-- 1. FORCE EMBEDDED PRODUCTION AI CHATBOT -->
 <!-- ========================================== -->
 <div th:fragment="chatbot">
 
-    <!-- 🎯 Botpress එකෙන් හොයන නිවැරදි Container ID එක -->
-    <div id="bp-embedded-webchat" class="botpress-embedded-container"></div>
+    <!-- 🎯 බොට් එක රෙන්ඩර් වෙන්න අපි හදන ස්ථාවර බොක්ස් එක -->
+    <div class="travelgenie-chat-wrapper">
+        <iframe id="bp-iframe" src="https://files.bpcontent.cloud/2026/07/01/21/20260701214322-Q82605O6.html" width="100%" height="100%" frameborder="0"></iframe>
+    </div>
 
-    <!-- 🎯 Botpress Scripts Injections -->
+    <!-- 🎯 Botpress Core Scripts (Fallback) -->
     <script src="https://cdn.botpress.cloud/webchat/v3.6/inject.js"></script>
     <script src="https://files.bpcontent.cloud/2026/07/01/21/20260701214322-Q82605O6.js" defer></script>
 
