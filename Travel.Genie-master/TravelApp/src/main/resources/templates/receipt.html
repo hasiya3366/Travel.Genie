@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Payment Receipt — TravelGenie</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Poppins', sans-serif; }
+        body { background-color: #f3fbf8; color: #2c3e50; display: flex; justify-content: center; align-items: center; min-height: 100vh; padding: 20px; }
+        .receipt-container { background: white; width: 100%; max-width: 550px; padding: 40px; border-radius: 24px; box-shadow: 0 10px 30px rgba(0,0,0,0.02); border: 1px solid #e2e8f0; text-align: center; }
+        .success-banner { color: #2ecc71; font-size: 55px; margin-bottom: 15px; }
+        .title { font-size: 24px; font-weight: 700; color: #1a3a2a; margin-bottom: 5px; }
+        .subtitle { font-size: 14px; color: #64748b; margin-bottom: 30px; }
+        .invoice-card { background: #f8fafc; border: 1px dashed #cbd5e1; border-radius: 16px; padding: 25px; text-align: left; margin-bottom: 30px; }
+        .info-row { display: flex; justify-content: space-between; margin-bottom: 12px; font-size: 14.5px; border-bottom: 1px solid #f1f5f9; padding-bottom: 6px; }
+        .info-row strong { color: #64748b; font-weight: 500; }
+        .info-row span { color: #1e293b; font-weight: 600; }
+        .total-row { display: flex; justify-content: space-between; margin-top: 15px; padding-top: 15px; border-top: 2px dashed #cbd5e1; }
+        .btn-download { display: inline-flex; align-items: center; gap: 10px; background-color: #0f766e; color: white; padding: 14px 28px; border: none; border-radius: 10px; font-size: 15px; font-weight: 600; text-decoration: none; transition: background 0.2s; box-shadow: 0 4px 10px rgba(15, 118, 110, 0.2); cursor: pointer; }
+        .btn-download:hover { background-color: #0d615a; color: white; }
+        .btn-home { display: inline-block; margin-top: 15px; font-size: 14px; color: #009688; text-decoration: none; font-weight: 500; }
+        .btn-home:hover { text-decoration: underline; }
+    </style>
+</head>
+<body>
+
+<div class="receipt-container">
+    <i class="fa-solid fa-circle-check success-banner"></i>
+    <div class="title">Payment Approved!</div>
+    <div class="subtitle">Thank you for your purchase. Your transaction was completed successfully.</div>
+    
+    <div class="invoice-card">
+        <div class="info-row"><strong>Package Status:</strong> <span style="color: #2ecc71 !important;"><i class="fa-solid fa-shield-check"></i> PAID</span></div>
+        <div class="info-row"><strong>Tour Package:</strong> <span th:text="${packageName}">Ella Rock Adventure</span></div>
+        <div class="info-row"><strong>Total Travelers:</strong> <span th:text="${travelers}">5 Person(s)</span></div>
+        
+        <div class="total-row">
+            <strong style="font-size: 16px; color: #1e293b;">Amount Charged:</strong>
+            <span th:text="'LKR ' + ${totalPrice}" style="font-size: 20px; font-weight: 800; color: #0f766e;">LKR 0.00</span>
+        </div>
+    </div>
+
+    <div>
+        <a th:href="@{/booking/download-receipt(
+            email=${userEmail}, 
+            date=${travelDate}, 
+            travelers=${travelers}, 
+            packageName=${packageName}, 
+            hotelName=${hotelName}, 
+            vehicle=${vehicle}, 
+            totalPrice=${totalPrice}
+        )}" class="btn-download">
+            <i class="fa-solid fa-file-pdf"></i> Download PDF Receipt
+        </a>
+    </div>
+    
+    <a href="/" class="btn-home"><i class="fa-solid fa-arrow-left"></i> Back to Home</a>
+</div>
+
+</body>
+</html>
