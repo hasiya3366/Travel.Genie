@@ -878,3 +878,23 @@ nav a:hover {
         color: #ccc;
     }
 }
+/* 🎯 GLOBAL DARK MODE VARIABLES SYSTEM */
+:root {
+    --bg-body: #f3fbf8;
+    --bg-card: white;
+    --text-main: #2c3e50;
+    --border-color: #e2e8f0;
+}
+
+[data-theme="dark"] {
+    --bg-body: #0b1311;
+    --bg-card: #121e1b;
+    --text-main: #e2e8f0;
+    --border-color: #1e293b;
+}
+
+/* 💡 හැම පිටුවකම background එකයි text color එකයි variable එකට ලින්ක් කරන්න */
+body {
+    background-color: var(--bg-body) !important;
+    color: var(--text-main) !important;
+}
