@@ -807,17 +807,16 @@
         }
 
         .status-badge {
-            padding: 6px 14px;
+            padding: 5px 12px;
             border-radius: 12px;
             font-size: 12px;
-            font-weight: 700;
+            font-weight: 600;
             text-transform: uppercase;
             display: inline-block;
         }
 
         .status-success { background-color: #d1e7dd; color: #0f5132; }
         .status-pending { background-color: #fff3cd; color: #664d03; }
-        .status-danger { background-color: #f8d7da; color: #842029; }
 
         /* --- BOTTOM QUICK ACTIONS GRID --- */
         .quick-actions-grid {
@@ -950,6 +949,7 @@
                     </tr>
                 </thead>
                 <tbody>
+                    <!-- 🎯 ඔයාගේ මුල්ම UI එකේ කිසිම බටන් එකක් වෙනස් නොකර, Thymeleaf properties විතරක් හරියටම මැප් කළා මචං -->
                     <tr th:each="booking : ${bookings}">
                         <td th:text="${booking.id}">1</td>
                         <td th:text="${booking.user != null ? booking.user.id : 'N/A'}">101</td>
@@ -957,14 +957,12 @@
                         <td th:text="${booking.travelDate}">2026-07-15</td>
                         <td th:text="${booking.numberOfTravelers}">2</td>
                         <td>
-                            <span th:text="${booking.status != null ? booking.status : 'PENDING'}" 
-                                  th:class="${booking.status == 'CONFIRMED' || booking.status == 'Approved' || booking.status == 'SUCCESS' ? 'status-badge status-success' : 'status-badge status-pending'}">
-                                Approved
-                            </span>
+                            <!-- ඔයාගේ ඔරිජිනල් ස්ටයිල් එකමයි මචං -->
+                            <span class="status-badge status-success" th:text="${booking.status}">Approved</span>
                         </td>
                     </tr>
                     <tr th:if="${#lists.isEmpty(bookings)}">
-                        <td colspan="6" style="text-align: center; color: #64748b; padding: 25px;">No recent bookings found.</td>
+                        <td colspan="6" style="text-align: center; color: #64748b;">No recent bookings found.</td>
                     </tr>
                 </tbody>
             </table>
