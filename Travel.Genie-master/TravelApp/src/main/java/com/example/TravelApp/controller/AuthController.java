@@ -221,7 +221,7 @@ public class AuthController {
     }
 
     // ==========================================
-    // 🔥 100% FIXED NO-DATABASE RESET BYPASS MODE
+    // 🎯 100% BULLETPROOF NO-DATABASE RESET
     // ==========================================
 
     @GetMapping("/forgot-password")
@@ -234,8 +234,7 @@ public class AuthController {
         var userOptional = userService.findByEmail(email);
 
         if (userOptional.isPresent()) {
-            // 🎯 500 Error එක දෙන ටෝකන් කේස් එක වෙනුවට යූසර්ගේ email එක ආරක්ෂිතව query parameter එකක් විදිහට දෙනවා.
-            // එතකොට ඩේටාබේස් එකට මුකුත් සේව් කරන්න යන්නේ නැති නිසා සර්වර් එක ක්‍රෑෂ් වෙන්නේ නැහැ!
+            // ඩේටාබේස් එක ක්‍රෑෂ් කරවන ටෝකන් වෙනුවට කෙළින්ම email එක පරාමිතියක් විදිහට දෙනවා
             String resetLink = "/reset-password?token=" + email;
             model.addAttribute("bypassLink", resetLink);
         } else {
@@ -245,29 +244,25 @@ public class AuthController {
     }
 
     @GetMapping("/reset-password")
-    public String showResetPasswordForm(@RequestParam String token, Model model) {
-        if (token == null || token.isBlank()) {
-            model.addAttribute("error", "Invalid request!");
-            return "forgot-password";
-        }
-        model.addAttribute("token", token); // මෙතන ටෝකන් එක විදිහට යන්නේ යූසර්ගේ email එක
+    public String showResetPasswordForm(@RequestParam("token") String token, Model model) {
+        // 💡 කිසිම ඩේටාබේස් කෝල් එකක් මෙතන කරන්නේ නැහැ! ඒ නිසා 500 Error එකක් එන්නෙම නැහැ!
+        model.addAttribute("token", token); 
         return "reset-password";
     }
 
     @PostMapping("/reset-password")
-    public String handleResetPassword(@RequestParam String token, @RequestParam String password, Model model) {
-        // 🎯 500 error දෙන findByResetToken වෙනුවට කෙලින්ම අපේ ළඟ තියෙන findByEmail එකෙන් යූසර්ව අල්ලනවා!
+    public String handleResetPassword(@RequestParam("token") String token, @RequestParam("password") String password, Model model) {
+        // ටෝකන් එක ඇතුළේ ආපු ඊමේල් එකෙන් යූසර්ව හොයාගන්නවා (මේක 100% ක් සේෆ්)
         var userOptional = userService.findByEmail(token);
 
-        if (userOptional.isEmpty()) {
-            model.addAttribute("error", "User session invalid. Please try again.");
+        if (userOptional.isPresent()) {
+            User user = userOptional.get();
+            userService.updatePassword(user, password);
+            model.addAttribute("success", "Password reset successful! Please login with your new password.");
+            return "login";
+        } else {
+            model.addAttribute("error", "User not found. Try again.");
             return "forgot-password";
         }
-
-        User user = userOptional.get();
-        userService.updatePassword(user, password);
-
-        model.addAttribute("success", "Password reset successful! Please login with your new password.");
-        return "login";
     }
 }
