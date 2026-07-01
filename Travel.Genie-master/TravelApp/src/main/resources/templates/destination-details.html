@@ -8,36 +8,17 @@
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
-    <script>
-        if (localStorage.getItem("theme") === "dark") {
-            document.documentElement.setAttribute("data-theme", "dark");
-        }
-    </script>
-
     <style>
-        /* 🎯 PREMIUM VARIABLE MATRIX STYLE */
         :root {
-            --bg-body: #f3fbf8;
-            --bg-card: white;
-            --text-main: #2c3e50;
-            --text-title: #1a3a2a;
+            --bg-body: #ffffff;       /* පිරිසිදු සුදු බැක්ග්‍රවුන්ඩ් එක */
+            --bg-card: #f8fafc;       /* ලා අළු/කොළ පැහැති ප්‍රිමියම් කාඩ් */
+            --text-main: #334155;     /* තද අකුරු */
+            --text-title: #0f766e;    /* ඔයාගේ තේමාවේ තද කොළ පාට */
             --text-muted: #64748b;
-            --border-color: #d1e7dd;
-            --brand-primary: #0f766e;
-            --brand-hover: #0d615a;
-            --accent-bg: #e8f5e9;
-        }
-
-        [data-theme="dark"] {
-            --bg-body: #0b1311;
-            --bg-card: #121e1b;
-            --text-main: #e2e8f0;
-            --text-title: #52b788;
-            --text-muted: #94a3b8;
-            --border-color: #1e293b;
-            --brand-primary: #00a88f;
-            --brand-hover: #008f7a;
-            --accent-bg: #162622;
+            --border-color: #e2e8f0;
+            --brand-primary: #00bfa5; /* 🎯 ඔයාගේ ලෝගෝ එකේ තියෙන සැබෑ Bright Teal/Green එක */
+            --brand-hover: #0f766e;
+            --accent-bg: #e8f5e9;     /* වෙදර් බොක්ස් එකේ ලා කොළ පාට */
         }
 
         * {
@@ -45,7 +26,6 @@
             padding: 0;
             box-sizing: border-box;
             font-family: 'Poppins', sans-serif;
-            transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
         }
 
         body {
@@ -62,14 +42,12 @@
             padding: 0 24px;
         }
 
-        /* --- PREMIUM HEADER STYLE --- */
         .site-header {
-            background-color: var(--bg-card);
-            border-bottom: 1px solid var(--border-color);
+            background-color: #0d1614; /* නැව්බී එක ඔයාගේ සයිට් එකේ වගේම තද පාටින්ම තියාගත්තා */
+            border-bottom: 1px solid #1a2e29;
             position: sticky;
             top: 0;
             z-index: 100;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.01);
         }
 
         .header-inner {
@@ -84,24 +62,20 @@
             font-weight: 700;
             color: var(--brand-primary);
             text-decoration: none;
-            letter-spacing: -0.5px;
-        }
-
-        .site-header nav {
-            display: flex;
-            gap: 25px;
-            align-items: center;
         }
 
         .site-header nav a {
-            color: var(--text-muted);
+            color: #b2c7c2;
             text-decoration: none;
             font-weight: 500;
             font-size: 15px;
+            margin-left: 25px;
         }
-        .site-header nav a:hover { color: var(--brand-primary); }
 
-        /* --- LAYOUT GRID MANAGEMENT --- */
+        .site-header nav a:hover {
+            color: var(--brand-primary);
+        }
+
         main {
             padding: 40px 0;
         }
@@ -118,7 +92,7 @@
             border-radius: 24px;
             padding: 35px;
             border: 1px solid var(--border-color);
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.015);
+            box-shadow: 0 4px 20px rgba(0,0,0,0.02);
         }
 
         .main-img {
@@ -126,7 +100,6 @@
             max-height: 400px;
             object-fit: cover;
             border-radius: 16px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.02);
             margin-bottom: 25px;
         }
 
@@ -134,7 +107,6 @@
             font-size: 36px;
             font-weight: 700;
             color: var(--text-title);
-            line-height: 1.2;
         }
 
         .dest-meta {
@@ -147,10 +119,9 @@
             color: var(--brand-primary);
         }
 
-        /* --- WEATHER METRIC CARD WIDGET OVERHAUL --- */
         .weather-premium-card {
-            background-color: var(--accent-bg);
-            border: 1px solid var(--border-color);
+            background-color: #f0fdf4;
+            border: 1px solid #bbf7d0;
             border-radius: 20px;
             padding: 25px;
             margin-top: 15px;
@@ -164,39 +135,31 @@
 
         .weather-icon-giant {
             font-size: 55px;
-            line-height: 1;
         }
 
         .weather-degree {
             font-size: 34px;
             font-weight: 800;
-            color: var(--text-title);
-            line-height: 1.1;
+            color: #166534;
         }
 
         .weather-status-label {
             font-size: 13px;
             font-weight: 700;
-            color: var(--brand-primary);
+            color: #15803d;
             text-transform: uppercase;
-            letter-spacing: 0.5px;
-            margin-top: 2px;
         }
 
         .weather-meta-row {
-            font-size: 13px;
-            color: var(--text-muted);
+            font-size: 13.5px;
+            color: #1e3a1e;
             margin-top: 15px;
             display: flex;
-            gap: 10px;
-            flex-wrap: wrap;
+            gap: 15px;
         }
 
-        .weather-sep { color: var(--border-color); }
-
-        /* --- MODERN FOOTER DESIGN --- */
         .site-footer {
-            background-color: var(--bg-card);
+            background-color: #f8fafc;
             border-top: 1px solid var(--border-color);
             padding: 30px 0;
             margin-top: 80px;
@@ -206,7 +169,7 @@
         }
 
         @media (max-width: 992px) {
-            .split-grid { grid-template-columns: 1fr; gap: 30px; }
+            .split-grid { grid-template-columns: 1fr; }
         }
     </style>
 </head>
@@ -228,27 +191,25 @@
 
 <main class="container">
     <div class="split-grid">
-        
         <div class="detail-main-card">
-            <img th:src="${destination.imageUrl}" alt="Premium destination visual layout illustration matrix" class="main-img"/>
+            <img th:src="${destination.imageUrl}" alt="Destination Cover" class="main-img"/>
             <h1 class="dest-title" th:text="${destination.name}">Sigiriya</h1>
             <p class="dest-meta"><strong th:text="${destination.country}">Sri Lanka</strong> • <span th:text="${destination.category}">Cultural</span></p>
 
             <hr style="border: 0; border-top: 1px solid var(--border-color); margin: 25px 0;">
 
             <h3 style="color: var(--text-title); font-size: 20px; margin-bottom: 12px;">About this destination</h3>
-            <p style="color: var(--text-main); line-height: 1.7; font-size: 15px; text-align: justify;" th:text="${destination.description}">Beautiful historical place.</p>
+            <p style="color: var(--text-main); line-height: 1.7; font-size: 15px;" th:text="${destination.description}">Beautiful historical place.</p>
             
-            <p style="font-size: 18px; color: var(--brand-primary); font-weight: 700; margin-top: 25px;">
-                Starting Price: <span style="font-size: 24px;" th:text="${destination.price}">0.00</span> USD
+            <p style="font-size: 18px; color: var(--text-title); font-weight: 700; margin-top: 25px;">
+                Starting Price: <span style="font-size: 24px; color: var(--brand-primary);" th:text="${destination.price}">0.00</span> USD
             </p>
         </div>
 
         <div class="sidebar-card">
             <h3 style="color: var(--text-title); font-size: 18px; margin-bottom: 15px; font-weight: 600;"><i class="fa-solid fa-cloud-sun"></i> Local Weather Forecast</h3>
 
-            <div class="weather-premium-card" id="weather-card"
-                 th:attr="data-destination=${destination.name},data-country=${destination.country}">
+            <div class="weather-premium-card" id="weather-card" th:attr="data-destination=${destination.name},data-country=${destination.country}">
                 <div class="weather-core">
                     <div class="weather-icon-giant" id="weather-icon">☀️</div>
                     <div>
@@ -257,34 +218,30 @@
                     </div>
                 </div>
 
-                <hr style="border: 0; border-top: 1px solid var(--border-color); margin: 15px 0;">
+                <hr style="border: 0; border-top: 1px solid #bbf7d0; margin: 15px 0;">
 
                 <div class="weather-meta-row">
-                    <span>Humidity: <strong id="weather-humidity" style="color: var(--text-title);">--%</strong></span>
-                    <span class="weather-sep">•</span>
-                    <span>Wind: <strong id="weather-wind" style="color: var(--text-title);">-- km/h</strong></span>
+                    <span>Humidity: <strong id="weather-humidity">--%</strong></span>
+                    <span>•</span>
+                    <span>Wind: <strong id="weather-wind">-- km/h</strong></span>
                 </div>
                 
-                <div style="font-size: 12px; color: var(--brand-primary); font-weight: 600; display: flex; align-items: center; gap: 5px; margin-top: 15px;">
-                    <i class="fa-solid fa-location-dot"></i> Real-time feed for <span id="weather-location" th:text="${destination.name}">Sigiriya</span>
+                <div style="font-size: 12px; color: #15803d; font-weight: 600; display: flex; align-items: center; gap: 5px; margin-top: 15px;">
+                    📍 Current condition in <span id="weather-location" th:text="${destination.name}">Sigiriya</span>
                 </div>
             </div>
         </div>
-
     </div>
 </main>
 
 <footer class="site-footer">
-    <div class="container">
-        <p>© 2026 TravelGenie. All Rights Reserved.</p>
-    </div>
+    <div class="container"><p>© 2026 TravelGenie. All Rights Reserved.</p></div>
 </footer>
 
 <script>
     document.addEventListener('DOMContentLoaded', async () => {
         const card = document.getElementById('weather-card');
         if (!card) return;
-
         const destination = card.dataset.destination || 'Sri Lanka';
         const country = card.dataset.country || '';
         
@@ -294,7 +251,7 @@
             document.getElementById('weather-condition').textContent = 'Unavailable';
             document.getElementById('weather-humidity').textContent = '--%';
             document.getElementById('weather-wind').textContent = '-- km/h';
-            document.getElementById('weather-icon').textContent = '🌦️';
+            document.getElementById('weather-icon').textContent = '☀️';
         };
 
         async function findGeoResult(queries) {
@@ -312,11 +269,9 @@
         try {
             const geoQueries = [`${destination}, ${country}`.trim(), destination, country, 'Sri Lanka'].filter((v, i, a) => v && a.indexOf(v) === i);
             const result = await findGeoResult(geoQueries);
-            if (!result) throw new Error('Location coordinates mapping failed');
+            if (!result) throw new Error('Failed');
 
             const weatherResponse = await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${result.latitude}&longitude=${result.longitude}&current=temperature_2m,relative_humidity_2m,wind_speed_10m,weather_code&timezone=auto`);
-            if (!weatherResponse.ok) throw new Error('Weather payload connection failure');
-            
             const weatherData = await weatherResponse.json();
             const current = weatherData.current;
             const code = current?.weather_code;
@@ -327,19 +282,17 @@
             document.getElementById('weather-humidity').textContent = `${Math.round(current?.relative_humidity_2m ?? 0)}%`;
             document.getElementById('weather-wind').textContent = `${Math.round(current?.wind_speed_10m ?? 0)} km/h`;
             document.getElementById('weather-icon').textContent = getWeatherIcon(code);
-        } catch (error) {
-            setFallback();
-        }
+        } catch (error) { setFallback(); }
     });
 
     function getWeatherLabel(code) {
-        const map = { 0: 'Clear sky', 1: 'Mostly clear', 2: 'Partly cloudy', 3: 'Overcast', 45: 'Foggy', 51: 'Light drizzle', 61: 'Light rain', 63: 'Moderate rain', 95: 'Thunderstorm' };
-        return map[code] || 'Pleasant';
+        const map = { 0: 'Clear sky', 1: 'Mostly clear', 2: 'Partly cloudy', 3: 'Overcast', 45: 'Foggy', 95: 'Thunderstorm' };
+        return map[code] || 'Sunny';
     }
 
     function getWeatherIcon(code) {
-        const map = { 0: '☀️', 1: '🌤️', 2: '⛅', 3: '☁️', 45: '🌫️', 51: '🌦️', 61: '🌦️', 63: '🌧️', 95: '⛈️' };
-        return map[code] || '🌦️';
+        const map = { 0: '☀️', 1: '🌤️', 2: '⛅', 3: '☁️', 95: '⛈️' };
+        return map[code] || '☀️';
     }
 </script>
 </body>
