@@ -58,7 +58,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Tour Packages — TravelGenie Premium</title>
     <link rel="stylesheet" th:href="@{/css/styles.css}">
-    <!-- Font Awesome සහ Poppins Font Integration -->
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
@@ -353,7 +352,6 @@
         <p>Choose your dream plan layout, specially designed with luxury itineraries, routes, and verified stays.</p>
     </section>
 
-    <!-- Filter Form -->
     <section class="filter-section">
         <form method="get" action="/packages" class="filter-form">
             <div class="filter-group">
@@ -376,36 +374,36 @@
         </form>
     </section>
 
-    <!-- Packages Cards Layout (FIXED VARIABLES) -->
     <div class="main-container">
         <section class="card-grid">
-            <!-- 💡 මෙතන 'package' කියන object එක හරහා properties කියවනවා -->
-            <article class="package-card" th:each="pkg : ${packages}">
+            <article class="package-card" th:each="packageItem : ${packages}">
                 <div class="card-image-wrapper">
-                    <img th:src="${pkg.imageUrl}" alt="Package image" onerror="this.src='https://images.unsplash.com/photo-1546708973-b339540b5162?w=600&auto=format&fit=crop&q=60'"/>
+                    <img th:src="${packageItem.imageUrl}" alt="Package image" onerror="this.src='https://images.unsplash.com/photo-1546708973-b339540b5162?w=600&auto=format&fit=crop&q=60'"/>
                     <span class="duration-badge">
-                        <i class="fa-regular fa-clock"></i> <span th:text="${pkg.durationDays}">0</span> Days
+                        <i class="fa-regular fa-clock"></i> 
+                        <span th:text="${packageItem.durationDays}">4</span> Days
                     </span>
                 </div>
                 <div class="card-body">
                     <div class="card-tagline">
                         <i class="fa-solid fa-plane-departure"></i> Sri Lanka Adventure
                     </div>
-                    <!-- 💡 destination වෙනුවට pkg fields හරියටම map කළා -->
-                    <h4 th:text="${pkg.name}">Signature Tour Package</h4>
-                    <p class="card-desc" th:text="${pkg.description}">Experience an unforgettable journey tailored for your absolute comfort.</p>
+                    
+                    <h4 th:text="${packageItem.name}">Signature Tour Package</h4>
+                    
+                    <p class="card-desc" th:text="${packageItem.description}">Experience an unforgettable journey tailored for your absolute comfort.</p>
                     
                     <div class="card-footer-row">
                         <div class="card-price">
-                            From <strong>LKR <span th:text="${pkg.price}">0</span></strong>
+                            From <strong>LKR <span th:text="${packageItem.price}">0</span></strong>
                         </div>
-                        <a th:href="@{'/packages/' + ${pkg.id}}" class="btn-details">View Details</a>
+                        
+                        <a th:href="@{'/packages/' + ${packageItem.id}}" class="btn-details">View Details</a>
                     </div>
                 </div>
             </article>
         </section>
 
-        <!-- Empty State Handling -->
         <div class="empty-state" th:if="${#lists.isEmpty(packages)}">
             <i class="fa-solid fa-cubes" style="font-size: 40px; color: #009688; margin-bottom: 15px; display: block;"></i>
             <p>No custom packages found matching your criteria. Try adjusting the filters!</p>
