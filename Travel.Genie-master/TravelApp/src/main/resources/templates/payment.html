@@ -25,7 +25,6 @@
         .btn-pay { width: 100%; background: #009688; color: white; border: none; padding: 16px; border-radius: 12px; font-size: 16px; font-weight: 600; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 10px; box-shadow: 0 4px 12px rgba(0, 150, 136, 0.2); transition: background 0.3s; margin-top: 10px; }
         .btn-pay:hover { background: #00796b; }
         
-        /* Processing Popup Overlay */
         .overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.6); backdrop-filter: blur(5px); display: none; justify-content: center; align-items: center; z-index: 999; }
         .popup-box { background: white; padding: 40px; border-radius: 24px; text-align: center; max-width: 360px; width: 90%; box-shadow: 0 20px 40px rgba(0,0,0,0.2); }
         .spinner { width: 50px; height: 50px; border: 5px solid #f3f3f3; border-top: 5px solid #009688; border-radius: 50%; animation: spin 1s linear infinite; margin: 0 auto 20px; }
@@ -39,10 +38,10 @@
     <div class="brand"><i class="fa-solid fa-shield-halved"></i> Travel<span>Genie Pay</span></div>
     
     <div class="payment-summary">
-    <div class="summary-item"><span>Package:</span><span style="font-weight: 600;" th:text="${packageName}">Mirissa Whale Watching</span></div>
-    <div class="summary-item"><span>Travelers:</span><span th:text="${travelers + ' Person(s)'}">5 Persons</span></div>
-    <div class="summary-total"><span>Total Amount:</span><span th:text="'LKR ' + ${totalPrice}">LKR 900.00</span></div>
-</div>
+        <div class="summary-item"><span>Package:</span><span style="font-weight: 600;" id="displayPackage">Loading...</span></div>
+        <div class="summary-item"><span>Travelers:</span><span id="displayTravelers">1 Person(s)</span></div>
+        <div class="summary-total"><span>Total Amount:</span><span id="displayPrice">LKR 0.00</span></div>
+    </div>
 
     <form id="paymentForm" onsubmit="processPayment(event)">
         <div class="form-group">
@@ -72,7 +71,7 @@
             </div>
         </div>
 
-        <button type="submit" class="btn-pay"><i class="fa-solid fa-lock"></i> Pay LKR 900.00</button>
+        <button type="submit" class="btn-pay" id="payButtonText"><i class="fa-solid fa-lock"></i> Pay Now</button>
     </form>
 </div>
 
@@ -86,14 +85,25 @@
 </div>
 
 <script>
-    // Card Formatters
+    // URL එකෙන් එන දත්ත ටික JavaScript වලින් කියවීම
+    document.addEventListener("DOMContentLoaded", function() {
+        const urlParams = new URLSearchParams(window.location.search);
+        const pkgName = urlParams.get('packageName') || 'Tour Package';
+        const price = urlParams.get('totalPrice') || '0.00';
+        const travelers = urlParams.get('travelers') || '1';
+
+        document.getElementById('displayPackage').innerText = pkgName;
+        document.getElementById('displayTravelers').innerText = travelers + ' Person(s)';
+        document.getElementById('displayPrice').innerText = 'LKR ' + parseFloat(price).toFixed(2);
+        document.getElementById('payButtonText').innerHTML = '<i class="fa-solid fa-lock"></i> Pay LKR ' + parseFloat(price).toFixed(2);
+    });
+
+    // Card Input Formatting
     document.getElementById('cardNum').addEventListener('input', function (e) {
         let v = e.target.value.replace(/\s+/g, '').replace(/[^0-9]/gi, '');
-        let matches = v.match(/\d{4,16}/g);
-        let match = matches && matches[0] || '';
         let parts = [];
-        for (let i=0, len=match.length; i<len; i+=4) { parts.push(match.substring(i, i+4)); }
-        if (parts.length > 0) { e.target.value = parts.join(' '); } else { e.target.value = v; }
+        for (let i=0, len=v.length; i<len; i+=4) { parts.push(v.substring(i, i+4)); }
+        e.target.value = parts.join(' ');
     });
 
     document.getElementById('expDate').addEventListener('input', function (e) {
@@ -111,18 +121,15 @@
 
         overlay.style.display = 'flex';
 
-        // 1. Fake Loading Screen (2.5 Seconds)
         setTimeout(() => {
             spinner.style.display = 'none';
             successIcon.style.display = 'block';
             statusText.innerText = 'Payment Successful!';
-            subtext.innerText = 'Your booking has been secured. Redirecting to Bookings Dashboard...';
+            subtext.innerText = 'Your booking has been secured. Redirecting to Admin Dashboard...';
             
-            // 2. Redirect to Bookings list (After another 2 seconds)
             setTimeout(() => {
-                window.location.href = '/admin/bookings';
+                window.location.href = '/admin';
             }, 2000);
-
         }, 2500);
     }
 </script>
