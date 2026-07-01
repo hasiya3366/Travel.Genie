@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!-- <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
@@ -49,5 +49,275 @@
     </div>
     <div th:replace="fragments :: chatbot"></div>
 </footer>
+</body>
+</html> -->
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>About Us — TravelGenie Premium</title>
+    <link rel="stylesheet" th:href="@{/css/styles.css}">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        body {
+            background-color: #f3fbf8; /* Premium ලා කොළ/සුදු පසුබිම */
+            color: #2c3e50;
+        }
+
+        /* --- NAVBAR STYLE --- */
+        .site-header {
+            background-color: white;
+            border-bottom: 1px solid rgba(0, 150, 136, 0.1);
+            padding: 15px 0;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        .header-inner {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+        .brand {
+            font-size: 24px;
+            font-weight: 700;
+            color: #1e293b;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .brand-icon { color: #009688; }
+        nav a {
+            color: #475569;
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 15px;
+            margin-left: 20px;
+            transition: color 0.2s;
+        }
+        nav a:hover { color: #009688; }
+
+        /* --- HERO HEADER SECTION --- */
+        .about-hero {
+            background: linear-gradient(rgba(0, 74, 66, 0.85), rgba(0, 150, 136, 0.7));
+            color: white;
+            text-align: center;
+            padding: 60px 20px;
+            margin-bottom: 40px;
+            width: 100%;
+        }
+        .about-hero h2 {
+            font-size: clamp(1.8rem, 4vw, 2.5rem);
+            font-weight: 700;
+            margin-bottom: 15px;
+        }
+        .about-hero p {
+            font-size: clamp(0.95rem, 2vw, 1.1rem);
+            opacity: 0.95;
+            max-width: 800px;
+            margin: 0 auto;
+            line-height: 1.7;
+        }
+
+        /* --- CONTENT STRUCTURE --- */
+        .main-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px 60px 20px;
+            width: 100%;
+        }
+
+        .section-title-row {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+        .section-title-row h3 {
+            font-size: 28px;
+            color: #1a3a2a;
+            font-weight: 700;
+            position: relative;
+            display: inline-block;
+            padding-bottom: 10px;
+        }
+        .section-title-row h3::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 60px;
+            height: 3px;
+            background-color: #e67e22; /* Premium Orange Accent */
+            border-radius: 2px;
+        }
+
+        /* --- FEATURE LIST TO MODERN VERTICAL BLOCKS --- */
+        .features-list {
+            display: flex;
+            flex-direction: column;
+            gap: 25px;
+            list-style: none;
+        }
+        .feature-item-card {
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.02);
+            border: 1px solid #e2e8f0;
+            display: flex;
+            gap: 25px;
+            align-items: flex-start;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        .feature-item-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 30px rgba(0, 150, 136, 0.06);
+            border-color: rgba(0, 150, 136, 0.2);
+        }
+        .feature-icon-wrapper {
+            background-color: #eafaf1;
+            color: #009688;
+            width: 60px;
+            height: 60px;
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            flex-shrink: 0;
+            border: 1px solid rgba(0, 150, 136, 0.1);
+        }
+        
+        /* Alternating icon backgrounds for micro visual dynamic depth */
+        .feature-item-card:nth-child(2) .feature-icon-wrapper { background-color: #f3f0fa; color: #6f42c1; border-color: rgba(111, 66, 193, 0.1); }
+        .feature-item-card:nth-child(3) .feature-icon-wrapper { background-color: #fef7ec; color: #e67e22; border-color: rgba(230, 126, 34, 0.1); }
+
+        .feature-text-content {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+        .feature-text-content strong {
+            font-size: 18px;
+            color: #1e293b;
+            font-weight: 600;
+        }
+        .feature-text-content p {
+            font-size: 14px;
+            color: #64748b;
+            line-height: 1.7;
+        }
+
+        /* --- FOOTER STYLE --- */
+        .site-footer {
+            background-color: white;
+            padding: 30px 0;
+            text-align: center;
+            border-top: 1px solid rgba(0, 150, 136, 0.1);
+            font-size: 14px;
+            color: #64748b;
+            width: 100%;
+            margin-top: 40px;
+        }
+
+        @media (max-width: 768px) {
+            .header-inner {
+                flex-direction: column;
+                gap: 10px;
+                text-align: center;
+            }
+            nav a { margin: 0 10px; }
+            .feature-item-card {
+                flex-direction: column;
+                gap: 15px;
+                padding: 25px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<header class="site-header">
+    <div class="header-inner">
+        <a class="brand" th:href="@{/}">
+            <span class="brand-icon">🌿</span>
+            <span>TravelGenie</span>
+        </a>
+        <nav>
+            <a th:href="@{/}">Home</a>
+            <a th:href="@{/destinations}">Destinations</a>
+            <a th:href="@{/packages}">Packages</a>
+            <a th:href="@{/about}" style="color: #009688; font-weight: 600;">About</a>
+            <a th:href="@{/contact}">Contact</a>
+        </nav>
+    </div>
+</header>
+
+<main>
+    <section class="about-hero">
+        <h2>About TravelGenie</h2>
+        <p>TravelGenie is a modern travel and tour booking platform that allows users to explore breathtaking destinations, browse a wide range of travel packages, make secure online bookings, track booking history, read authentic traveler reviews, and enjoy a seamless experience while planning unforgettable journeys across Sri Lanka.</p>
+    </section>
+
+    <div class="main-container">
+        <div class="section-title-row">
+            <h3>Why Choose Us?</h3>
+        </div>
+
+        <ul class="features-list">
+            <li class="feature-item-card">
+                <div class="feature-icon-wrapper">
+                    <i class="fa-solid fa-shield-halved"></i>
+                </div>
+                <div class="feature-text-content">
+                    <strong>Seamless & Secure Booking Experience</strong>
+                    <p>Discover the ultimate convenience with a highly intuitive, user-friendly reservation system optimized for desktops, tablets, and smartphones. Users can effortlessly explore detailed tour packages—complete with high-quality images, structured itineraries, clear pricing, and inclusions—while managing their entire journey through a secure account portal. From advanced search filters based on budget, duration, and category, to a convenient booking history that tracks upcoming and past reservations, the entire process is designed for a frictionless, end-to-end booking experience.</p>
+                </div>
+            </li>
+
+            <li class="feature-item-card">
+                <div class="feature-icon-wrapper">
+                    <i class="fa-solid fa-wand-magic-sparkles"></i>
+                </div>
+                <div class="feature-text-content">
+                    <strong>AI-Powered Recommendations & Real-Time Travel Insights</strong>
+                    <p>Plan your trips with absolute precision and confidence. Our platform delivers hyper-personalized travel package recommendations tailored specifically to your unique preferences, budget, and destination interests. To ensure you are fully prepared, TravelGenie integrates real-time weather updates directly into the destination pages, providing current conditions alongside comprehensive travel guides, local highlights, activities, and essential travel tips.</p>
+                </div>
+            </li>
+
+            <li class="feature-item-card">
+                <div class="feature-icon-wrapper">
+                    <i class="fa-solid fa-face-smile-beam"></i>
+                </div>
+                <div class="feature-text-content">
+                    <strong>Verified Community Trust & Dedicated Customer Support</strong>
+                    <p>Travel with peace of mind knowing you are backed by authentic ratings and transparent reviews from verified travelers, helping you make highly informed choices. Whether you are embark on interactive destination explorations to discover the hidden gems of Sri Lanka or finalizing your booking details, our quick and reliable customer inquiry system ensures that our dedicated support team is always just a click away, ready to assist you whenever needed.</p>
+                </div>
+            </li>
+        </ul>
+    </div>
+</main>
+
+<footer class="site-footer">
+    <div class="container">
+        <p>© 2026 TravelGenie. All Rights Reserved.</p>
+    </div>
+    <div th:replace="~{fragments :: chatbot}"></div>
+</footer>
+
 </body>
 </html>
