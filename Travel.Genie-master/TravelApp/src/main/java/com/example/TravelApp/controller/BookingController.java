@@ -160,18 +160,19 @@ public class BookingController {
         return "booking-confirmation";
     }
 
-    // 🎯 3. අලුතින්ම එකතු කළ PAYMENT PAGE ENDPOINT (Whitelabel Error එක නැති කරන්නේ මේකෙන්)
+    // 🎯 500 Internal Server Error එක සදහටම නැති කරන නිවැරදිම මෙතඩ් එක මචං
     @GetMapping("/book/payment")
-    public String showPaymentPage(@RequestParam(required = false) String packageName,
-                                  @RequestParam(required = false) String totalPrice,
-                                  @RequestParam(required = false) String travelers,
-                                  Model model) {
-        // කන්ෆර්මේෂන් පේජ් එකෙන් URL Parameters හරහා එන දත්ත ටික payment.html එකට පාස් කරනවා
+    public String showPaymentPage(HttpServletRequest request, Model model) {
+        // URL එකෙන් එන දත්ත කෙලින්ම String විදිහට අරන්, null නම් fallback values දෙනවා
+        String packageName = request.getParameter("packageName");
+        String totalPrice = request.getParameter("totalPrice");
+        String travelers = request.getParameter("travelers");
+
         model.addAttribute("packageName", packageName != null ? packageName : "Tour Package");
         model.addAttribute("totalPrice", totalPrice != null ? totalPrice : "0.00");
         model.addAttribute("travelers", travelers != null ? travelers : "1");
         
-        return "book/payment"; // templates/book/payment.html පේජ් එක රෙන්ඩර් කරනවා
+        return "book/payment"; 
     }
 
     // 📄 INVOICE PDF DOWNLOAD ENDPOINT
