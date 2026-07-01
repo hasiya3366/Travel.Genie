@@ -111,3 +111,21 @@
 //         }
 //     }
 // }
+package com.example.TravelApp.service;
+
+import org.springframework.stereotype.Service;
+
+@Service
+public class EmailService {
+
+    public EmailService() {
+    }
+
+    public void sendBookingSuccessEmail(String toEmail, String userName, String packageName, double totalPrice) {
+        System.out.println("ℹ️ Booking Email Bypassed for: " + toEmail);
+    }
+
+    public void sendForgotPasswordEmail(String toEmail, String userName, String resetLink) {
+        System.out.println("ℹ️ Forgot Password Email Bypassed for: " + toEmail);
+    }
+}
