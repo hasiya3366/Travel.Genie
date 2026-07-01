@@ -85,8 +85,8 @@
 </div>
 
 <script>
-    // URL එකෙන් එන දත්ත ටික JavaScript වලින් කියවීම
     document.addEventListener("DOMContentLoaded", function() {
+        // URL Parameters ටික පූර්ණ පිරිසිදු JavaScript වලින් කියවීම
         const urlParams = new URLSearchParams(window.location.search);
         const pkgName = urlParams.get('packageName') || 'Tour Package';
         const price = urlParams.get('totalPrice') || '0.00';
@@ -98,7 +98,6 @@
         document.getElementById('payButtonText').innerHTML = '<i class="fa-solid fa-lock"></i> Pay LKR ' + parseFloat(price).toFixed(2);
     });
 
-    // Card Input Formatting
     document.getElementById('cardNum').addEventListener('input', function (e) {
         let v = e.target.value.replace(/\s+/g, '').replace(/[^0-9]/gi, '');
         let parts = [];
