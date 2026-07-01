@@ -7,6 +7,8 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @Controller
 @RequestMapping("/admin")
 public class AdminController {
@@ -16,9 +18,8 @@ public class AdminController {
     private final TourPackageService tourPackageService;
     private final BookingService bookingService;
     private final ReviewService reviewService;
-    private final HotelService hotelService; // 🎯 HotelService එක Inject කරන්න field එකක් හැදුවා
+    private final HotelService hotelService; 
 
-    // Constructor එක ඇතුලට HotelService එකත් ඇතුලත් කළා
     public AdminController(UserService userService, DestinationService destinationService,
                            TourPackageService tourPackageService, BookingService bookingService,
                            ReviewService reviewService, HotelService hotelService) {
@@ -40,18 +41,24 @@ public class AdminController {
             return "redirect:/login";
         }
 
+        // 📊 Dashboard Counter Cards වලට අවශ්‍ය දත්ත
         model.addAttribute("totalUsers", userService.findAll().size());
         model.addAttribute("totalDestinations", destinationService.findAll().size());
         model.addAttribute("totalPackages", tourPackageService.findAll().size());
         model.addAttribute("totalBookings", bookingService.findAll().size());
         model.addAttribute("totalRevenue", bookingService.findAll().stream().mapToDouble(Booking::getTotalPrice).sum());
-        model.addAttribute("recentBookings", bookingService.findAll().stream().limit(5).toList());
+        
+        // 🎯 CRITICAL FIX FOR RECENT BOOKINGS LOG:
+        // HTML එක ඇතුළේ Thymeleaf ලූප් එක `${bookings}` කියලා කියවන නිසා, 
+        // ඩේටාබේස් එකේ තියෙන බුකින් ලිස්ට් එක "bookings" කියන නිවැරදි නමින්ම Model එකට ඇඩ් කළා මචං.
+        List<Booking> allBookings = bookingService.findAll();
+        model.addAttribute("bookings", allBookings); 
 
         return "admin/dashboard";
     }
 
     // ==========================================
-    // 🏨 🎯 HOTELS MANAGEMENT SECTION
+    // 🏨 HOTELS MANAGEMENT SECTION
     // ==========================================
 
     @GetMapping("/hotels/add")
@@ -60,8 +67,8 @@ public class AdminController {
             return "redirect:/login";
         }
         model.addAttribute("hotel", new Hotel());
-        model.addAttribute("packages", tourPackageService.findAll()); // හෝටලය අයිති පැකේජ් එක තෝරන්න ලිස්ට් එක යවනවා
-        return "add-hotel"; // templates/add-hotel.html පිටුවට යයි
+        model.addAttribute("packages", tourPackageService.findAll()); 
+        return "add-hotel"; 
     }
 
     @PostMapping("/hotels/add")
@@ -74,7 +81,7 @@ public class AdminController {
             hotel.setTourPackage(tourPackage);
             hotelService.save(hotel);
         }
-        return "redirect:/admin/packages"; // සේව් වුනාට පස්සේ packages ලිස්ට් එකට රීඩිරෙක්ට් වෙනවා
+        return "redirect:/admin/packages"; 
     }
 
     // ==========================================
@@ -258,7 +265,6 @@ public class AdminController {
         return "admin/packages-form";
     }
 
-    // 🎯 1. අලුතින් පැකේජ් එකක් දාද්දී හෝටලයකුත් එකපාරම සේව් වන විදිහට වෙනස් කළා
     @PostMapping("/packages/add")
     public String addPackage(@RequestParam String name, @RequestParam String category,
                              @RequestParam String description, @RequestParam Double price,
@@ -275,14 +281,13 @@ public class AdminController {
         if (dest.isPresent()) {
             TourPackage pkg = new TourPackage(name, description, price, rating, imageUrl, category, maxTravelers, mapUrl, dest.get());
             pkg.setIncludes(includes);
-            TourPackage savedPkg = tourPackageService.save(pkg); // පැකේජ් එක මුලින්ම සේව් කරනවා
+            TourPackage savedPkg = tourPackageService.save(pkg); 
 
-            // 🏨 හෝටල් නමක් ෆෝම් එකෙන් එවලා තියෙනවා නම් ඒකත් ඩේටාබේස් එකට සේව් කරනවා
             if (hotelName != null && !hotelName.trim().isEmpty()) {
                 Hotel hotel = new Hotel();
                 hotel.setName(hotelName);
                 hotel.setExtraPrice(hotelExtraPrice != null ? hotelExtraPrice : 0.0);
-                hotel.setTourPackage(savedPkg); // අලුතින් හැදුණු පැකේජ් එකට ලින්ක් කරනවා
+                hotel.setTourPackage(savedPkg); 
                 hotelService.save(hotel);
             }
         }
@@ -303,7 +308,6 @@ public class AdminController {
         return "redirect:/admin/packages";
     }
 
-    // 🎯 2. පැකේජ් එක Edit කරලා Update කරද්දී අලුත් හෝටලයකුත් එකපාරම සේව් වන විදිහට වෙනස් කළා
     @PostMapping("/packages/edit/{id}")
     public String editPackage(@PathVariable Long id, @RequestParam String name,
                               @RequestParam String category, @RequestParam String description,
@@ -335,12 +339,11 @@ public class AdminController {
             }
             TourPackage savedPkg = tourPackageService.save(p);
 
-            // 🏨 හෝටල් නමක් ෆෝම් එකෙන් එවලා තියෙනවා නම් ඒකත් ඩේටාබේස් එකට සේව් කරනවා
             if (hotelName != null && !hotelName.trim().isEmpty()) {
                 Hotel hotel = new Hotel();
                 hotel.setName(hotelName);
                 hotel.setExtraPrice(hotelExtraPrice != null ? hotelExtraPrice : 0.0);
-                hotel.setTourPackage(savedPkg); // දැනට තියෙන පැකේජ් එකට ලින්ක් කරනවා
+                hotel.setTourPackage(savedPkg); 
                 hotelService.save(hotel);
             }
         }
