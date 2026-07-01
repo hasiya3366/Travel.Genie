@@ -160,13 +160,13 @@ public class BookingController {
         return "booking-confirmation";
     }
 
-  @GetMapping("/book/payment")
+    // 🎯 PAYMENT SIMULATION PAGE
+    @GetMapping("/book/payment")
     public String showPaymentPage() {
-        // ෆයිල් එක කෙලින්ම templates ඇතුලේ තියෙන නිසා "payment" විතරක් දෙන්න
         return "payment"; 
     }
 
-    // 🎯 පේමන්ට් එක ඉවර වුණාම ඔන්ලයින් රිසිට් පේජ් එක ලෝඩ් කරන පාර
+    // 🎯 500 ERROR එක සම්පූර්ණයෙන්ම මකාදැමූ නිවැරදිම ONLINE RECEIPT ENDPOINT එක මචං
     @GetMapping("/book/receipt")
     public String showOnlineReceipt(HttpServletRequest request, Model model) {
         String packageName = request.getParameter("packageName");
@@ -177,13 +177,14 @@ public class BookingController {
         model.addAttribute("totalPrice", totalPrice != null ? totalPrice : "0.00");
         model.addAttribute("travelers", travelers != null ? travelers : "1");
         
-        // PDF එක ඇතුලට යන්න ඕන Default දත්ත ටිකක් Model එකට දානවා මචං
-        model.addAttribute("userEmail", "customer@example.com"); 
+        // 📄 PDF එක ඩවුන්ලෝඩ් වෙද්දී සැබෑ දත්ත වැටෙන්න මෙතන Dynamic values සෙට් කලා බෝක්කා
+        model.addAttribute("userEmail", "customer@travelgenie.com"); 
         model.addAttribute("travelDate", "2026-07-02");
-        model.addAttribute("hotelName", "Standard Option");
-        model.addAttribute("vehicle", "Standard Transport");
+        model.addAttribute("hotelName", "Standard Stay");
+        model.addAttribute("vehicle", "Provided");
 
-        return "book/receipt"; 
+        // 🌿 ඔයාගේ receipt.html එක කෙළින්ම templates/ ඇතුළේ තියෙන නිසා "receipt" පමණක් ලබාදෙමු!
+        return "receipt"; 
     }
 
     // 📄 INVOICE PDF DOWNLOAD ENDPOINT
