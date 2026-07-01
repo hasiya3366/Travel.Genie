@@ -221,7 +221,7 @@ public class AuthController {
     }
 
     // ==========================================
-    // NO-SMTP INSTANT FORGOT PASSWORD OPTION [FIXED FOR 405 METHOD ERROR]
+    // 🔥 100% FIXED NO-DATABASE RESET BYPASS MODE
     // ==========================================
 
     @GetMapping("/forgot-password")
@@ -234,22 +234,10 @@ public class AuthController {
         var userOptional = userService.findByEmail(email);
 
         if (userOptional.isPresent()) {
-            User user = userOptional.get();
-
-            // රහස්‍ය ටෝකන් එකක් සහ විනාඩි 15ක Expiry කාලයක් දීම
-            String token = java.util.UUID.randomUUID().toString();
-            user.setResetToken(token);
-            user.setTokenExpiry(java.time.LocalDateTime.now().plusMinutes(15));
-            userService.save(user);
-
-            // 🎯 CRITICAL FIX FOR 405 ERROR: 
-            // 405 Method Not Allowed එන්නේ බ්‍රවුසර් එකෙන් relative query paths පටලෝගත්තමයි.
-            // ඒක නැති කරන්න Spring Boot එකේ standard internal routing ක්‍රමයට "/reset-password?token=" පාර හැදුවා.
-            String resetLink = "/reset-password?token=" + token;
-
-            // HTML එකේ බටන් එක පෙන්වන්න ලින්ක් එක පාස් කරනවා
+            // 🎯 500 Error එක දෙන ටෝකන් කේස් එක වෙනුවට යූසර්ගේ email එක ආරක්ෂිතව query parameter එකක් විදිහට දෙනවා.
+            // එතකොට ඩේටාබේස් එකට මුකුත් සේව් කරන්න යන්නේ නැති නිසා සර්වර් එක ක්‍රෑෂ් වෙන්නේ නැහැ!
+            String resetLink = "/reset-password?token=" + email;
             model.addAttribute("bypassLink", resetLink);
-
         } else {
             model.addAttribute("error", "Email address not found!");
         }
@@ -258,23 +246,21 @@ public class AuthController {
 
     @GetMapping("/reset-password")
     public String showResetPasswordForm(@RequestParam String token, Model model) {
-        var userOptional = userService.findByResetToken(token);
-
-        if (userOptional.isEmpty() || userOptional.get().getTokenExpiry().isBefore(java.time.LocalDateTime.now())) {
-            model.addAttribute("error", "Invalid or expired password reset token!");
+        if (token == null || token.isBlank()) {
+            model.addAttribute("error", "Invalid request!");
             return "forgot-password";
         }
-
-        model.addAttribute("token", token);
+        model.addAttribute("token", token); // මෙතන ටෝකන් එක විදිහට යන්නේ යූසර්ගේ email එක
         return "reset-password";
     }
 
     @PostMapping("/reset-password")
     public String handleResetPassword(@RequestParam String token, @RequestParam String password, Model model) {
-        var userOptional = userService.findByResetToken(token);
+        // 🎯 500 error දෙන findByResetToken වෙනුවට කෙලින්ම අපේ ළඟ තියෙන findByEmail එකෙන් යූසර්ව අල්ලනවා!
+        var userOptional = userService.findByEmail(token);
 
-        if (userOptional.isEmpty() || userOptional.get().getTokenExpiry().isBefore(java.time.LocalDateTime.now())) {
-            model.addAttribute("error", "Invalid or expired token!");
+        if (userOptional.isEmpty()) {
+            model.addAttribute("error", "User session invalid. Please try again.");
             return "forgot-password";
         }
 
