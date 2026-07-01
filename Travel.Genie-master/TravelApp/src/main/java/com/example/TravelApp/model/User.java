@@ -20,7 +20,11 @@ public class User {
     private String phone;
     private String address;
 
+    // 🎯 ඩේටාබේස් එකේ columns ඔටෝම අප්ඩේට් වෙන්න Hibernate ඇනොටේෂන්ස් ලස්සනට මැප් කළා මචං
+    @Column(name = "reset_token", length = 255)
     private String resetToken;
+
+    @Column(name = "token_expiry")
     private LocalDateTime tokenExpiry;
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
