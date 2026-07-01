@@ -24,7 +24,7 @@ public class PdfService {
             Font normalFont = FontFactory.getFont(FontFactory.HELVETICA, 12, BaseColor.BLACK);
             Font priceFont = FontFactory.getFont(FontFactory.HELVETICA_BOLD, 16, new BaseColor(15, 118, 110));
 
-            Paragraph title = new Paragraph("TRAVELAPP - INVOICE BREAKDOWN", titleFont);
+            Paragraph title = new Paragraph("TRAVELGenie - INVOICE BREAKDOWN", titleFont);
             title.setAlignment(Element.ALIGN_CENTER);
             document.add(title);
             document.add(Chunk.NEWLINE);
