@@ -166,6 +166,26 @@ public class BookingController {
         return "payment"; 
     }
 
+    // 🎯 පේමන්ට් එක ඉවර වුණාම ඔන්ලයින් රිසිට් පේජ් එක ලෝඩ් කරන පාර
+    @GetMapping("/book/receipt")
+    public String showOnlineReceipt(HttpServletRequest request, Model model) {
+        String packageName = request.getParameter("packageName");
+        String totalPrice = request.getParameter("totalPrice");
+        String travelers = request.getParameter("travelers");
+
+        model.addAttribute("packageName", packageName != null ? packageName : "Tour Package");
+        model.addAttribute("totalPrice", totalPrice != null ? totalPrice : "0.00");
+        model.addAttribute("travelers", travelers != null ? travelers : "1");
+        
+        // PDF එක ඇතුලට යන්න ඕන Default දත්ත ටිකක් Model එකට දානවා මචං
+        model.addAttribute("userEmail", "customer@example.com"); 
+        model.addAttribute("travelDate", "2026-07-02");
+        model.addAttribute("hotelName", "Standard Option");
+        model.addAttribute("vehicle", "Standard Transport");
+
+        return "book/receipt"; 
+    }
+
     // 📄 INVOICE PDF DOWNLOAD ENDPOINT
     @GetMapping("/booking/download-receipt")
     public ResponseEntity<InputStreamResource> downloadReceipt(
