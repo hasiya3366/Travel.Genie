@@ -1,15 +1,15 @@
-<!DOCTYPE html>
+<!-- <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org" lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>TravelGenie — Sri Lanka Adventures</title>
     <link rel="stylesheet" th:href="@{/css/styles.css}">
-    <!-- Font Awesome ලින්ක් එක -->
+    
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
     <style>
-        /* --- CHATBOT WIDGET RESET --- */
+        
         .need-help, #need-help, .needhelp-btn, [class*="need-help"] {
             display: none !important;
             visibility: hidden !important;
@@ -104,7 +104,7 @@
             <a th:href="@{/about}">About</a>
             <a th:href="@{/contact}">Contact</a>
 
-            <!-- Welcome Message සහ Logout Button එක Navbar එකට එකතු කළා -->
+            
             <span th:if="${session.user != null}" class="user-greeting">Welcome, <strong th:text="${session.userName}"></strong></span>
             <a th:if="${session.user != null}" th:href="@{/logout}" class="nav-logout-btn">
                 <i class="fa-solid fa-right-from-bracket"></i> Logout
@@ -142,10 +142,10 @@
 <!--                <button class="btn btn-search" onclick="onSearch()" style="padding: 14px 26px; border-radius: 8px; cursor: pointer; border: none; font-weight: 600;">Search</button>-->
 <!--            </div>-->
 
-        </div>
+        <!-- </div>
     </section>
 
-    <!-- ඉතිරි කොටස් එහෙම්මම තියෙනවා -->
+   
     <section class="section">
         <div class="container">
             <div class="section-heading">
@@ -201,5 +201,478 @@
 
     <div th:replace="~{fragments :: chatbot}"></div>
 </main>
+</body>
+</html> --> -->
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TravelGenie — Sri Lanka Adventures</title>
+    <link rel="stylesheet" th:href="@{/css/styles.css}">
+    <!-- Font Awesome සහ Poppins Font Integration -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        body {
+            background-color: #f3fbf8; /* Premium ලා කොළ/සුදු පසුබිම */
+            color: #2c3e50;
+            overflow-x: hidden;
+        }
+
+        /* --- NAVBAR STYLE (100% MATCH WITH OTHER PAGES) --- */
+        .site-header {
+            background-color: white;
+            border-bottom: 1px solid rgba(0, 150, 136, 0.1);
+            padding: 15px 0;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        .header-inner {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+        .brand {
+            font-size: 24px;
+            font-weight: 700;
+            color: #1e293b;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .brand-icon { color: #009688; }
+        nav {
+            display: flex;
+            align-items: center;
+        }
+        nav a {
+            color: #475569;
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 15px;
+            margin-left: 20px;
+            transition: color 0.2s;
+        }
+        nav a:hover { color: #009688; }
+        
+        .user-greeting {
+            font-size: 14px;
+            color: #475569;
+            margin-left: 20px;
+        }
+        .nav-logout-btn {
+            margin-left: 15px;
+            color: #e74c3c !important;
+            font-weight: 600;
+        }
+        .nav-logout-btn:hover {
+            color: #c0392b !important;
+        }
+
+        /* --- IMMERSIVE HERO VIDEO SECTION --- */
+        .hero {
+            position: relative;
+            overflow: hidden;
+            min-height: 80vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: 80px 20px;
+            width: 100%;
+        }
+        .hero video {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            z-index: 0;
+        }
+        .hero-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(rgba(0, 40, 35, 0.65), rgba(0, 0, 0, 0.6));
+            z-index: 1;
+        }
+        .hero-content {
+            position: relative;
+            z-index: 2;
+            max-width: 850px;
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            color: white;
+        }
+        .eyebrow {
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            font-size: 0.85rem;
+            margin-bottom: 15px;
+            color: #00e6cc;
+            font-weight: 700;
+        }
+        .hero-content h1 {
+            font-size: clamp(2.2rem, 5vw, 3.8rem);
+            line-height: 1.2;
+            margin-bottom: 20px;
+            font-weight: 700;
+            text-shadow: 0 4px 15px rgba(0,0,0,0.4);
+        }
+        .hero-content p {
+            font-size: clamp(1rem, 2.5vw, 1.2rem);
+            line-height: 1.6;
+            opacity: 0.95;
+            max-width: 680px;
+            margin-bottom: 35px;
+            text-shadow: 0 2px 8px rgba(0,0,0,0.3);
+        }
+        
+        /* Premium Hero CTA Actions Buttons */
+        .hero-actions {
+            display: flex;
+            gap: 16px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+        .btn-primary {
+            background-color: #e67e22 !important;
+            border: 2px solid #e67e22 !important;
+            color: white !important;
+            padding: 14px 32px;
+            border-radius: 30px;
+            font-weight: 600;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(230, 126, 34, 0.3);
+        }
+        .btn-primary:hover {
+            background-color: #d35400 !important;
+            border-color: #d35400 !important;
+            transform: translateY(-2px);
+        }
+        .btn-secondary {
+            background-color: transparent !important;
+            border: 2px solid white !important;
+            color: white !important;
+            padding: 14px 32px;
+            border-radius: 30px;
+            font-weight: 600;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(5px);
+        }
+        .btn-secondary:hover {
+            background-color: white !important;
+            color: #009688 !important;
+            transform: translateY(-2px);
+        }
+
+        /* --- GLOBAL SECTION LAYOUT --- */
+        .section {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 70px 20px;
+            width: 100%;
+        }
+        .section-heading {
+            text-align: center;
+            margin-bottom: 50px;
+            max-width: 700px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        .section-heading span {
+            font-size: 13px;
+            font-weight: 600;
+            color: #009688;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            display: block;
+            margin-bottom: 8px;
+        }
+        .section-heading h2 {
+            font-size: 32px;
+            color: #1e293b;
+            font-weight: 700;
+            margin-bottom: 15px;
+        }
+        .section-heading p {
+            font-size: 15px;
+            color: #64748b;
+            line-height: 1.6;
+        }
+
+        /* --- MODERN FEATURE EXPERIENCES GRID --- */
+        .feature-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+        }
+        .feature-card {
+            background: white;
+            border-radius: 20px;
+            padding: 35px;
+            text-align: center;
+            border: 1px solid #e2e8f0;
+            box-shadow: 0 4px 25px rgba(0, 0, 0, 0.01);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        .feature-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(0, 150, 136, 0.06);
+            border-color: rgba(0, 150, 136, 0.2);
+        }
+        .feature-icon {
+            font-size: 45px;
+            margin-bottom: 20px;
+            display: inline-block;
+        }
+        .feature-card h3 {
+            font-size: 20px;
+            color: #1e293b;
+            margin-bottom: 12px;
+            font-weight: 600;
+        }
+        .feature-card p {
+            font-size: 14px;
+            color: #64748b;
+            line-height: 1.6;
+        }
+
+        /* --- POPULAR DESTINATIONS GRID (MATCHES DESTINATIONS.HTML) --- */
+        .destinations-section {
+            background-color: #f8fafc;
+            width: 100%;
+            border-top: 1px solid #e2e8f0;
+        }
+        .card-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 30px;
+            width: 100%;
+        }
+        .destination-card {
+            background: white;
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.02);
+            border: 1px solid #e2e8f0;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            display: flex;
+            flex-direction: column;
+            width: 100%;
+        }
+        .destination-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(0, 150, 136, 0.08);
+        }
+        .card-image-wrapper {
+            position: relative;
+            height: 240px;
+            overflow: hidden;
+            width: 100%;
+        }
+        .destination-card img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.5s ease;
+        }
+        .destination-card:hover img {
+            transform: scale(1.05);
+        }
+        .card-body {
+            padding: 25px;
+            display: flex;
+            flex-direction: column;
+            flex-grow: 1;
+            gap: 10px;
+        }
+        .card-body h3 {
+            font-size: 20px;
+            color: #1e293b;
+            font-weight: 600;
+            margin: 0;
+        }
+        .card-body p {
+            font-size: 14px;
+            color: #64748b;
+            line-height: 1.6;
+        }
+        .card-meta {
+            font-size: 12px;
+            font-weight: 600;
+            color: #009688;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-top: auto;
+            padding-top: 12px;
+            border-top: 1px solid #f1f5f9;
+        }
+
+        /* --- FOOTER STYLE --- */
+        .site-footer {
+            background-color: white;
+            padding: 30px 0;
+            text-align: center;
+            border-top: 1px solid rgba(0, 150, 136, 0.1);
+            font-size: 14px;
+            color: #64748b;
+            width: 100%;
+        }
+
+        /* --- CHATBOT WIDGET HIDDEN FIX --- */
+        .need-help, #need-help, .needhelp-btn, [class*="need-help"] {
+            display: none !important;
+            visibility: hidden !important;
+        }
+
+        @media (max-width: 768px) {
+            .header-inner {
+                flex-direction: column;
+                gap: 10px;
+                text-align: center;
+            }
+            nav a { margin: 0 10px; }
+            .section { padding: 50px 20px; }
+        }
+    </style>
+
+    <script>
+        function onSearch() {
+            const q = document.getElementById('q').value.trim();
+            if (q) {
+                window.location.href = '/destinations?search=' + encodeURIComponent(q);
+            }
+        }
+    </script>
+</head>
+<body>
+
+<header class="site-header">
+    <div class="header-inner">
+        <a class="brand" th:href="@{/}">
+            <span class="brand-icon">🌿</span>
+            <span>TravelGenie</span>
+        </a>
+        <nav>
+            <a th:href="@{/}" style="color: #009688; font-weight: 600;">Home</a>
+            <a th:href="@{/destinations}">Destinations</a>
+            <a th:href="@{/packages}">Packages</a>
+            <a th:href="@{/about}">About</a>
+            <a th:href="@{/contact}">Contact</a>
+
+            <!-- Welcome Message සහ Logout Button එක Navbar එකට -->
+            <span th:if="${session.user != null}" class="user-greeting">Welcome, <strong th:text="${session.userName}"></strong></span>
+            <a th:if="${session.user != null}" th:href="@{/logout}" class="nav-logout-btn">
+                <i class="fa-solid fa-right-from-bracket"></i> Logout
+            </a>
+            <a th:if="${session.user == null}" th:href="@{/login}"><i class="fa-solid fa-user"></i> Login</a>
+        </nav>
+    </div>
+</header>
+
+<main>
+    <!-- Background Video Hero Module -->
+    <section class="hero">
+        <video autoplay muted loop playsinline>
+            <source src="/videos/srilanka-promo.mp4" type="video/mp4">
+        </video>
+        <div class="hero-overlay"></div>
+
+        <div class="hero-content">
+            <p class="eyebrow">Sri Lanka Travel Guide</p>
+            <h1>Explore Sri Lanka’s Best Beaches, Temples & Wildlife</h1>
+            <p>Experience golden coastlines, ancient ruins, and unforgettable safari adventures with curated Sri Lanka travel packages.</p>
+
+            <div class="hero-actions">
+                <a class="btn-primary" th:href="@{/packages}"><i class="fa-solid fa-suitcase-rolling"></i> Book a Package</a>
+                <a class="btn-secondary" th:href="@{/destinations}"><i class="fa-solid fa-map-marked-alt"></i> View Destinations</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Handpicked Adventure Highlights -->
+    <section class="section">
+        <div class="section-heading">
+            <span>Signature Experiences</span>
+            <h2>Handpicked Sri Lanka Adventures</h2>
+            <p>From cultural heritage sites to tropical beaches, discover curated tours crafted for travelers who want the best of Sri Lanka.</p>
+        </div>
+        
+        <div class="feature-grid">
+            <article class="feature-card">
+                <div class="feature-icon">🏯</div>
+                <h3>Temple & Culture Tours</h3>
+                <p>Visit Sigiriya, Kandy, Dambulla, and the Temple of the Tooth with expert guides.</p>
+            </article>
+            <article class="feature-card">
+                <div class="feature-icon">🐘</div>
+                <h3>Wildlife Safaris</h3>
+                <p>Spot elephants, leopards, and birds in Yala, Udawalawe, and Horton Plains.</p>
+            </article>
+            <article class="feature-card">
+                <div class="feature-icon">🏄</div>
+                <h3>Beach Escapes</h3>
+                <p>Relax in Mirissa, Unawatuna, and Arugam Bay with premium beachfront stays.</p>
+            </article>
+        </div>
+    </section>
+
+    <!-- Dynamic Popular Destinations Section (Premium Content Grid) -->
+    <section class="section destinations-section">
+        <div class="section-heading">
+            <span>Popular Destinations</span>
+            <h2>Top Sri Lanka Destinations</h2>
+            <p>Explore iconic locations travelers love, with vibrant landscapes and immersive local experiences.</p>
+        </div>
+        
+        <div class="main-container">
+            <div class="card-grid">
+                <!-- 💡 Th:each dynamic layout map structure perfectly preserved -->
+                <article class="destination-card" th:each="d : ${destinations}">
+                    <div class="card-image-wrapper">
+                        <img th:src="${d.imageUrl}" th:alt="${d.name}" onerror="this.src='https://images.unsplash.com/photo-1546708973-b339540b5162?w=600&auto=format&fit=crop&q=60'" />
+                    </div>
+                    <div class="card-body">
+                        <h3 th:text="${d.name}">Destination Name</h3>
+                        <p class="card-desc" th:text="${d.description}">A beautiful Sri Lanka destination waiting for your arrival.</p>
+                        <div class="card-meta">Sri Lanka · Authentic · Adventure</div>
+                    </div>
+                </article>
+            </div>
+        </div>
+    </section>
+</main>
+
+<footer class="site-footer">
+    <div class="container footer-inner">
+        <p>© 2026 TravelGenie. Crafted for Sri Lanka explorers.</p>
+    </div>
+</footer>
+
+<!-- Dynamic Integration Framework Footer Fragment Link -->
+<div th:replace="~{fragments :: chatbot}"></div>
+
 </body>
 </html>
