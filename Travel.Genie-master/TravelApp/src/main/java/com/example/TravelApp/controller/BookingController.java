@@ -160,18 +160,9 @@ public class BookingController {
         return "booking-confirmation";
     }
 
-    // 🎯 500 Internal Server Error එක සදහටම නැති කරන නිවැරදිම මෙතඩ් එක මචං
-    @GetMapping("/book/payment")
-    public String showPaymentPage(HttpServletRequest request, Model model) {
-        // URL එකෙන් එන දත්ත කෙලින්ම String විදිහට අරන්, null නම් fallback values දෙනවා
-        String packageName = request.getParameter("packageName");
-        String totalPrice = request.getParameter("totalPrice");
-        String travelers = request.getParameter("travelers");
-
-        model.addAttribute("packageName", packageName != null ? packageName : "Tour Package");
-        model.addAttribute("totalPrice", totalPrice != null ? totalPrice : "0.00");
-        model.addAttribute("travelers", travelers != null ? travelers : "1");
-        
+   @GetMapping("/book/payment")
+    public String showPaymentPage() {
+        // කිසිම ඩේටා එකක් චෙක් කරන්නේ නැහැ, කෙළින්ම පේජ් එක විතරක් ඇරලා දෙනවා
         return "book/payment"; 
     }
 
