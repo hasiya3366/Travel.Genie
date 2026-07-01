@@ -4,24 +4,30 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" th:href="@{/css/styles.css}">
-    <title>Booking Confirmation - TravelGenie</title>
+    <title>Review & Pay — TravelGenie</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        .btn-pdf {
-            display: inline-block;
-            background-color: #0f766e;
+        .btn-pay-now {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            background-color: #00a88f;
             color: white;
-            padding: 12px 24px;
+            padding: 14px 28px;
             border: none;
-            border-radius: 8px;
-            font-size: 15px;
+            border-radius: 12px;
+            font-size: 16px;
             font-weight: 600;
             text-decoration: none;
-            transition: background-color 0.2s;
+            transition: all 0.3s ease;
             margin-top: 20px;
-            box-shadow: 0 4px 6px -1px rgba(15, 118, 110, 0.2);
+            box-shadow: 0 4px 12px rgba(0, 168, 143, 0.2);
+            cursor: pointer;
         }
-        .btn-pdf:hover {
-            background-color: #0d615a;
+        .btn-pay-now:hover {
+            background-color: #008f7a;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 15px rgba(0, 168, 143, 0.3);
             color: white;
         }
         .text-center {
@@ -33,8 +39,19 @@
             border-top: 1px dashed #cbd5e1;
         }
         .info-row {
-            margin-bottom: 12px;
+            margin-bottom: 14px;
             font-size: 15px;
+            display: flex;
+            justify-content: space-between;
+            padding-bottom: 8px;
+            border-bottom: 1px solid #f1f5f9;
+        }
+        .info-row strong {
+            color: #64748b;
+        }
+        .info-row span {
+            font-weight: 500;
+            color: #1e293b;
         }
     </style>
 </head>
@@ -54,44 +71,44 @@
 </header>
 
 <main class="container">
-    <section class="page-heading">
-        <h2>Booking Confirmation</h2>
+    <section class="page-heading" style="text-align: center; margin-top: 30px; margin-bottom: 20px;">
+        <h2>Review Booking Details</h2>
+        <p style="color: #64748b; font-size: 15px; margin-top: 5px;">Please check your itinerary summary before proceeding to payment.</p>
     </section>
 
-    <section class="card-grid" style="max-width: 600px; margin: 0 auto;">
-        <div class="card">
+    <section class="card-grid" style="max-width: 550px; margin: 0 auto;">
+        <div class="card" style="background: white; padding: 30px; border-radius: 20px; box-shadow: 0 4px 25px rgba(0,0,0,0.02); border: 1px solid #e2e8f0;">
             <div class="card-body">
-                <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 20px;">
-                    <span style="font-size: 24px;">✅</span>
-                    <h3 style="margin: 0; color: #0f766e;">Booking Successfully Confirmed!</h3>
+                <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 25px; padding-bottom: 15px; border-bottom: 2px solid #e2e8f0;">
+                    <i class="fa-solid fa-receipt" style="font-size: 24px; color: #0f766e;"></i>
+                    <h3 style="margin: 0; color: #1e293b; font-weight: 600;">Order Summary</h3>
                 </div>
                 
-                <div class="info-row"><strong>Package:</strong> <span th:text="${booking.tourPackage.name}"></span></div>
-                <div class="info-row"><strong>Email:</strong> <span th:text="${booking.user.email}"></span></div>
-                <div class="info-row"><strong>Travel Date:</strong> <span th:text="${booking.travelDate}"></span></div>
-                <div class="info-row"><strong>Travelers:</strong> <span th:text="${booking.travelers}"></span></div>
+                <div class="info-row"><strong>Selected Package:</strong> <span th:text="${booking.tourPackage.name}">Ella Adventure Tour</span></div>
+                <div class="info-row"><strong>Customer Email:</strong> <span th:text="${booking.user.email}">user@example.com</span></div>
+                <div class="info-row"><strong>Departure Date:</strong> <span th:text="${booking.travelDate}">2026-10-12</span></div>
+                <div class="info-row"><strong>Total Travelers:</strong> <span th:text="${booking.travelers + ' Person(s)'}">5 Person(s)</span></div>
                 
-                <div class="info-row"><strong>Selected Hotel:</strong> <span th:text="${hotelName}"></span> <span th:if="${hotelName != 'No Hotel'}" th:text="'(' + ${hotelNights} + ' Days)'"></span></div>
-                <div class="info-row"><strong>Transport Facility:</strong> <span th:text="${vehicle}"></span></div>
+                <div class="info-row"><strong>Hotel Option:</strong> <span th:text="${hotelName}">No Hotel</span></div>
+                <div class="info-row"><strong>Transport Facility:</strong> <span th:text="${vehicle}">Car</span></div>
                 
-                <div class="info-row" style="margin-top: 15px; padding-top: 10px; border-top: 1px solid #e2e8f0;">
-                    <strong style="font-size: 16px;">Total Price:</strong> 
-                    <span th:text="'LKR ' + ${#numbers.formatDecimal(booking.totalPrice, 1, 2)}" style="font-size: 20px; font-weight: 800; color: #0f766e;"></span>
+                <div class="info-row" style="margin-top: 20px; padding-top: 15px; border-top: 2px dashed #cbd5e1; border-bottom: none;">
+                    <strong style="font-size: 16px; color: #1e293b;">Total Payable Amount:</strong> 
+                    <span th:text="'LKR ' + ${#numbers.formatDecimal(booking.totalPrice, 1, 2)}" style="font-size: 22px; font-weight: 800; color: #00a88f;">LKR 900.00</span>
                 </div>
 
                 <div class="action-area text-center">
-                    <p style="margin: 0; color: #64748b; font-size: 14px;">You can now download your digital invoice breakdown.</p>
-                    <a th:href="@{/booking/download-receipt(
-                        email=${booking.user.email}, 
-                        date=${booking.travelDate}, 
-                        travelers=${booking.travelers}, 
-                        packageName=${booking.tourPackage.name}, 
-                        hotelName=${hotelName}, 
-                        vehicle=${vehicle}, 
-                        totalPrice=${booking.totalPrice}
-                    )}" class="btn-pdf">
-                        📥 Download PDF Receipt
-                    </a>
+                    <p style="margin: 0; color: #64748b; font-size: 13.5px;">Click below to open the secure payment checkout simulation.</p>
+                    
+                    <form th:action="@{/book/payment}" method="GET" style="display: inline;">
+                        <input type="hidden" name="packageName" th:value="${booking.tourPackage.name}" />
+                        <input type="hidden" name="totalPrice" th:value="${booking.totalPrice}" />
+                        <input type="hidden" name="travelers" th:value="${booking.travelers}" />
+                        
+                        <button type="submit" class="btn-pay-now">
+                            <i class="fa-solid fa-credit-card"></i> Proceed to Secure Payment
+                        </button>
+                    </form>
                 </div>
 
             </div>
