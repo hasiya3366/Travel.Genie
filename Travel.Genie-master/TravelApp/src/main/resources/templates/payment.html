@@ -86,7 +86,6 @@
 
 <script>
     document.addEventListener("DOMContentLoaded", function() {
-        // URL Parameters ටික පූර්ණ පිරිසිදු JavaScript වලින් කියවීම
         const urlParams = new URLSearchParams(window.location.search);
         const pkgName = urlParams.get('packageName') || 'Tour Package';
         const price = urlParams.get('totalPrice') || '0.00';
@@ -124,10 +123,11 @@
             spinner.style.display = 'none';
             successIcon.style.display = 'block';
             statusText.innerText = 'Payment Successful!';
-            subtext.innerText = 'Your booking has been secured. Redirecting to Admin Dashboard...';
+            subtext.innerText = 'Your booking has been secured. Redirecting to Digital Receipt...';
             
+            // 🎯 ළොගින් එකට නොගොස් කෙළින්ම ඩේටා ටිකත් අරන් අපේ අලුත් රිසිට් පේජ් එකට රීඩිරෙක්ට් වෙනවා මචං
             setTimeout(() => {
-                window.location.href = '/admin';
+                window.location.href = '/book/receipt' + window.location.search;
             }, 2000);
         }, 2500);
     }
