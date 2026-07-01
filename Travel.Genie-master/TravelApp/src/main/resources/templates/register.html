@@ -289,9 +289,8 @@
             display: flex;
             flex-direction: column;
             min-height: 100vh;
-            background-color: transparent !important;
-            background: transparent !important;
-            background-image: none !important;
+            background-color: #0f172a !important; /* වීඩියෝ එක Load වෙනකන් පෙනෙන පසුබිම් වර්ණය */
+            overflow-x: hidden;
         }
 
         body::before {
@@ -301,7 +300,7 @@
             left: 0;
             width: 100vw;
             height: 100vh;
-            background-color: rgba(0, 0, 0, 0.35); /* වීඩියෝ එක ටිකක් අඳුරු කිරීම */
+            background-color: rgba(0, 0, 0, 0.5); /* වීඩියෝ එක තවත් ටිකක් අඳුරු කර කාඩ් එක මතු කර පෙන්වීම */
             z-index: -1;
         }
 
@@ -323,30 +322,29 @@
             display: flex;
             justify-content: center;
             align-items: center;
-            padding: 40px 20px;
+            padding: 60px 20px; /* ඉහළ සහ පහළ පරතරය වැඩි කලා */
             position: relative;
             z-index: 1;
-            background-color: transparent !important;
         }
 
-        /* 🎯 Glassmorphism Registration Card */
+        /* 🎯 Glassmorphism Registration Card - වීඩියෝ එක උඩින් හොඳින් පෙනෙන්නට සැකසුවා */
         .auth-container {
-            background: rgba(255, 255, 255, 0.15); /* Transparent Background */
-            backdrop-filter: blur(15px);
-            -webkit-backdrop-filter: blur(15px);
+            background: rgba(15, 23, 42, 0.6); /* කාඩ් එක ඇතුලත තව ටිකක් අඳුරු කළා අකුරු පැහැදිලිව පෙනෙන්න */
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
             width: 100%;
-            max-width: 460px; /* ෆීල්ඩ්ස් වැඩි නිසා පළල ටිකක් වැඩියෙන් තිබ්බා */
+            max-width: 460px;
             padding: 40px 35px;
-            border: 1px solid rgba(255, 255, 255, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.2);
             border-radius: 24px;
-            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.3);
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
             box-sizing: border-box;
         }
 
         .auth-container h2 {
             font-size: 1.8rem;
             font-weight: 700;
-            color: #ffffff; /* සුදු පාටින් අකුරු */
+            color: #ffffff;
             text-align: center;
             margin-top: 0;
             margin-bottom: 25px;
@@ -363,15 +361,15 @@
             font-size: 0.9rem;
             font-weight: 600;
             margin-bottom: 8px;
-            color: #ffffff; /* සුදු පාටින් අකුරු */
+            color: #ffffff;
         }
 
         /* 🎯 Input Fields Glass Effect */
         .form-group input {
             width: 100%;
             padding: 14px 16px;
-            background: rgba(255, 255, 255, 0.1);
-            border: 1px solid rgba(255, 255, 255, 0.4);
+            background: rgba(255, 255, 255, 0.07);
+            border: 1px solid rgba(255, 255, 255, 0.25);
             border-radius: 12px;
             font-family: inherit;
             font-size: 14px;
@@ -381,14 +379,14 @@
         }
 
         .form-group input::placeholder {
-            color: rgba(255, 255, 255, 0.7);
+            color: rgba(255, 255, 255, 0.5);
         }
 
         .form-group input:focus {
             outline: none;
             border-color: #34d399;
-            background: rgba(255, 255, 255, 0.2);
-            box-shadow: 0 0 0 4px rgba(52, 211, 153, 0.2);
+            background: rgba(255, 255, 255, 0.15);
+            box-shadow: 0 0 0 4px rgba(52, 211, 153, 0.25);
         }
 
         /* Register Button */
@@ -438,9 +436,9 @@
             text-decoration: underline;
         }
 
-        /* Global Error Notification */
+        /* Error Notification */
         .error {
-            background-color: rgba(254, 242, 242, 0.9);
+            background-color: rgba(254, 242, 242, 0.95);
             color: #991b1b;
             border: 1px solid #fca5a5;
             padding: 12px 16px;
@@ -448,16 +446,7 @@
             margin-bottom: 20px;
             font-size: 14px;
             font-weight: 500;
-        }
-
-        /* 🎯 Field Specific Error Message Styling */
-        .field-error {
-            color: #fca5a5;
-            font-size: 0.8rem;
-            font-weight: 500;
-            margin-top: 5px;
-            display: block;
-            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
         }
 
         /* 🎯 Header & Footer Transparent Effect */
@@ -480,6 +469,8 @@
         .site-footer p {
             color: #ffffff !important;
             text-shadow: 1px 1px 3px rgba(0,0,0,0.6);
+            text-align: center;
+            margin: 20px 0;
         }
     </style>
 </head>
@@ -507,34 +498,30 @@
 
         <div th:if="${error}" class="error" th:text="${error}"></div>
 
-        <form method="post" th:action="@{/register}" th:object="${userDto}">
+        <form method="post" th:action="@{/register}">
             
             <div class="form-group">
                 <label th:for="name">Full Name</label>
-                <input type="text" id="name" th:field="*{name}" required 
+                <input type="text" id="name" name="name" required 
                        minlength="3" maxlength="50" placeholder="Your full name"/>
-                <span class="field-error" th:if="${#fields.hasErrors('name')}" th:errors="*{name}">Name Error</span>
             </div>
             
             <div class="form-group">
                 <label th:for="email">Email</label>
-                <input type="email" id="email" th:field="*{email}" required 
+                <input type="email" id="email" name="email" required 
                        placeholder="your@email.com"/>
-                <span class="field-error" th:if="${#fields.hasErrors('email')}" th:errors="*{email}">Email Error</span>
             </div>
             
             <div class="form-group">
                 <label th:for="phone">Phone</label>
-                <input type="tel" id="phone" th:field="*{phone}" 
+                <input type="tel" id="phone" name="phone" required
                        pattern="[0-9]{10}" placeholder="Your phone number (e.g. 0771234567)"/>
-                <span class="field-error" th:if="${#fields.hasErrors('phone')}" th:errors="*{phone}">Phone Error</span>
             </div>
             
             <div class="form-group">
                 <label th:for="password">Password</label>
-                <input type="password" id="password" th:field="*{password}" required 
+                <input type="password" id="password" name="password" required 
                        minlength="6" placeholder="Enter password (Min. 6 characters)"/>
-                <span class="field-error" th:if="${#fields.hasErrors('password')}" th:errors="*{password}">Password Error</span>
             </div>
             
             <button type="submit" class="btn-register">Register</button>
