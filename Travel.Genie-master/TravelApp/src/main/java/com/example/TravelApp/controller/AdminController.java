@@ -48,11 +48,9 @@ public class AdminController {
         model.addAttribute("totalBookings", bookingService.findAll().size());
         model.addAttribute("totalRevenue", bookingService.findAll().stream().mapToDouble(Booking::getTotalPrice).sum());
         
-        // 🎯 CRITICAL FIX FOR RECENT BOOKINGS LOG:
-        // HTML එක ඇතුළේ Thymeleaf ලූප් එක `${bookings}` කියලා කියවන නිසා, 
-        // ඩේටාබේස් එකේ තියෙන බුකින් ලිස්ට් එක "bookings" කියන නිවැරදි නමින්ම Model එකට ඇඩ් කළා මචං.
-        List<Booking> allBookings = bookingService.findAll();
-        model.addAttribute("bookings", allBookings); 
+        // 🎯 ඩෑෂ්බෝඩ් එකේ ටේබල් එකට බුකින්ස් වෙනුවට, අලුතින් දාන Tour Packages ඔක්කොම ලෝඩ් කරලා පාස් කරනවා බෝක්කා
+        List<TourPackage> allPackages = tourPackageService.findAll();
+        model.addAttribute("bookings", allPackages); 
 
         return "admin/dashboard";
     }
@@ -384,9 +382,3 @@ public class AdminController {
     @PostMapping("/reviews/delete/{id}")
     public String deleteReview(@PathVariable Long id, HttpSession session) {
         if (!isAdmin(session)) {
-            return "redirect:/login";
-        }
-        reviewService.deleteById(id);
-        return "redirect:/admin/reviews";
-    }
-}
