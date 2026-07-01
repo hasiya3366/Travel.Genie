@@ -34,7 +34,6 @@ public class BookingController {
     private final HotelService hotelService;
     private final PdfService pdfService; 
 
-    // 🎯 EmailService එක Dependency Injection එකෙන් සම්පූර්ණයෙන්ම ඉවත් කළා මචං
     public BookingController(BookingService bookingService, TourPackageService tourPackageService,
                              UserService userService, HotelService hotelService, PdfService pdfService) {
         this.bookingService = bookingService;
@@ -102,7 +101,6 @@ public class BookingController {
         int days = (hotelNights != null && hotelNights > 0) ? hotelNights : 1;
         double totalFoodCost = 0.0;
 
-        // 🍔 DAY-BY-DAY MEAL PRICE CALCULATION LOGIC
         if (hotelId != null) {
             if ("hotel".equals(foodSource)) {
                 for (int i = 1; i <= days; i++) {
@@ -137,7 +135,6 @@ public class BookingController {
             }
         }
 
-        // 🚗 වාහන මිල තීරණය කිරීම
         double transPrice = 0.0;
         String selectedVehicle = "No Vehicle";
         if (transportMode != null && hotelId != null) {
@@ -148,17 +145,13 @@ public class BookingController {
             }
         }
 
-        // 🧮 අවසාන මිල ගණන් සූත්‍රය
         double extraHotelAndTransCost = (extraPricePerNight + transPrice) * booking.getTravelers() * days;
         double extraFoodCostTotal = totalFoodCost * booking.getTravelers();
         double totalPrice = (basePrice * booking.getTravelers()) + extraHotelAndTransCost + extraFoodCostTotal;
 
         booking.setTotalPrice(totalPrice);
-
-        // 💾 Booking එක Database එකට සේව් කිරීම (මේක විතරක් ක්‍රියාත්මක වෙනවා 🌿)
         bookingService.save(booking);
 
-        // 📄 Confirmation පිටුවට අදාළ ඩේටා පාස් කිරීම
         model.addAttribute("booking", booking);
         model.addAttribute("hotelName", selectedHotelName);
         model.addAttribute("vehicle", selectedVehicle);
@@ -167,7 +160,21 @@ public class BookingController {
         return "booking-confirmation";
     }
 
-    // 📄 🎯 INVOICE PDF DOWNLOAD ENDPOINT (මෙය එලෙසම සුරක්ෂිතව පවතී)
+    // 🎯 3. අලුතින්ම එකතු කළ PAYMENT PAGE ENDPOINT (Whitelabel Error එක නැති කරන්නේ මේකෙන්)
+    @GetMapping("/book/payment")
+    public String showPaymentPage(@RequestParam(required = false) String packageName,
+                                  @RequestParam(required = false) String totalPrice,
+                                  @RequestParam(required = false) String travelers,
+                                  Model model) {
+        // කන්ෆර්මේෂන් පේජ් එකෙන් URL Parameters හරහා එන දත්ත ටික payment.html එකට පාස් කරනවා
+        model.addAttribute("packageName", packageName != null ? packageName : "Tour Package");
+        model.addAttribute("totalPrice", totalPrice != null ? totalPrice : "0.00");
+        model.addAttribute("travelers", travelers != null ? travelers : "1");
+        
+        return "book/payment"; // templates/book/payment.html පේජ් එක රෙන්ඩර් කරනවා
+    }
+
+    // 📄 INVOICE PDF DOWNLOAD ENDPOINT
     @GetMapping("/booking/download-receipt")
     public ResponseEntity<InputStreamResource> downloadReceipt(
             @RequestParam String email,
