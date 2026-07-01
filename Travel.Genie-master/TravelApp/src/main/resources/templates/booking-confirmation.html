@@ -101,14 +101,14 @@
                     <p style="margin: 0; color: #64748b; font-size: 13.5px;">Click below to open the secure payment checkout simulation.</p>
                     
                     <form th:action="@{/book/payment}" method="GET" style="display: inline;">
-                        <input type="hidden" name="packageName" th:value="${booking.tourPackage.name}" />
-                        <input type="hidden" name="totalPrice" th:value="${booking.totalPrice}" />
-                        <input type="hidden" name="travelers" th:value="${booking.travelers}" />
-                        
-                        <button type="submit" class="btn-pay-now">
-                            <i class="fa-solid fa-credit-card"></i> Proceed to Secure Payment
-                        </button>
-                    </form>
+    <input type="hidden" name="packageName" th:value="${booking.tourPackage.name}" />
+    <input type="hidden" name="totalPrice" th:value="${booking.totalPrice}" />
+    <input type="hidden" name="travelers" th:value="${booking.travelers}" />
+    
+    <button type="submit" class="btn-pay-now">
+        <i class="fa-solid fa-credit-card"></i> Proceed to Secure Payment
+    </button>
+</form>
                 </div>
 
             </div>
