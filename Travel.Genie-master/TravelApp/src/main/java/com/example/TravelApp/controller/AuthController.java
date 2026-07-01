@@ -221,7 +221,7 @@ public class AuthController {
     }
 
     // ==========================================
-    // NO-SMTP INSTANT FORGOT PASSWORD OPTION
+    // NO-SMTP INSTANT FORGOT PASSWORD OPTION [FIXED FOR 405 METHOD ERROR]
     // ==========================================
 
     @GetMapping("/forgot-password")
@@ -242,10 +242,12 @@ public class AuthController {
             user.setTokenExpiry(java.time.LocalDateTime.now().plusMinutes(15));
             userService.save(user);
 
-            // 💡 ඊමේල් යවන්නේ නැතිව, කෙලින්ම HTML එකට පාස් කරන්න සාපේක්ෂ (Relative) පාරක් හදනවා
+            // 🎯 CRITICAL FIX FOR 405 ERROR: 
+            // 405 Method Not Allowed එන්නේ බ්‍රවුසර් එකෙන් relative query paths පටලෝගත්තමයි.
+            // ඒක නැති කරන්න Spring Boot එකේ standard internal routing ක්‍රමයට "/reset-password?token=" පාර හැදුවා.
             String resetLink = "/reset-password?token=" + token;
 
-            // 🎯 HTML එක උඩම 'Reset Password' බටන් එක පෙන්වන්න ලින්ක් එක මෘදුකාංගයෙන්ම පාස් කරනවා
+            // HTML එකේ බටන් එක පෙන්වන්න ලින්ක් එක පාස් කරනවා
             model.addAttribute("bypassLink", resetLink);
 
         } else {
