@@ -382,3 +382,9 @@ public class AdminController {
     @PostMapping("/reviews/delete/{id}")
     public String deleteReview(@PathVariable Long id, HttpSession session) {
         if (!isAdmin(session)) {
+            return "redirect:/login";
+        }
+        reviewService.deleteById(id);
+        return "redirect:/admin/reviews";
+    }
+}
