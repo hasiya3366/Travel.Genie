@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!-- <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
@@ -209,7 +209,7 @@
 <body>
 
 <!-- 🎯 අලුත් srilanka-promo වීඩියෝ එක මෙතනින් දැම්මා -->
-<video autoplay muted loop class="bg-video">
+<!-- <video autoplay muted loop class="bg-video">
     <source th:src="@{/videos/srilanka-promo.mp4}" type="video/mp4">
     Your browser does not support HTML5 video.
 </video>
@@ -260,6 +260,295 @@
 <footer class="site-footer">
     <div class="container">
         <p>© 2026 TravelGenie. All Rights Reserved.</p>
+    </div>
+</footer>
+</body>
+</html> --> 
+
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" th:href="@{/css/styles.css}">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght=400;500;600;700&display=swap" rel="stylesheet">
+
+    <style>
+        :root {
+            --primary-color: #0f766e;
+            --primary-hover: #0d9488;
+            --text-dark: #0f172a;
+            --text-muted: #64748b;
+            --card-shadow: 0 10px 30px rgba(0, 0, 0, 0.2), 0 1px 3px rgba(0, 0, 0, 0.05);
+        }
+
+        /* 🎯 Transparent Body & Background Video Settings */
+        html, body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+            background-color: transparent !important;
+            background: transparent !important;
+            background-image: none !important;
+        }
+
+        body::before {
+            content: "";
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background-color: rgba(0, 0, 0, 0.35); /* වීඩියෝ එක ටිකක් අඳුරු කිරීම */
+            z-index: -1;
+        }
+
+        .bg-video {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            min-width: 100%;
+            min-height: 100%;
+            width: auto;
+            height: auto;
+            z-index: -2;
+            transform: translate(-50%, -50%);
+            object-fit: cover;
+        }
+
+        main.container {
+            flex: 1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 40px 20px;
+            position: relative;
+            z-index: 1;
+            background-color: transparent !important;
+        }
+
+        /* 🎯 Glassmorphism Registration Card */
+        .auth-container {
+            background: rgba(255, 255, 255, 0.15); /* Transparent Background */
+            backdrop-filter: blur(15px);
+            -webkit-backdrop-filter: blur(15px);
+            width: 100%;
+            max-width: 460px; /* ෆීල්ඩ්ස් වැඩි නිසා පළල ටිකක් වැඩියෙන් තිබ්බා */
+            padding: 40px 35px;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            border-radius: 24px;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.3);
+            box-sizing: border-box;
+        }
+
+        .auth-container h2 {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: #ffffff; /* සුදු පාටින් අකුරු */
+            text-align: center;
+            margin-top: 0;
+            margin-bottom: 25px;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.5);
+        }
+
+        /* Form Styling */
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            font-size: 0.9rem;
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: #ffffff; /* සුදු පාටින් අකුරු */
+        }
+
+        /* 🎯 Input Fields Glass Effect */
+        .form-group input {
+            width: 100%;
+            padding: 14px 16px;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.4);
+            border-radius: 12px;
+            font-family: inherit;
+            font-size: 14px;
+            color: #ffffff;
+            transition: all 0.2s ease;
+            box-sizing: border-box;
+        }
+
+        .form-group input::placeholder {
+            color: rgba(255, 255, 255, 0.7);
+        }
+
+        .form-group input:focus {
+            outline: none;
+            border-color: #34d399;
+            background: rgba(255, 255, 255, 0.2);
+            box-shadow: 0 0 0 4px rgba(52, 211, 153, 0.2);
+        }
+
+        /* Register Button */
+        .btn-register {
+            width: 100%;
+            padding: 14px;
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-family: inherit;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            margin-top: 10px;
+            box-shadow: 0 4px 12px rgba(15, 118, 110, 0.3);
+        }
+
+        .btn-register:hover {
+            background-color: var(--primary-hover);
+            transform: translateY(-1px);
+            box-shadow: 0 6px 20px rgba(15, 118, 110, 0.4);
+        }
+
+        .btn-register:active {
+            transform: translateY(0);
+        }
+
+        /* Bottom Link Styling */
+        .auth-link {
+            text-align: center;
+            margin-top: 20px;
+            font-size: 0.9rem;
+            color: rgba(255, 255, 255, 0.85);
+        }
+
+        .auth-link a {
+            color: #fbbf24;
+            text-decoration: none;
+            font-weight: 600;
+            transition: color 0.2s ease;
+        }
+
+        .auth-link a:hover {
+            color: #f59e0b;
+            text-decoration: underline;
+        }
+
+        /* Global Error Notification */
+        .error {
+            background-color: rgba(254, 242, 242, 0.9);
+            color: #991b1b;
+            border: 1px solid #fca5a5;
+            padding: 12px 16px;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            font-size: 14px;
+            font-weight: 500;
+        }
+
+        /* 🎯 Field Specific Error Message Styling */
+        .field-error {
+            color: #fca5a5;
+            font-size: 0.8rem;
+            font-weight: 500;
+            margin-top: 5px;
+            display: block;
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+        }
+
+        /* 🎯 Header & Footer Transparent Effect */
+        .site-header, .site-footer {
+            position: relative;
+            z-index: 1;
+            background-color: transparent !important;
+            background: transparent !important;
+            box-shadow: none !important;
+            border: none !important;
+            backdrop-filter: none !important;
+            -webkit-backdrop-filter: none !important;
+        }
+
+        .site-header a, .site-header h1 a, .site-header nav a {
+            color: #ffffff !important;
+            text-shadow: 1px 1px 3px rgba(0,0,0,0.6);
+        }
+
+        .site-footer p {
+            color: #ffffff !important;
+            text-shadow: 1px 1px 3px rgba(0,0,0,0.6);
+        }
+    </style>
+</head>
+<body>
+
+<video autoplay muted loop class="bg-video">
+    <source th:src="@{/videos/srilanka-promo.mp4}" type="video/mp4">
+    Your browser does not support HTML5 video.
+</video>
+
+<header class="site-header">
+    <div class="container header-inner">
+        <h1><a th:href="@{/}">TravelGenie</a></h1>
+        <nav>
+            <a th:href="@{/}">Home</a>
+            <a th:href="@{/login}">Login</a>
+            <a th:href="@{/register}">Register</a>
+        </nav>
+    </div>
+</header>
+
+<main class="container">
+    <div class="auth-container">
+        <h2>User Registration</h2>
+
+        <div th:if="${error}" class="error" th:text="${error}"></div>
+
+        <form method="post" th:action="@{/register}" th:object="${userDto}">
+            
+            <div class="form-group">
+                <label th:for="name">Full Name</label>
+                <input type="text" id="name" th:field="*{name}" required 
+                       minlength="3" maxlength="50" placeholder="Your full name"/>
+                <span class="field-error" th:if="${#fields.hasErrors('name')}" th:errors="*{name}">Name Error</span>
+            </div>
+            
+            <div class="form-group">
+                <label th:for="email">Email</label>
+                <input type="email" id="email" th:field="*{email}" required 
+                       placeholder="your@email.com"/>
+                <span class="field-error" th:if="${#fields.hasErrors('email')}" th:errors="*{email}">Email Error</span>
+            </div>
+            
+            <div class="form-group">
+                <label th:for="phone">Phone</label>
+                <input type="tel" id="phone" th:field="*{phone}" 
+                       pattern="[0-9]{10}" placeholder="Your phone number (e.g. 0771234567)"/>
+                <span class="field-error" th:if="${#fields.hasErrors('phone')}" th:errors="*{phone}">Phone Error</span>
+            </div>
+            
+            <div class="form-group">
+                <label th:for="password">Password</label>
+                <input type="password" id="password" th:field="*{password}" required 
+                       minlength="6" placeholder="Enter password (Min. 6 characters)"/>
+                <span class="field-error" th:if="${#fields.hasErrors('password')}" th:errors="*{password}">Password Error</span>
+            </div>
+            
+            <button type="submit" class="btn-register">Register</button>
+        </form>
+
+        <div class="auth-link">
+            Already have an account? <a th:href="@{/login}">Login here</a>
+        </div>
+    </div>
+</main>
+
+<footer class="site-footer">
+    <div class="container">
+        <p>©️ 2026 TravelGenie. All Rights Reserved.</p>
     </div>
 </footer>
 </body>
