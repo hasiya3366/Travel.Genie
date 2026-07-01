@@ -895,7 +895,7 @@
                 <h2>Operational overview</h2>
             </div>
             <div class="top-actions">
-                <button class="btn-top btn-teal" onclick="exportTableToCSV('recent-bookings-report.csv')">Export report</button>
+                <button class="btn-top btn-teal" onclick="exportTableToCSV('recent-packages-report.csv')">Export report</button>
                 <a th:href="@{/admin/packages/add}" class="btn-top btn-teal">Create package</a>
             </div>
         </div>
@@ -935,34 +935,32 @@
 
         <div class="section-container">
             <div class="section-title">
-                <i class="fa-solid fa-clock-rotate-left"></i> Recent Booking Logs
+                <i class="fa-solid fa-clock-rotate-left"></i> Recent Package Logs
             </div>
             <table class="custom-table" id="bookingsTable">
                 <thead>
                     <tr>
-                        <th>Booking ID</th>
-                        <th>User ID</th>
                         <th>Package ID</th>
-                        <th>Travel Date</th>
-                        <th>Travelers</th>
-                        <th>Status</th>
+                        <th>Package Name</th>
+                        <th>Category</th>
+                        <th>Destination</th>
+                        <th>Max Travelers</th>
+                        <th>Price</th>
                     </tr>
                 </thead>
                 <tbody>
-                    <!-- 🎯 ඔයාගේ මුල්ම UI එකේ කිසිම බටන් එකක් වෙනස් නොකර, Thymeleaf properties විතරක් හරියටම මැප් කළා මචං -->
                     <tr th:each="booking : ${bookings}">
                         <td th:text="${booking.id}">1</td>
-                        <td th:text="${booking.user != null ? booking.user.id : 'N/A'}">101</td>
-                        <td th:text="${booking.tourPackage != null ? booking.tourPackage.id : 'N/A'}">202</td>
-                        <td th:text="${booking.travelDate}">2026-07-15</td>
-                        <td th:text="${booking.numberOfTravelers}">2</td>
+                        <td th:text="${booking.name}">Beautiful Ella</td>
+                        <td th:text="${booking.category}">Adventure</td>
+                        <td th:text="${booking.destination != null ? booking.destination.name : 'N/A'}">Ella</td>
+                        <td th:text="${booking.maxTravelers}">5</td>
                         <td>
-                            <!-- ඔයාගේ ඔරිජිනල් ස්ටයිල් එකමයි මචං -->
-                            <span class="status-badge status-success" th:text="${booking.status}">Approved</span>
+                            <span class="status-badge status-success" th:text="${'$' + booking.price}">$150.00</span>
                         </td>
                     </tr>
                     <tr th:if="${#lists.isEmpty(bookings)}">
-                        <td colspan="6" style="text-align: center; color: #64748b;">No recent bookings found.</td>
+                        <td colspan="6" style="text-align: center; color: #64748b;">No recent packages found.</td>
                     </tr>
                 </tbody>
             </table>
