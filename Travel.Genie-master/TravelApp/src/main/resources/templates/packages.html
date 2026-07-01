@@ -71,7 +71,7 @@
         }
 
         body {
-            background-color: #f3fbf8; 
+            background-color: #f3fbf8; /* Premium ලා කොළ/සුදු පසුබිම */
             color: #2c3e50;
         }
 
@@ -117,8 +117,8 @@
             background: linear-gradient(rgba(0, 74, 66, 0.85), rgba(0, 150, 136, 0.7));
             color: white;
             text-align: center;
-            padding: 60px 20px;
-            margin-bottom: 40px;
+            padding: 50px 20px;
+            margin-bottom: 30px;
             width: 100%;
         }
         .packages-hero h2 {
@@ -133,69 +133,42 @@
             margin: 0 auto;
         }
 
-        /* --- FILTER FORM STYLE --- */
+        /* --- MODERN FILTER TABS STYLE (ඔයාගේ මුල්ම CATEGORIES ටික) --- */
         .filter-section {
             max-width: 1200px;
-            margin: -30px auto 40px auto;
+            margin: 0 auto 30px auto;
             padding: 0 20px;
-            position: relative;
-            z-index: 10;
-            width: 100%;
+            text-align: center;
         }
-        .filter-form {
+        .filter-row {
+            display: flex;
+            justify-content: center;
+            gap: 12px;
+            flex-wrap: wrap;
             background: white;
-            padding: 25px;
-            border-radius: 16px;
-            box-shadow: 0 10px 30px rgba(0, 150, 136, 0.08);
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 15px;
-            align-items: end;
+            padding: 15px;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0, 150, 136, 0.05);
             border: 1px solid rgba(0, 150, 136, 0.1);
         }
-        .filter-group {
-            display: flex;
-            flex-direction: column;
-            gap: 5px;
-            width: 100%;
-        }
-        .filter-group label {
-            font-size: 12px;
+        .filter-row a {
+            color: #475569;
+            text-decoration: none;
+            padding: 10px 22px;
+            border-radius: 30px;
             font-weight: 600;
-            color: #009688;
-            text-transform: uppercase;
-        }
-        .filter-form input {
-            padding: 12px 16px;
-            border: 1px solid #e2e8f0;
-            border-radius: 8px;
             font-size: 14px;
-            color: #334155;
-            outline: none;
-            width: 100%;
-            transition: border 0.2s;
+            background-color: #f8fafc;
+            border: 1px solid #e2e8f0;
+            transition: all 0.3s ease;
         }
-        .filter-form input:focus {
+        .filter-row a:hover {
+            background-color: #009688;
+            color: white;
             border-color: #009688;
         }
-        .btn-filter {
-            background-color: #e67e22; 
-            color: white;
-            border: none;
-            padding: 12px 24px;
-            border-radius: 8px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: background 0.2s;
-            width: 100%;
-            height: 47px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-        .btn-filter:hover { background-color: #d35400; }
 
-        /* --- CARDS GRID PATTERN (DESTINATION පේජ් එක වගේමයි) --- */
+        /* --- CARDS GRID PATTERN (100% DESTINATION MATCH) --- */
         .main-container {
             max-width: 1200px;
             margin: 0 auto;
@@ -238,7 +211,7 @@
         .package-card:hover img {
             transform: scale(1.05);
         }
-        .duration-badge {
+        .category-badge {
             position: absolute;
             top: 15px;
             left: 15px;
@@ -248,9 +221,6 @@
             border-radius: 20px;
             font-size: 12px;
             font-weight: 600;
-            display: flex;
-            align-items: center;
-            gap: 5px;
         }
         .card-body {
             padding: 25px;
@@ -354,52 +324,36 @@
     </section>
 
     <section class="filter-section">
-        <form method="get" action="/packages" class="filter-form">
-            <div class="filter-group">
-                <label>Package Name</label>
-                <input type="text" name="keyword" placeholder="e.g. Cultural, Beach"/>
-            </div>
-            <div class="filter-group">
-                <label>Max Days</label>
-                <input type="number" name="days" placeholder="e.g. 7"/>
-            </div>
-            <div class="filter-group">
-                <label>Min Price (LKR)</label>
-                <input type="number" name="minPrice" placeholder="Min" step="0.01"/>
-            </div>
-            <div class="filter-group">
-                <label>Max Price (LKR)</label>
-                <input type="number" name="maxPrice" placeholder="Max" step="0.01"/>
-            </div>
-            <button type="submit" class="btn-filter">Filter</button>
-        </form>
+        <div class="filter-row">
+            <a th:href="@{/packages}"><i class="fa-solid fa-globe"></i> All</a>
+            <a th:href="@{/packages(category='Beach')}"><i class="fa-solid fa-umbrella-beach"></i> Beach</a>
+            <a th:href="@{/packages(category='Mountain')}"><i class="fa-solid fa-mountain"></i> Mountain</a>
+            <a th:href="@{/packages(category='Adventure')}"><i class="fa-solid fa-person-hiking"></i> Adventure</a>
+            <a th:href="@{/packages(category='Cultural')}"><i class="fa-solid fa-landmark"></i> Cultural</a>
+        </div>
     </section>
 
     <div class="main-container">
         <section class="card-grid">
-            <article class="package-card" th:each="packageItem : ${packages}">
+            <article class="package-card" th:each="pkg : ${packages}">
                 <div class="card-image-wrapper">
-                    <img th:src="${packageItem.imageUrl}" alt="Package image" onerror="this.src='https://images.unsplash.com/photo-1546708973-b339540b5162?w=600&auto=format&fit=crop&q=60'"/>
-                    <span class="duration-badge">
-                        <i class="fa-regular fa-clock"></i> 
-                        <span th:text="${packageItem.durationDays}">4</span> Days
-                    </span>
+                    <img th:src="${pkg.imageUrl}" alt="Package image" onerror="this.src='https://images.unsplash.com/photo-1546708973-b339540b5162?w=600&auto=format&fit=crop&q=60'"/>
+                    <span class="category-badge" th:text="${pkg.category}">Category</span>
                 </div>
                 <div class="card-body">
                     <div class="card-tagline">
                         <i class="fa-solid fa-plane-departure"></i> Sri Lanka Adventure
                     </div>
                     
-                    <h4 th:text="${packageItem.name}">Signature Tour Package</h4>
-                    
-                    <p class="card-desc" th:text="${packageItem.description}">Experience an unforgettable journey tailored for your absolute comfort.</p>
+                    <h4 th:text="${pkg.name}">Package Name</h4>
+                    <p class="card-desc" th:text="${pkg.description}">Description</p>
                     
                     <div class="card-footer-row">
                         <div class="card-price">
-                            From <strong>LKR <span th:text="${packageItem.price}">0</span></strong>
+                            From <strong>LKR <span th:text="${pkg.price}">0</span></strong>
                         </div>
                         
-                        <a th:href="@{'/packages/' + ${packageItem.id}}" class="btn-details">View Details</a>
+                        <a th:href="@{/packages/{id}(id=${pkg.id})}" class="btn-details">View Details</a>
                     </div>
                 </div>
             </article>
@@ -407,14 +361,14 @@
 
         <div class="empty-state" th:if="${#lists.isEmpty(packages)}">
             <i class="fa-solid fa-cubes" style="font-size: 40px; color: #009688; margin-bottom: 15px; display: block;"></i>
-            <p>No custom packages found matching your criteria. Try adjusting the filters!</p>
+            <p>No custom packages found matching your criteria.</p>
         </div>
     </div>
 </main>
 
 <footer class="site-footer">
     <div class="container">
-        <p>© 2026 TravelGenie. Crafted for Sri Lanka explorers.</p>
+        <p>© 2026 TravelGenie. All Rights Reserved.</p>
     </div>
     <div th:replace="~{fragments :: chatbot}"></div>
 </footer>
