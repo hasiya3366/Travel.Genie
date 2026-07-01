@@ -160,10 +160,10 @@ public class BookingController {
         return "booking-confirmation";
     }
 
-   @GetMapping("/book/payment")
+  @GetMapping("/book/payment")
     public String showPaymentPage() {
-        // කිසිම ඩේටා එකක් චෙක් කරන්නේ නැහැ, කෙළින්ම පේජ් එක විතරක් ඇරලා දෙනවා
-        return "book/payment"; 
+        // ෆයිල් එක කෙලින්ම templates ඇතුලේ තියෙන නිසා "payment" විතරක් දෙන්න
+        return "payment"; 
     }
 
     // 📄 INVOICE PDF DOWNLOAD ENDPOINT
