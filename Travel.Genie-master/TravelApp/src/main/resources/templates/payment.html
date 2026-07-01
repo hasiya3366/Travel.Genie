@@ -39,10 +39,10 @@
     <div class="brand"><i class="fa-solid fa-shield-halved"></i> Travel<span>Genie Pay</span></div>
     
     <div class="payment-summary">
-        <div class="summary-item"><span>Package:</span><span style="font-weight: 600;">Mirissa Whale Watching</span></div>
-        <div class="summary-item"><span>Travelers:</span><span>5 Persons</span></div>
-        <div class="summary-total"><span>Total Amount:</span><span>LKR 900.00</span></div>
-    </div>
+    <div class="summary-item"><span>Package:</span><span style="font-weight: 600;" th:text="${packageName}">Mirissa Whale Watching</span></div>
+    <div class="summary-item"><span>Travelers:</span><span th:text="${travelers + ' Person(s)'}">5 Persons</span></div>
+    <div class="summary-total"><span>Total Amount:</span><span th:text="'LKR ' + ${totalPrice}">LKR 900.00</span></div>
+</div>
 
     <form id="paymentForm" onsubmit="processPayment(event)">
         <div class="form-group">
