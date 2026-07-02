@@ -235,6 +235,12 @@
             color: #94a3b8;
             cursor: not-allowed;
         }
+        
+        /* 🚨 CHAT END WUNAMA PLACEHOLDER EKA PENNA TEXT SIZING CSS */
+        input[type="text"].session-ended-input {
+            font-size: 12.5px;
+            padding: 14px 12px;
+        }
     </style>
     
     <script src="https://cdnjs.cloudflare.com/ajax/libs/sockjs-client/1.5.1/sockjs.min.js"></script>
@@ -252,7 +258,8 @@
     </div>
     
     <div class="chat-messages" id="chatMessages">
-        <div class="message system-msg"><i class="fa-solid fa-shield-halved" style="color:var(--teal-main)"></i> Initialize dynamic support token route loop. Secured end-to-end bridge.</div>
+        <!-- 🚨 VERIFY MARK CONNECTED FIXED HERE -->
+        <div class="message system-msg"><i class="fa-solid fa-circle-check" style="color:var(--teal-main)"></i> Initialize dynamic support token route loop. Secured end-to-end bridge.</div>
     </div>
     
     <div class="input-group">
@@ -312,7 +319,6 @@
         }
     }
 
-    // 🧬 RECEIVED HUB ENGINE (NO WINDOW ALERTS)
     function onMessageReceived(message) {
         const chatMessages = document.getElementById('chatMessages');
         const messageElement = document.createElement('div');
@@ -325,7 +331,6 @@
                 document.getElementById('status').innerText = "Live connected with Official Support Agent";
                 document.getElementById('statusPulse').style.backgroundColor = "#00bfa5";
             } 
-            // 🚨 ADMIN CHAT EK CLOSE KALA VELAVE DI KRIAATHMAKA VANNAE
             else if (message.type === 'LEAVE') {
                 messageElement.className = 'message system-msg';
                 messageElement.style.color = 'var(--danger-glow)';
@@ -338,19 +343,22 @@
                 document.getElementById('statusPulse').style.backgroundColor = "var(--danger-glow)";
                 
                 // 1. චැට් එක සම්පූර්ණයෙන්ම ක්‍රියා විරහිත කිරීම
-                document.getElementById('messageInput').disabled = true;
+                const msgInput = document.getElementById('messageInput');
+                msgInput.disabled = true;
                 document.getElementById('sendBtn').disabled = true;
                 
-                // 2. ප්ලේස්හෝල්ඩර් එක ඔයා ඉල්ලපු විදියටම යාවත්කාලීන කිරීම
-                document.getElementById('messageInput').placeholder = "Chat ended. Thank you for connecting with us!";
+                // 2. ප්ලේස්හෝල්ඩර් එක කැපෙන්නේ නැති වෙන්න font size එක මෘදු ලෙස අඩු කිරීම
+                msgInput.classList.add('session-ended-input');
+                msgInput.placeholder = "Chat ended. Thank you for connecting with us!";
                 
-                // 3. වෙබ්සොකට් එක විසන්ධි කිරීම (Clean Up Connection)
+                // 3. වෙබ්සොකට් එක විසන්ධි කිරීම
                 if (stompClient) {
                     stompClient.disconnect();
                 }
             }
             else {
-                messageElement.innerHTML = `<i class="fa-solid fa-spinner fa-spin" style="color: var(--teal-main)"></i> ${message.content || "Support token successfully queued."}`;
+                // 🚨 VERIFY COORDINATE REPLACED INSTEAD OF SPIN LOADER
+                messageElement.innerHTML = `<i class="fa-solid fa-circle-check" style="color: var(--teal-main)"></i> ${message.content || "Support token successfully queued."}`;
             }
         } 
         else if (message.content) {
