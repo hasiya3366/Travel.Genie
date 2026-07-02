@@ -81,24 +81,44 @@ public class ChatController {
         return "admin-chat"; 
     }
 
-    @GetMapping("/admin/api/dashboard-stats")
-    @ResponseBody
-    public Map<String, Object> getRealDashboardStats() {
-        Map<String, Object> stats = new HashMap<>();
+//     @GetMapping("/admin/api/dashboard-stats")
+//     @ResponseBody
+//     public Map<String, Object> getRealDashboardStats() {
+//         Map<String, Object> stats = new HashMap<>();
         
-        long totalUsers = userRepository.count();
-        long totalBookings = bookingRepository.count();
-        long totalDestinations = destinationRepository.count();
-        long totalPackages = tourPackageRepository.count();
+//         long totalUsers = userRepository.count();
+//         long totalBookings = bookingRepository.count();
+//         long totalDestinations = destinationRepository.count();
+//         long totalPackages = tourPackageRepository.count();
         
-        double totalRevenue = bookingRepository.getTotalRevenue(); 
+//         double totalRevenue = bookingRepository.getTotalRevenue(); 
 
-        stats.put("totalUsers", totalUsers);
-        stats.put("totalDestinations", totalDestinations);
-        stats.put("totalPackages", totalPackages);
-        stats.put("totalBookings", totalBookings);
-        stats.put("totalRevenue", totalRevenue);
+//         stats.put("totalUsers", totalUsers);
+//         stats.put("totalDestinations", totalDestinations);
+//         stats.put("totalPackages", totalPackages);
+//         stats.put("totalBookings", totalBookings);
+//         stats.put("totalRevenue", totalRevenue);
+        
+//         return stats;
+//     }
+// }
+@GetMapping("/admin/api/dashboard-stats")
+@ResponseBody
+public Map<String, Object> getRealDashboardStats() {
+    try {
+        Map<String, Object> stats = new HashMap<>();
+        stats.put("totalUsers", userRepository.count());
+        stats.put("totalBookings", bookingRepository.count());
+        stats.put("totalDestinations", destinationRepository.count());
+        stats.put("totalPackages", tourPackageRepository.count());
+        
+        Double revenue = bookingRepository.getTotalRevenue();
+        stats.put("totalRevenue", (revenue != null) ? revenue : 0.0);
         
         return stats;
+    } catch (Exception e) {
+    
+        e.printStackTrace();
+        return new HashMap<>(); 
     }
 }
