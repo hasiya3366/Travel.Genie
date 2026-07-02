@@ -709,22 +709,14 @@
             </div>
         </div>
 
-        <!-- 🎯 LIVE CUSTOMER SUPPORT WORKSPACE PANEL GRID -->
+        <!-- 🎯 LIVE CUSTOMER SUPPORT WORKSPACE PANEL GRID (FIXED) -->
         <div class="live-workspace-grid">
             <div class="chat-queue-box">
                 <div class="section-title" style="font-size: 16px;">
                     <i class="fa-solid fa-headset" style="color: #e67e22;"></i> Live Tickets Queue
                 </div>
-                <ul class="ticket-list" id="adminQueueList">
-                    <!-- Initial Dynamic Row Container -->
-                    <div class="ticket-item" id="ticket-SESSION_12345" style="display: flex; justify-content: space-between; align-items: center; padding: 12px 16px; background-color: var(--table-th); border: 1px solid var(--border-color); border-radius: 12px; margin-bottom: 10px;">
-                        <span style="font-size: 13px; font-weight: 500;"><i class="fa-solid fa-user"></i> Hasindu</span>
-                        <div style="display: flex; gap: 8px;">
-                            <button class="btn-accept-chat" style="background-color: #009688; color: white; border: none; padding: 6px 12px; border-radius: 8px; cursor: pointer; font-weight: 600; font-size: 12px;" onclick="acceptLiveChat('SESSION_12345', 'Hasindu')">Accept</button>
-                            <button class="btn-reject-chat" style="background-color: #e74c3c; color: white; border: none; padding: 6px 12px; border-radius: 8px; cursor: pointer; font-weight: 600; font-size: 12px;" onclick="rejectLiveChat('SESSION_12345', 'Hasindu')">Reject</button>
-                        </div>
-                    </div>
-                </ul>
+                <!-- 💡 මෝල්ඩරය මෙතන තියෙන්නේ සම්පූර්ණයෙන්ම හිස්ව. කස්ටමර් කනෙක්ට් වුණු සැනින් බටන් ලයිව්ම මැවෙනවා -->
+                <ul class="ticket-list" id="adminQueueList"></ul>
             </div>
             
             <div class="chat-box-area">
@@ -969,7 +961,7 @@
         stompSupportClient.debug = null;
         
         stompSupportClient.connect({}, function (frame) {
-            showToast(`Connected to ${username}'s workspace.`);
+            showToast("Connected to live workspace stream securely.");
             
             stompSupportClient.subscribe('/topic/chat/' + activeSessionToken, function (response) {
                 renderIncomingLiveBubble(JSON.parse(response.body));
@@ -1023,34 +1015,31 @@
         }
     }
 
-    
-function renderIncomingLiveBubble(msgObj) {
-    const msgLogsContainer = document.getElementById('adminWorkspaceMsgLogs');
-    if (!msgLogsContainer) return;
-    
-    const bubbleElement = document.createElement('div');
-    
-    if (msgObj.type === 'JOIN' || msgObj.type === 'LEAVE' || (msgObj.content && msgObj.content.includes('connected'))) {
-        bubbleElement.style.textAlign = 'center';
-        bubbleElement.style.color = 'var(--text-muted)';
-        bubbleElement.style.fontSize = '12px';
-        bubbleElement.style.margin = '12px 0';
-        bubbleElement.innerHTML = `<em>${msgObj.content}</em>`;
-    } 
-  
-    else if (msgObj.content) {
+    function renderIncomingLiveBubble(msgObj) {
+        const msgLogsContainer = document.getElementById('adminWorkspaceMsgLogs');
+        if (!msgLogsContainer) return;
         
-        if (msgObj.sender && msgObj.sender.toLowerCase().includes('admin')) {
-            bubbleElement.className = 'admin-msg-bubble';
-        } else {
-            bubbleElement.className = 'customer-msg-bubble';
+        const bubbleElement = document.createElement('div');
+        
+        if (msgObj.type === 'JOIN' || msgObj.type === 'LEAVE' || (msgObj.content && msgObj.content.includes('connected'))) {
+            bubbleElement.style.textAlign = 'center';
+            bubbleElement.style.color = 'var(--text-muted)';
+            bubbleElement.style.fontSize = '12px';
+            bubbleElement.style.margin = '12px 0';
+            bubbleElement.innerHTML = `<em>${msgObj.content}</em>`;
+        } 
+        else if (msgObj.content) {
+            if (msgObj.sender && msgObj.sender.toLowerCase().includes('admin')) {
+                bubbleElement.className = 'admin-msg-bubble';
+            } else {
+                bubbleElement.className = 'customer-msg-bubble';
+            }
+            bubbleElement.innerHTML = `<strong>${msgObj.sender}:</strong> ${msgObj.content}`;
         }
-        bubbleElement.innerHTML = `<strong>${msgObj.sender}:</strong> ${msgObj.content}`;
+        
+        msgLogsContainer.appendChild(bubbleElement);
+        msgLogsContainer.scrollTop = msgLogsContainer.scrollHeight;
     }
-    
-    msgLogsContainer.appendChild(bubbleElement);
-    msgLogsContainer.scrollTop = msgLogsContainer.scrollHeight; 
-}
 
     function currentStatsFromDom() {
         return {
