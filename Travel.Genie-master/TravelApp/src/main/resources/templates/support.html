@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>TravelGenie — Customer Live Support</title>
+    <!-- 🎨 Teal/Dark Minimalism theme එකට ගැලපෙන සරල CSS ටිකක් -->
+    <style>
+        body { background-color: #0d1614; color: #ffffff; font-family: 'Segoe UI', sans-serif; margin: 40px; }
+        .chat-container { max-width: 500px; background: #14221f; border-radius: 12px; padding: 20px; box-shadow: 0 8px 32px rgba(0,0,0,0.4); border: 1px solid #1a2e29; }
+        .chat-messages { height: 300px; overflow-y: auto; border: 1px solid #1a2e29; background: #0d1614; padding: 10px; margin-bottom: 10px; border-radius: 6px; }
+        .message { margin-bottom: 10px; padding: 8px; border-radius: 6px; max-width: 80%; }
+        .customer-msg { background: #1e3a34; margin-left: auto; text-align: right; }
+        .admin-msg { background: #2a4d44; margin-right: auto; text-align: left; }
+        .system-msg { background: #333; margin: 5px auto; text-align: center; font-size: 12px; max-width: 100%; }
+        input[type="text"] { width: 75%; padding: 10px; background: #14221f; border: 1px solid #1a2e29; color: white; border-radius: 4px; }
+        button { padding: 10px 15px; background: #00bfa5; border: none; color: black; font-weight: bold; cursor: pointer; border-radius: 4px; }
+        button:disabled { background: #444; color: #888; }
+    </style>
+    <!-- 📡 WebSocket Live Libraries -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/sockjs-client/1.5.1/sockjs.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/stomp.js/2.3.3/stomp.min.js"></script>
+</head>
+<body>
+
+<div class="chat-container">
+    <h2>🧬 TravelGenie Live Support</h2>
+    <div id="status" style="color: #00bfa5; margin-bottom: 10px;">Status: Waiting to connect...</div>
+    
+    <div class="chat-messages" id="chatMessages">
+        <!-- ලයිව් මැසේජ් ලෝඩ් වෙන්නේ මෙතනට මචං -->
+    </div>
+    
+    <input type="text" id="messageInput" placeholder="Type your issue here..." disabled>
+    <button id="sendBtn" onclick="sendMessage()" disabled>Send</button>
+</div>
+
+<script th:inline="javascript">
+    let stompClient = null;
+    // 💡 ටෙස්ට් කරන්න ලේසි වෙන්න Random Session ID එකක් හදනවා (ඩේටාබේස් ලොජික් එක පස්සේ දෙන්නම්)
+    const sessionId = "SESSION_" + Math.floor(Math.random() * 100000);
+    // 👤 දැනට ලොග් වෙලා ඉන්න යූසර්ගේ නම (Thymeleaf වලින් ගන්න පුළුවන්, දැනට ටෙස්ට් එකට 'Hasindu' ගමු)
+    const username = "Hasindu"; 
+
+    function connect() {
+        const socket = new SockJS('/ws-support');
+        stompClient = Stomp.over(socket);
+        
+        stompClient.connect({}, function (frame) {
+            document.getElementById('status').innerText = "Status: Connected! Waiting for an Agent...";
+            
+            // 📡 මේ සෙෂන් එකට අදාළ ලයිව් චැට් රූම් එකට Subscribe වෙනවා
+            stompClient.subscribe('/topic/chat/' + sessionId, function (response) {
+                showWithMessage(JSON.parse(response.body));
+            });
+
+            // 📥 සර්වර් එකට කියනවා මම ආවා (Join වුණා) කියලා
+            stompClient.send("/app/chat/" + sessionId + "/addUser", {}, JSON.stringify({sender: username, type: 'JOIN', sessionId: sessionId}));
+            
+            // මැසේජ් ටයිප් කරන්න ඉඩ දෙනවා
+            document.getElementById('messageInput').disabled = false;
+            document.getElementById('sendBtn').disabled = false;
+        });
+    }
+
+    function sendMessage() {
+        const messageContent = document.getElementById('messageInput').value.trim();
+        if(messageContent && stompClient) {
+            const chatMessage = {
+                sender: username,
+                content: messageContent,
+                type: 'CHAT',
+                sessionId: sessionId
+            };
+            stompClient.send("/app/chat/" + sessionId + "/sendMessage", {}, JSON.stringify(chatMessage));
+            document.getElementById('messageInput').value = '';
+        }
+    }
+
+    function showWithMessage(message) {
+        const chatMessages = document.getElementById('chatMessages');
+        const messageElement = document.createElement('div');
+        
+        if(message.type === 'JOIN') {
+            messageElement.classList.add('message', 'system-msg');
+            messageElement.innerText = message.sender + " requested support.";
+        } else if (message.type === 'CHAT') {
+            if(message.sender === username) {
+                messageElement.classList.add('message', 'customer-msg');
+            } else {
+                messageElement.classList.add('message', 'admin-msg');
+                document.getElementById('status').innerText = "Status: Connected with Admin (" + message.sender + ")";
+            }
+            messageElement.innerText = message.sender + ": " + message.content;
+        }
+        
+        chatMessages.appendChild(messageElement);
+        chatMessages.scrollTop = chatMessages.scrollHeight; // Auto scroll down
+    }
+
+    // 🔌 පේජ් එක ලෝඩ් වෙද්දීම WebSocket එක කනෙක්ට් කරනවා
+    window.onload = connect;
+</script>
+</body>
+</html>
