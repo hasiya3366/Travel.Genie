@@ -835,7 +835,6 @@
     // 📡 LIVE WORKSPACE STOMP ENGINE OBJECT CONFIGS
     let stompSupportClient = null;
     let activeSessionToken = null;
-    const staticAdminIdentity = "Admin_Malith";
 
     document.addEventListener("DOMContentLoaded", function () {
         // --- 1. DARK LIGHT MODE SYSTEM SCRIPT ---
@@ -922,8 +921,8 @@
                 renderIncomingLiveBubble(JSON.parse(response.body));
             });
 
-            // Signal connection payload initialization
-            const joinAlertPayload = { sender: staticAdminIdentity, content: "Agent connected to workspace session.", type: 'CHAT', sessionId: activeSessionToken };
+            // Signal connection payload initialization - sender set to "Admin" to match DataLoader identity
+            const joinAlertPayload = { sender: "Admin", content: "Agent connected to workspace session.", type: 'CHAT', sessionId: activeSessionToken };
             stompSupportClient.send("/app/chat/" + activeSessionToken + "/sendMessage", {}, JSON.stringify(joinAlertPayload));
 
             // Enable elements inputs inside chat zone
@@ -935,7 +934,8 @@
     function transmitAdminLiveMessage() {
         const rawContent = document.getElementById('adminWorkspaceInput').value.trim();
         if(rawContent && stompSupportClient) {
-            const outPayload = { sender: staticAdminIdentity, content: rawContent, type: 'CHAT', sessionId: activeSessionToken };
+            // sender explicitly defined as "Admin" for seamless UI processing
+            const outPayload = { sender: "Admin", content: rawContent, type: 'CHAT', sessionId: activeSessionToken };
             stompSupportClient.send("/app/chat/" + activeSessionToken + "/sendMessage", {}, JSON.stringify(outPayload));
             document.getElementById('adminWorkspaceInput').value = '';
         }
@@ -946,7 +946,8 @@
         const bubbleElement = document.createElement('div');
         
         if (msgObj.type === 'CHAT') {
-            if(msgObj.sender === staticAdminIdentity) {
+            // Flexible string checking ensures that any variation of Admin (e.g., Admin_Malith, Admin) renders cleanly on the right
+            if(msgObj.sender && msgObj.sender.toLowerCase().includes('admin')) {
                 bubbleElement.classList.add('admin-msg-bubble');
             } else {
                 bubbleElement.classList.add('customer-msg-bubble');
@@ -1012,15 +1013,17 @@
     }
 
     // --- CHART #2: DOUGHNUT CHART ---
-    function getCategoryCountsFromTable() {
-        var counts = {};
-        var rows = document.querySelectorAll("#tableLogBody tr:not(#emptyRowPlaceholder)");
-        rows.forEach(function (row) {
-            var category = row.getAttribute("data-category") || row.children[2].innerText.trim();
-            if (!category) return;
-            counts[category] = (counts[category] || 0) + 1;
-        });
-        return counts;
+    if (typeof getCategoryCountsFromTable !== 'function') {
+        window.getCategoryCountsFromTable = function() {
+            var counts = {};
+            var rows = document.querySelectorAll("#tableLogBody tr:not(#emptyRowPlaceholder)");
+            rows.forEach(function (row) {
+                var category = row.getAttribute("data-category") || (row.children[2] ? row.children[2].innerText.trim() : null);
+                if (!category) return;
+                counts[category] = (counts[category] || 0) + 1;
+            });
+            return counts;
+        };
     }
 
     function initCategoryChart() {
