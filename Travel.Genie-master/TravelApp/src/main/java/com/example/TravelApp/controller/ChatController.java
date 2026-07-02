@@ -7,17 +7,15 @@ import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.messaging.simp.SimpMessageHeaderAccessor;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model; 
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import java.security.Principal; 
+import jakarta.servlet.http.HttpSession;
 
 @Controller
 public class ChatController {
 
-    // 1. WEBSOCKET REAL-TIME MESSAGING LOGIC
-    
     @MessageMapping("/chat/{sessionId}/sendMessage")
     @SendTo("/topic/chat/{sessionId}")
     public ChatMessage sendMessage(@DestinationVariable String sessionId, @Payload ChatMessage chatMessage) {
@@ -41,16 +39,20 @@ public class ChatController {
         return ticketJson;
     }
 
-    // 2. THYMELEAF VIEW PAGE MAPPINGS
-
     @GetMapping("/support")
-    public String showCustomerSupportPage(Principal principal, Model model) {
+    public String showCustomerSupportPage(HttpSession session, Model model) {
+        Object loggedUser = session.getAttribute("username");
+        
+        if (loggedInUser == null) {
+            loggedUser = session.getAttribute("user");
+        }
 
-        if (principal != null) {
-            model.addAttribute("realName", principal.getName());
+        if (loggedUser != null) {
+            model.addAttribute("realName", loggedUser.toString());
         } else {
             model.addAttribute("realName", null);
         }
+        
         return "support"; 
     }
 
