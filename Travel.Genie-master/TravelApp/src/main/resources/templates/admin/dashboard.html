@@ -414,7 +414,7 @@
             border-radius: 16px;
             padding: 15px;
             overflow-y: auto;
-            margin-bottom: 15px;
+            margin-bottom: 10px;
         }
         .admin-msg-bubble {
             background-color: #009688;
@@ -462,6 +462,32 @@
             cursor: pointer;
         }
         .btn-chat-reply:hover { background-color: #d35400; }
+        
+        /* 🚨 END CHAT BUTTON NEW STYLES */
+        .btn-end-chat {
+            background-color: #e74c3c;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 12px;
+            font-weight: 600;
+            font-size: 13px;
+            cursor: pointer;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            transition: background-color 0.2s;
+        }
+        .btn-end-chat:hover { background-color: #c0392b; }
+        .btn-end-chat:disabled {
+            background-color: var(--table-th);
+            color: var(--text-muted);
+            cursor: not-allowed;
+            border: 1px solid var(--border-color);
+        }
+
         .btn-chat-reply:disabled, .chat-input-wrapper input:disabled {
             background-color: var(--table-th);
             color: var(--text-muted);
@@ -710,13 +736,12 @@
             </div>
         </div>
 
-        <!-- 🎯 LIVE CUSTOMER SUPPORT WORKSPACE PANEL GRID (FIXED) -->
+        <!-- 🎯 LIVE CUSTOMER SUPPORT WORKSPACE PANEL GRID -->
         <div class="live-workspace-grid">
             <div class="chat-queue-box">
                 <div class="section-title" style="font-size: 16px;">
                     <i class="fa-solid fa-headset" style="color: #e67e22;"></i> Live Tickets Queue
                 </div>
-                <!-- 💡 මෝල්ඩරය මෙතන තියෙන්නේ සම්පූර්ණයෙන්ම හිස්ව. කස්ටමර් කනෙක්ට් වුණු සැනින් බටන් ලයිව්ම මැවෙනවා -->
                 <ul class="ticket-list" id="adminQueueList"></ul>
             </div>
             
@@ -725,12 +750,19 @@
                     <i class="fa-solid fa-comments"></i> Support Live Workspace
                     <span id="activeChannelBadge" style="font-size: 11px; font-weight: 500; color: var(--text-muted); margin-left: 10px;">No Active Stream</span>
                 </div>
+                
                 <div class="chat-msg-history" id="adminWorkspaceMsgLogs">
                     <div style="text-align: center; color: var(--text-muted); font-size: 13px; margin-top: 100px;">
                         <i class="fa-solid fa-lock" style="font-size: 24px; display: block; margin-bottom: 10px;"></i>
                         Select an active request ticket loop to bridge live encryption communication.
                     </div>
                 </div>
+
+                <!-- 🚨 END CHAT BUTTON PLACEMENT -->
+                <button class="btn-end-chat" id="endChatBtn" onclick="endChatSession()" disabled>
+                    <i class="fa-solid fa-phone-slash"></i> End Chat
+                </button>
+
                 <div class="chat-input-wrapper">
                     <input type="text" id="adminWorkspaceInput" placeholder="Enter secure response matrix..." disabled />
                     <button class="btn-chat-reply" id="adminWorkspaceSendBtn" onclick="transmitAdminLiveMessage()" disabled>Reply</button>
@@ -977,8 +1009,10 @@
             };
             stompSupportClient.send("/app/chat/" + activeSessionToken + "/sendMessage", {}, JSON.stringify(joinAlertPayload));
 
+            // Enable inputs and end chat button
             document.getElementById('adminWorkspaceInput').disabled = false;
             document.getElementById('adminWorkspaceSendBtn').disabled = false;
+            document.getElementById('endChatBtn').disabled = false;
             
             const acceptedTicket = document.getElementById(`ticket-${sessionId}`);
             if (acceptedTicket) acceptedTicket.remove();
@@ -1016,6 +1050,47 @@
         }
     }
 
+    // 🚨 NEW FUNCTION: END LIVE CHAT SESSION TERMINATION
+    function endChatSession() {
+        if (activeSessionToken && stompSupportClient) {
+            // පාරිභෝගිකයාට සන්නිවේදනය අවසන් කළ බව දන්වන පණිවිඩය
+            const leavePayload = {
+                sender: "Admin",
+                content: "The support session has been closed by the administrator.",
+                type: 'LEAVE',
+                sessionId: activeSessionToken
+            };
+            
+            stompSupportClient.send("/app/chat/" + activeSessionToken + "/sendMessage", {}, JSON.stringify(leavePayload));
+            
+            // කෙටි විරාමයකින් පසු වෙබ්සොකට් එක වසා දැමීම
+            setTimeout(function() {
+                if (stompSupportClient) {
+                    stompSupportClient.disconnect();
+                    stompSupportClient = null;
+                }
+                showToast("Live chat session closed successfully.");
+            }, 500);
+            
+            // UI එක නැවත මුල් තත්ත්වයට පත් කිරීම (Reset UI Elements)
+            document.getElementById('adminWorkspaceInput').value = '';
+            document.getElementById('adminWorkspaceInput').disabled = true;
+            document.getElementById('adminWorkspaceSendBtn').disabled = true;
+            document.getElementById('endChatBtn').disabled = true;
+            document.getElementById('activeChannelBadge').innerText = "No Active Stream";
+            
+            const msgLogsContainer = document.getElementById('adminWorkspaceMsgLogs');
+            msgLogsContainer.innerHTML = `
+                <div style="text-align: center; color: var(--text-muted); font-size: 13px; margin-top: 100px;">
+                    <i class="fa-solid fa-lock" style="font-size: 24px; display: block; margin-bottom: 10px;"></i>
+                    Select an active request ticket loop to bridge live encryption communication.
+                </div>
+            `;
+            
+            activeSessionToken = null;
+        }
+    }
+
     function renderIncomingLiveBubble(msgObj) {
         const msgLogsContainer = document.getElementById('adminWorkspaceMsgLogs');
         if (!msgLogsContainer) return;
@@ -1028,6 +1103,14 @@
             bubbleElement.style.fontSize = '12px';
             bubbleElement.style.margin = '12px 0';
             bubbleElement.innerHTML = `<em>${msgObj.content}</em>`;
+            
+            // පාරිභෝගිකයා තනිවම චැට් එකෙන් අයින් වුනොත් ඇඩ්මින්ගේ පැත්තත් මුදවා හැරීම (Auto-reset if client leaves)
+            if (msgObj.type === 'LEAVE' && msgObj.sender !== "Admin") {
+                document.getElementById('adminWorkspaceInput').disabled = true;
+                document.getElementById('adminWorkspaceSendBtn').disabled = true;
+                document.getElementById('endChatBtn').disabled = true;
+                document.getElementById('activeChannelBadge').innerText = "Stream Disconnected by User";
+            }
         } 
         else if (msgObj.content) {
             if (msgObj.sender && msgObj.sender.toLowerCase().includes('admin')) {
@@ -1204,7 +1287,7 @@
         });
     }
 
-    function updateRevenueTrendChart(newRevenueValue) {
+    window.updateRevenueTrendChart = function(newRevenueValue) {
         revenueHistory.push({ label: nowLabel(), value: newRevenueValue });
 
         if (revenueHistory.length > 12) {
@@ -1225,69 +1308,58 @@
     }
 
     // --- MASTER AUTO-UPDATE FUNCTION ---
-  function refreshAllCharts() {
-    fetch(STATS_API_URL)
-        .then(function (res) {
-            if (!res.ok) throw new Error('Stats endpoint not available (' + res.status + ')');
-            return res.json();
-        })
-        .then(function (data) {
-            applyFreshStatsToDom(data);
-            
-            if (typeof dashboardChart !== 'undefined' && dashboardChart.data) {
-                dashboardChart.data.datasets[0].data = [
-                    data.totalUsers, data.totalDestinations, data.totalPackages, data.totalBookings
-                ];
-                dashboardChart.update();
-            }
+    function refreshAllCharts() {
+        fetch(STATS_API_URL)
+            .then(function (res) {
+                if (!res.ok) throw new Error('Stats endpoint not available (' + res.status + ')');
+                return res.json();
+            })
+            .then(function (data) {
+                applyFreshStatsToDom(data);
+                
+                if (typeof dashboardChart !== 'undefined' && dashboardChart.data) {
+                    dashboardChart.data.datasets[0].data = [
+                        data.totalUsers, data.totalDestinations, data.totalPackages, data.totalBookings
+                    ];
+                    dashboardChart.update();
+                }
 
-            if (typeof updateCategoryChart === 'function') updateCategoryChart();
-            if (typeof updateRevenueTrendChart === 'function') updateRevenueTrendChart(data.totalRevenue);
-        })
-        .catch(function (err) {
-            console.warn('[auto-update] ' + err.message + ' — falling back to DOM-only refresh.');
-            if (typeof updateCategoryChart === 'function') updateCategoryChart();
-            if (typeof currentStatsFromDom === 'function' && typeof updateRevenueTrendChart === 'function') {
-                updateRevenueTrendChart(currentStatsFromDom().totalRevenue);
-            }
-        });
-}
+                if (typeof updateCategoryChart === 'function') updateCategoryChart();
+                if (typeof window.updateRevenueTrendChart === 'function') window.updateRevenueTrendChart(data.totalRevenue);
+            })
+            .catch(function (err) {
+                console.warn('[auto-update] ' + err.message + ' — falling back to DOM-only refresh.');
+                if (typeof updateCategoryChart === 'function') updateCategoryChart();
+                if (typeof currentStatsFromDom === 'function' && typeof window.updateRevenueTrendChart === 'function') {
+                    window.updateRevenueTrendChart(currentStatsFromDom().totalRevenue);
+                }
+            });
+    }
 
-// function applyFreshStatsToDom(data) {
-    
-//     const revenueDisplay = document.getElementById("domRevenueDisplay");
-//     if (revenueDisplay) {
-        
-//         revenueDisplay.innerText = 'LKR ' + Number(data.totalRevenue).toLocaleString(undefined, {minimumFractionDigits: 2});
-//     }
-// }
     function applyFreshStatsToDom(data) {
-    // 1. Users, Destinations, Packages, Bookings (මේවා සාමාන්‍ය අගයන්)
-    if (document.getElementById('domTotalUsers')) 
-        document.getElementById('domTotalUsers').innerText = data.totalUsers;
-    if (document.getElementById('domTotalDestinations')) 
-        document.getElementById('domTotalDestinations').innerText = data.totalDestinations;
-    if (document.getElementById('domTotalPackages')) 
-        document.getElementById('domTotalPackages').innerText = data.totalPackages;
-    if (document.getElementById('domTotalBookings')) 
-        document.getElementById('domTotalBookings').innerText = data.totalBookings;
+        if (document.getElementById('domTotalUsers')) 
+            document.getElementById('domTotalUsers').innerText = data.totalUsers;
+        if (document.getElementById('domTotalDestinations')) 
+            document.getElementById('domTotalDestinations').innerText = data.totalDestinations;
+        if (document.getElementById('domTotalPackages')) 
+            document.getElementById('domTotalPackages').innerText = data.totalPackages;
+        if (document.getElementById('domTotalBookings')) 
+            document.getElementById('domTotalBookings').innerText = data.totalBookings;
 
-    const revenueDisplay = document.getElementById("domRevenueDisplay");
-    if (revenueDisplay) {
-   
-        let formattedRevenue = Number(data.totalRevenue).toLocaleString('en-US', {
-            minimumFractionDigits: 2,
-            maximumFractionDigits: 2
-        });
+        const revenueDisplay = document.getElementById("domRevenueDisplay");
+        if (revenueDisplay) {
+            let formattedRevenue = Number(data.totalRevenue).toLocaleString('en-US', {
+                minimumFractionDigits: 2,
+                maximumFractionDigits: 2
+            });
+            revenueDisplay.innerText = 'LKR ' + formattedRevenue;
+        }
         
-        revenueDisplay.innerText = 'LKR ' + formattedRevenue;
+        if (document.getElementById('hiddenRevenue')) {
+            document.getElementById('hiddenRevenue').value = data.totalRevenue;
+        }
     }
-    
-    // Hidden field එකේ තියෙන අගයත් අප්ඩේට් කරමු
-    if (document.getElementById('hiddenRevenue')) {
-        document.getElementById('hiddenRevenue').value = data.totalRevenue;
-    }
-}
+
     // CSV Export Script
     function exportTableToCSV(filename) {
         var csv = [];
