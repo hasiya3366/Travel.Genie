@@ -77,37 +77,22 @@ public class ChatController {
         return "admin-chat";
     }
 
-//     @GetMapping("/admin/api/dashboard-stats")
-//     @ResponseBody
-//     public Map<String, Object> getRealDashboardStats() {
-//         Map<String, Object> stats = new HashMap<>();
-//         try {
-//             stats.put("totalUsers", userRepository.count());
-//             stats.put("totalBookings", bookingRepository.count());
-//             stats.put("totalDestinations", destinationRepository.count());
-//             stats.put("totalPackages", tourPackageRepository.count());
-            
-//             Double revenue = bookingRepository.getTotalRevenue();
-//             stats.put("totalRevenue", (revenue != null) ? revenue : 0.0);
-//         } catch (Exception e) {
-//             System.out.println("❌ Dashboard Stats Error: " + e.getMessage());
-//             stats.put("totalRevenue", 0.0);
-//         }
-//         return stats;
-//     }
-// }
     @GetMapping("/admin/api/dashboard-stats")
-@ResponseBody
-public Map<String, Object> getRealDashboardStats() {
-    Map<String, Object> stats = new HashMap<>();
-    
-    stats.put("totalUsers", userRepository.count());
-    stats.put("totalBookings", bookingRepository.count());
-    stats.put("totalDestinations", destinationRepository.count());
-    stats.put("totalPackages", tourPackageRepository.count());
-    
-    Double revenue = bookingRepository.getTotalRevenue();
-    stats.put("totalRevenue", (revenue != null) ? revenue : 0.0);
-    
-    return stats;
+    @ResponseBody
+    public Map<String, Object> getRealDashboardStats() {
+        Map<String, Object> stats = new HashMap<>();
+        try {
+            stats.put("totalUsers", userRepository.count());
+            stats.put("totalBookings", bookingRepository.count());
+            stats.put("totalDestinations", destinationRepository.count());
+            stats.put("totalPackages", tourPackageRepository.count());
+            
+            Double revenue = bookingRepository.getTotalRevenue();
+            stats.put("totalRevenue", (revenue != null) ? revenue : 0.0);
+        } catch (Exception e) {
+            System.out.println("❌ Stats Error: " + e.getMessage());
+            stats.put("totalRevenue", 0.0);
+        }
+        return stats;
+    }
 }
