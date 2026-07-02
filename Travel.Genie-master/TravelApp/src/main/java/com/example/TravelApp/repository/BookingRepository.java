@@ -31,6 +31,6 @@ public interface BookingRepository extends JpaRepository<Booking, Long> {
     
     List<Booking> findByUser(User user);
 
-@Query(value = "SELECT IFNULL(SUM(price), 0.0) FROM booking", nativeQuery = true)
+@Query(value = "SELECT COALESCE(SUM(total_price), 0.0) FROM booking", nativeQuery = true)
 Double getTotalRevenue();
 }
