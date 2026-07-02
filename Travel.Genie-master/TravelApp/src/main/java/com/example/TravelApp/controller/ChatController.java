@@ -1,6 +1,6 @@
-package com.travelgenie.controller;
+package com.example.TravelApp.controller;
 
-import com.travelgenie.model.ChatMessage;
+import com.example.TravelApp.model.ChatMessage;
 import org.springframework.messaging.handler.annotation.DestinationVariable;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.Payload;
@@ -12,18 +12,14 @@ import org.springframework.web.bind.annotation.GetMapping;
 @Controller
 public class ChatController {
 
-    // ==========================================
-    // 📡 1. WEBSOCKET REAL-TIME MESSAGING LOGIC
-    // ==========================================
-
-    // 🎯 යූසර් හෝ ඇඩ්මින් ලයිව් චැට් රූම් එකකට මැසේජ් එකක් යැව්වාම ක්‍රියාත්මක වෙනවා
+    // 1. WEBSOCKET REAL-TIME MESSAGING LOGIC
+    
     @MessageMapping("/chat/{sessionId}/sendMessage")
     @SendTo("/topic/chat/{sessionId}")
     public ChatMessage sendMessage(@DestinationVariable String sessionId, @Payload ChatMessage chatMessage) {
         return chatMessage;
     }
 
-    // 🎯 චැට් එකට අලුතෙන් සම්බන්ධ වෙද්දී (Join වෙද්දී) ක්‍රියාත්මක වෙනවා
     @MessageMapping("/chat/{sessionId}/addUser")
     @SendTo("/topic/chat/{sessionId}")
     public ChatMessage addUser(@DestinationVariable String sessionId, @Payload ChatMessage chatMessage, SimpMessageHeaderAccessor headerAccessor) {
@@ -34,19 +30,15 @@ public class ChatController {
         return chatMessage;
     }
 
-    // ==========================================
-    // 🌐 2. THYMELEAF VIEW PAGE MAPPINGS
-    // ==========================================
+    // 2. THYMELEAF VIEW PAGE MAPPINGS
 
-    // 👤 කස්ටමර්ට පේන Live Support පිටුව ඕපන් කර ගැනීමට
     @GetMapping("/support")
     public String showCustomerSupportPage() {
-        return "support"; // templates/support.html එක රෙන්ඩර් කරයි
+        return "support"; 
     }
 
-    // 👑 ඇඩ්මින්ට පේන Live Support Dashboard පිටුව ඕපන් කර ගැනීමට
     @GetMapping("/admin/support")
     public String showAdminSupportPage() {
-        return "admin-chat"; // templates/admin-chat.html එක රෙන්ඩර් කරයි
+        return "admin-chat"; 
     }
 }
