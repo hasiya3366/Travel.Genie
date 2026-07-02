@@ -7,8 +7,11 @@ import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.messaging.simp.SimpMessageHeaderAccessor;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model; 
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
+
+import java.security.Principal; 
 
 @Controller
 public class ChatController {
@@ -31,7 +34,6 @@ public class ChatController {
         return chatMessage;
     }
 
-    // 🎯 🌐 REAL-TIME GLOBAL QUEUE ROUTER (කස්ටමර්ගේ ටිකට් එක ඇඩ්මින් පැනල් එකට ලයිව් යවන තැන)
     @MessageMapping("/chat/globalQueue")
     @SendTo("/topic/global-queue")
     @ResponseBody
@@ -42,7 +44,13 @@ public class ChatController {
     // 2. THYMELEAF VIEW PAGE MAPPINGS
 
     @GetMapping("/support")
-    public String showCustomerSupportPage() {
+    public String showCustomerSupportPage(Principal principal, Model model) {
+
+        if (principal != null) {
+            model.addAttribute("realName", principal.getName());
+        } else {
+            model.addAttribute("realName", null);
+        }
         return "support"; 
     }
 
