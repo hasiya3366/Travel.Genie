@@ -463,9 +463,9 @@
         }
         .btn-chat-reply:hover { background-color: #d35400; }
         
-        /* 🚨 END CHAT BUTTON NEW STYLES */
+        /* 🚨 END CHAT BUTTON PREMIUM STYLES */
         .btn-end-chat {
-            background-color: #e74c3c;
+            background-color: red;
             color: white;
             border: none;
             padding: 8px 16px;
@@ -480,7 +480,7 @@
             gap: 6px;
             transition: background-color 0.2s;
         }
-        .btn-end-chat:hover { background-color: #c0392b; }
+        .btn-end-chat:hover { background-color: #cc0000; }
         .btn-end-chat:disabled {
             background-color: var(--table-th);
             color: var(--text-muted);
@@ -758,7 +758,7 @@
                     </div>
                 </div>
 
-                <!-- 🚨 END CHAT BUTTON PLACEMENT -->
+                <!-- 📢 END CHAT BUTTON PLACEMENT -->
                 <button class="btn-end-chat" id="endChatBtn" onclick="endChatSession()" disabled>
                     <i class="fa-solid fa-phone-slash"></i> End Chat
                 </button>
@@ -863,7 +863,7 @@
     // 📡 LIVE WORKSPACE STOMP ENGINE OBJECT CONFIGS
     let stompSupportClient = null;
     let globalQueueClient = null; 
-    let activeSessionToken = null;
+    let activeSessionToken = null; // මේක තමයි ඔයාගේ කේතයේ තියෙන currentSessionId එක
 
     document.addEventListener("DOMContentLoaded", function () {
         // --- 1. DARK LIGHT MODE SYSTEM SCRIPT ---
@@ -1011,6 +1011,7 @@
 
             // Enable inputs and end chat button
             document.getElementById('adminWorkspaceInput').disabled = false;
+            document.getElementById('adminWorkspaceInput').placeholder = "Enter secure response matrix...";
             document.getElementById('adminWorkspaceSendBtn').disabled = false;
             document.getElementById('endChatBtn').disabled = false;
             
@@ -1050,45 +1051,40 @@
         }
     }
 
-    // 🚨 NEW FUNCTION: END LIVE CHAT SESSION TERMINATION
+    // 🚨 REQUESTED FUNCTION: END LIVE CHAT WITH CONFIRMATION BLOCK
     function endChatSession() {
-        if (activeSessionToken && stompSupportClient) {
-            // පාරිභෝගිකයාට සන්නිවේදනය අවසන් කළ බව දන්වන පණිවිඩය
-            const leavePayload = {
-                sender: "Admin",
-                content: "The support session has been closed by the administrator.",
-                type: 'LEAVE',
-                sessionId: activeSessionToken
-            };
-            
-            stompSupportClient.send("/app/chat/" + activeSessionToken + "/sendMessage", {}, JSON.stringify(leavePayload));
-            
-            // කෙටි විරාමයකින් පසු වෙබ්සොකට් එක වසා දැමීම
-            setTimeout(function() {
-                if (stompSupportClient) {
-                    stompSupportClient.disconnect();
-                    stompSupportClient = null;
-                }
-                showToast("Live chat session closed successfully.");
-            }, 500);
-            
-            // UI එක නැවත මුල් තත්ත්වයට පත් කිරීම (Reset UI Elements)
-            document.getElementById('adminWorkspaceInput').value = '';
-            document.getElementById('adminWorkspaceInput').disabled = true;
-            document.getElementById('adminWorkspaceSendBtn').disabled = true;
-            document.getElementById('endChatBtn').disabled = true;
-            document.getElementById('activeChannelBadge').innerText = "No Active Stream";
-            
-            const msgLogsContainer = document.getElementById('adminWorkspaceMsgLogs');
-            msgLogsContainer.innerHTML = `
-                <div style="text-align: center; color: var(--text-muted); font-size: 13px; margin-top: 100px;">
-                    <i class="fa-solid fa-lock" style="font-size: 24px; display: block; margin-bottom: 10px;"></i>
-                    Select an active request ticket loop to bridge live encryption communication.
-                </div>
-            `;
-            
-            activeSessionToken = null;
+        if(confirm("Are you sure you want to end this chat?")) {
+            if (activeSessionToken && stompSupportClient) {
+                // මැසේජ් එක යවනවා
+                stompSupportClient.send("/app/chat/" + activeSessionToken + "/sendMessage", {}, 
+                    JSON.stringify({
+                        sender: "Admin",
+                        content: "Chat ended. Thank you for connecting with us!",
+                        type: "LEAVE"
+                    })
+                );
+                
+                // වෙබ්සොකට් එක වසා දැමීම
+                setTimeout(function() {
+                    if (stompSupportClient) {
+                        stompSupportClient.disconnect();
+                        stompSupportClient = null;
+                    }
+                }, 500);
+                
+                // UI එක disable කරනවා
+                disableChatInput();
+                document.getElementById('endChatBtn').disabled = true; // බට්න් එක ආයේ ඔබන්න බැරි වෙන්න
+                document.getElementById('activeChannelBadge').innerText = "Chat Session Ended";
+            }
         }
+    }
+
+    // 🚨 REQUESTED FUNCTION: DISABLE INPUT CODES MAPPED WITH DOM ID
+    function disableChatInput() {
+        document.getElementById('adminWorkspaceInput').disabled = true;
+        document.getElementById('adminWorkspaceSendBtn').disabled = true;
+        document.getElementById('adminWorkspaceInput').placeholder = "Chat session has ended.";
     }
 
     function renderIncomingLiveBubble(msgObj) {
@@ -1104,10 +1100,9 @@
             bubbleElement.style.margin = '12px 0';
             bubbleElement.innerHTML = `<em>${msgObj.content}</em>`;
             
-            // පාරිභෝගිකයා තනිවම චැට් එකෙන් අයින් වුනොත් ඇඩ්මින්ගේ පැත්තත් මුදවා හැරීම (Auto-reset if client leaves)
+            // පාරිභෝගිකයා තනිවම චැට් එකෙන් අයින් වුනොත් ඇඩ්මින්ගේ පැත්තත් disable කරමු
             if (msgObj.type === 'LEAVE' && msgObj.sender !== "Admin") {
-                document.getElementById('adminWorkspaceInput').disabled = true;
-                document.getElementById('adminWorkspaceSendBtn').disabled = true;
+                disableChatInput();
                 document.getElementById('endChatBtn').disabled = true;
                 document.getElementById('activeChannelBadge').innerText = "Stream Disconnected by User";
             }
