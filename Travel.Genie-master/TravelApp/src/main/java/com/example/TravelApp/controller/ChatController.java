@@ -42,3 +42,10 @@ public class ChatController {
         return "admin-chat"; 
     }
 }
+
+/
+@MessageMapping("/chat/globalQueue")
+@SendTo("/topic/global-queue")
+public String broadcastGlobalQueue(String ticketJson) {
+    return ticketJson; 
+}
