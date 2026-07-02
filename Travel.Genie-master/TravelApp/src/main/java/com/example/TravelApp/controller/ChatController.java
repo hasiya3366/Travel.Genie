@@ -57,10 +57,7 @@ public class ChatController {
     @GetMapping("/support")
     public String showCustomerSupportPage(HttpSession session, Model model) {
         Object loggedUser = session.getAttribute("username");
-        
-        if (loggedUser == null) {
-            loggedUser = session.getAttribute("user");
-        }
+        if (loggedUser == null) loggedUser = session.getAttribute("user");
 
         if (loggedUser != null) {
             if (loggedUser instanceof com.example.TravelApp.model.User) {
@@ -72,40 +69,17 @@ public class ChatController {
         } else {
             model.addAttribute("realName", null);
         }
-        
-        return "support"; 
+        return "support";
     }
 
     @GetMapping("/admin/support")
     public String showAdminSupportPage() {
-        return "admin-chat"; 
+        return "admin-chat";
     }
 
-//     @GetMapping("/admin/api/dashboard-stats")
-//     @ResponseBody
-//     public Map<String, Object> getRealDashboardStats() {
-//         Map<String, Object> stats = new HashMap<>();
-        
-//         long totalUsers = userRepository.count();
-//         long totalBookings = bookingRepository.count();
-//         long totalDestinations = destinationRepository.count();
-//         long totalPackages = tourPackageRepository.count();
-        
-//         double totalRevenue = bookingRepository.getTotalRevenue(); 
-
-//         stats.put("totalUsers", totalUsers);
-//         stats.put("totalDestinations", totalDestinations);
-//         stats.put("totalPackages", totalPackages);
-//         stats.put("totalBookings", totalBookings);
-//         stats.put("totalRevenue", totalRevenue);
-        
-//         return stats;
-//     }
-// }
-@GetMapping("/admin/api/dashboard-stats")
-@ResponseBody
-public Map<String, Object> getRealDashboardStats() {
-    try {
+    @GetMapping("/admin/api/dashboard-stats")
+    @ResponseBody
+    public Map<String, Object> getRealDashboardStats() {
         Map<String, Object> stats = new HashMap<>();
         stats.put("totalUsers", userRepository.count());
         stats.put("totalBookings", bookingRepository.count());
@@ -116,9 +90,5 @@ public Map<String, Object> getRealDashboardStats() {
         stats.put("totalRevenue", (revenue != null) ? revenue : 0.0);
         
         return stats;
-    } catch (Exception e) {
-    
-        e.printStackTrace();
-        return new HashMap<>(); 
     }
 }
