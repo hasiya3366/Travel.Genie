@@ -1023,29 +1023,34 @@
         }
     }
 
-    function renderIncomingLiveBubble(msgObj) {
-        const msgLogsContainer = document.getElementById('adminWorkspaceMsgLogs');
-        const bubbleElement = document.createElement('div');
+    
+function renderIncomingLiveBubble(msgObj) {
+    const msgLogsContainer = document.getElementById('adminWorkspaceMsgLogs');
+    if (!msgLogsContainer) return;
+    
+    const bubbleElement = document.createElement('div');
+    
+    if (msgObj.type === 'JOIN' || msgObj.type === 'LEAVE' || (msgObj.content && msgObj.content.includes('connected'))) {
+        bubbleElement.style.textAlign = 'center';
+        bubbleElement.style.color = 'var(--text-muted)';
+        bubbleElement.style.fontSize = '12px';
+        bubbleElement.style.margin = '12px 0';
+        bubbleElement.innerHTML = `<em>${msgObj.content}</em>`;
+    } 
+  
+    else if (msgObj.content) {
         
-        if (msgObj.type === 'CHAT' || msgObj.type === 'JOIN' || msgObj.type === 'LEAVE') {
-            if (msgObj.type === 'JOIN' || msgObj.type === 'LEAVE') {
-                bubbleElement.style.textAlign = 'center';
-                bubbleElement.style.color = 'var(--text-muted)';
-                bubbleElement.style.fontSize = '12px';
-                bubbleElement.style.margin = '12px 0';
-                bubbleElement.innerHTML = `<em>${msgObj.content}</em>`;
-            } else {
-                if(msgObj.sender && msgObj.sender.toLowerCase().includes('admin')) {
-                    bubbleElement.className = 'admin-msg-bubble';
-                } else {
-                    bubbleElement.className = 'customer-msg-bubble';
-                }
-                bubbleElement.innerHTML = `<strong>${msgObj.sender}:</strong> ${msgObj.content}`;
-            }
-            msgLogsContainer.appendChild(bubbleElement);
-            msgLogsContainer.scrollTop = msgLogsContainer.scrollHeight;
+        if (msgObj.sender && msgObj.sender.toLowerCase().includes('admin')) {
+            bubbleElement.className = 'admin-msg-bubble';
+        } else {
+            bubbleElement.className = 'customer-msg-bubble';
         }
+        bubbleElement.innerHTML = `<strong>${msgObj.sender}:</strong> ${msgObj.content}`;
     }
+    
+    msgLogsContainer.appendChild(bubbleElement);
+    msgLogsContainer.scrollTop = msgLogsContainer.scrollHeight; 
+}
 
     function currentStatsFromDom() {
         return {
