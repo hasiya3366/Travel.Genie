@@ -8,18 +8,18 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
     <style>
-        /* 🎯 PREMIUM DARK/TEAL MINIMALISM THEME SYSTEM */
+        /* 🎯 PREMIUM WHITE / LIGHT MINIMALISM THEME SYSTEM */
         :root {
-            --bg-body: #0b1311;
-            --bg-container: #121e1b;
-            --bg-chat-box: #080f0d;
+            --bg-body: #ffffff;
+            --bg-container: #ffffff;
+            --bg-chat-box: #fafafa;
             --teal-main: #009688;
             --teal-glow: #00bfa5;
-            --text-main: #e2e8f0;
-            --text-muted: #94a3b8;
-            --border-color: #192a25;
-            --customer-bubble: #1e3a34;
-            --admin-bubble: #112d26;
+            --text-main: #1a2a26;
+            --text-muted: #64748b;
+            --border-color: #e2e8f0;
+            --customer-bubble: #009688;
+            --admin-bubble: #f1f5f9;
             --danger-glow: #e74c3c;
         }
 
@@ -46,7 +46,7 @@
             background: var(--bg-container); 
             border-radius: 24px; 
             padding: 30px; 
-            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.6); 
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05); 
             border: 1px solid var(--border-color); 
             display: flex;
             flex-direction: column;
@@ -81,7 +81,7 @@
         .status-badge-zone { 
             font-size: 13px; 
             font-weight: 500; 
-            color: var(--teal-glow); 
+            color: var(--teal-main); 
             display: flex;
             align-items: center;
             gap: 8px;
@@ -96,7 +96,7 @@
         }
 
         @keyframes pulse-glow {
-            0% { box-shadow: 0 0 0 0 rgba(0, 191, 165, 0.5); }
+            0% { box-shadow: 0 0 0 0 rgba(0, 191, 165, 0.4); }
             70% { box-shadow: 0 0 0 6px rgba(0, 191, 165, 0); }
             100% { box-shadow: 0 0 0 0 rgba(0, 191, 165, 0); }
         }
@@ -116,7 +116,7 @@
         /* Custom Scrollbar */
         .chat-messages::-webkit-scrollbar { width: 6px; }
         .chat-messages::-webkit-scrollbar-track { background: transparent; }
-        .chat-messages::-webkit-scrollbar-thumb { background: var(--border-color); border-radius: 10px; }
+        .chat-messages::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
 
         .message { 
             padding: 12px 16px; 
@@ -133,6 +133,7 @@
             margin-left: auto; 
             border-radius: 16px 16px 2px 16px;
             text-align: left; 
+            box-shadow: 0 3px 10px rgba(0, 150, 136, 0.15);
         }
 
         .admin-msg { 
@@ -145,7 +146,7 @@
         }
 
         .system-msg { 
-            background: rgba(255, 255, 255, 0.03); 
+            background: #ffffff; 
             color: var(--text-muted);
             margin: 5px auto; 
             text-align: center; 
@@ -153,7 +154,7 @@
             max-width: 100%; 
             border-radius: 10px;
             padding: 8px 16px;
-            border: 1px solid rgba(255, 255, 255, 0.02);
+            border: 1px solid var(--border-color);
             font-style: italic;
         }
 
@@ -167,15 +168,17 @@
             padding: 14px 18px; 
             background: var(--bg-chat-box); 
             border: 1px solid var(--border-color); 
-            color: white; 
+            color: var(--text-main); 
             border-radius: 12px; 
             outline: none;
             font-size: 14px;
-            transition: border-color 0.2s;
+            transition: all 0.2s;
         }
 
         input[type="text"]:focus {
             border-color: var(--teal-main);
+            background: #ffffff;
+            box-shadow: 0 0 0 3px rgba(0, 150, 136, 0.1);
         }
 
         button { 
@@ -196,8 +199,8 @@
         }
 
         button:disabled { 
-            background: #222; 
-            color: #555; 
+            background: #e2e8f0; 
+            color: #94a3b8; 
             cursor: not-allowed; 
         }
     </style>
@@ -229,32 +232,35 @@
 
 <script th:inline="javascript">
     let stompClient = null;
+    
     // 💡 Dynamic session token allocation
     const sessionId = "SESSION_" + Math.floor(Math.random() * 100000);
-    const username = "Hasindu"; 
+    
+    // 👤 Thymeleaf Security Dynamic Intercept Loop
+    const loggedInUser = /*[[${#authentication != null ? #authentication.name : null}]]*/ null;
+    const username = (loggedInUser && loggedInUser !== 'anonymousUser') ? loggedInUser : "Traveler_" + Math.floor(Math.random() * 1000); 
 
     function connect() {
         const socket = new SockJS('/ws-support');
         stompClient = Stomp.over(socket);
-        stompClient.debug = null; // Clean clean workspace console
+        stompClient.debug = null; 
         
         stompClient.connect({}, function (frame) {
             document.getElementById('status').innerText = "Status: Connected! Waiting for support desk routing...";
             
-            // 📡 1. Dynamic private communication tunnel mapping inside active session
+            // 📡 1. Dynamic private communication tunnel mapping
             stompClient.subscribe('/topic/chat/' + sessionId, function (response) {
                 onMessageReceived(JSON.parse(response.body));
             });
 
-            // 📥 2. Real-time alert initialization trigger to broad network scope
+            // 📥 2. Real-time alert initialization trigger
             stompClient.send("/app/chat/" + sessionId + "/addUser", {}, JSON.stringify({
                 sender: username, 
                 type: 'JOIN', 
                 sessionId: sessionId
             }));
             
-            // 📡 3. 🎯 CRITICAL NEW: Global queue register radar system trigger
-            // This force pushes the active ticket straight into the admin's live view panel
+            // 📡 3. Global queue register radar system trigger
             setTimeout(() => {
                 stompClient.send("/app/chat/globalQueue", {}, JSON.stringify({
                     username: username,
@@ -262,7 +268,6 @@
                 }));
             }, 500);
             
-            // Enable interactive elements inputs inside lounge zone
             document.getElementById('messageInput').disabled = false;
             document.getElementById('sendBtn').disabled = false;
         });
@@ -286,35 +291,33 @@
         const chatMessages = document.getElementById('chatMessages');
         const messageElement = document.createElement('div');
         
-        // 💡 1. System response logic intercept loop (JOIN Alert)
-        if(message.type === 'JOIN') {
+        // 💡 1. System response logic intercept loop (JOIN / LEAVE)
+        if (message.type === 'JOIN' || message.type === 'LEAVE' || (message.content && message.content.includes('connected'))) {
             messageElement.className = 'message system-msg';
             
-            if (message.sender === 'Admin') {
-                // 🤝 Admin accept කළාම කස්ටමර්ට වැටෙන ලස්සන සිස්ටම් එක මචං
-                messageElement.innerHTML = `<i class="fa-solid fa-user-check"></i> Support Agent connected to active secure stream.`;
+            if (message.type === 'JOIN' && message.sender === 'Admin') {
+                messageElement.innerHTML = `<i class="fa-solid fa-user-check" style="color: var(--teal-main);"></i> Support Agent connected to active secure stream.`;
                 document.getElementById('status').innerText = "Status: Live connected with Official Support Agent";
                 document.getElementById('statusPulse').style.backgroundColor = "#00bfa5";
-            } else {
-                messageElement.innerText = "Support token successfully queued into operational matrix.";
+            } 
+            else if (message.type === 'LEAVE') {
+                messageElement.className = 'message system-msg';
+                messageElement.style.color = 'var(--danger-glow)';
+                messageElement.innerHTML = `<i class="fa-solid fa-triangle-exclamation"></i> ${message.content}`;
+                
+                document.getElementById('status').innerText = "Status: Request Declined";
+                document.getElementById('statusPulse').style.animation = "none";
+                document.getElementById('statusPulse').style.backgroundColor = "var(--danger-glow)";
+                
+                document.getElementById('messageInput').disabled = true;
+                document.getElementById('sendBtn').disabled = true;
+                document.getElementById('messageInput').placeholder = "Terminal bridge disconnected.";
+            }
+            else {
+                messageElement.innerText = message.content || "Support token successfully queued.";
             }
         } 
-        // ❌ 2. Admin reject කළොත් කස්ටමර්ව දැනුවත් කරන සිස්ටම් එක (LEAVE Alert)
-        else if (message.type === 'LEAVE') {
-            messageElement.className = 'message system-msg';
-            messageElement.style.color = 'var(--danger-glow)';
-            messageElement.innerHTML = `<i class="fa-solid fa-triangle-exclamation"></i> ${message.content}`;
-            
-            document.getElementById('status').innerText = "Status: Request Declined";
-            document.getElementById('statusPulse').style.animation = "none";
-            document.getElementById('statusPulse').style.backgroundColor = "var(--danger-glow)";
-            
-            // Interaction terminal blocking safety protocols
-            document.getElementById('messageInput').disabled = true;
-            document.getElementById('sendBtn').disabled = true;
-            document.getElementById('messageInput').placeholder = "Terminal bridge disconnected.";
-        }
-        // 💬 3. Standard chat transmission processing block
+        // 💬 2. Standard chat transmission processing block
         else if (message.content) {
             if(message.sender === username) {
                 messageElement.className = 'message customer-msg';
@@ -327,10 +330,9 @@
         }
         
         chatMessages.appendChild(messageElement);
-        chatMessages.scrollTop = chatMessages.scrollHeight; // Auto secure scrolling focus tracking
+        chatMessages.scrollTop = chatMessages.scrollHeight; 
     }
 
-    // 🔌 Auto loop engine connection invocation on interface initial render
     window.onload = connect;
 </script>
 </body>
