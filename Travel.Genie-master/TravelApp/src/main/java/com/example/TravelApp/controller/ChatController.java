@@ -28,8 +28,9 @@ public class ChatController {
     @Autowired
     private com.example.TravelApp.repository.DestinationRepository destinationRepository;
 
+    // 💡 ජාවා කම්පයිලර් එකට පැටලෙන්නේ නැති වෙන්න TourPackageRepository කියලා වෙනස් කළා මචං
     @Autowired
-    private com.example.TravelApp.repository.PackageRepository packageRepository;
+    private com.example.TravelApp.repository.TourPackageRepository tourPackageRepository;
 
     @MessageMapping("/chat/{sessionId}/sendMessage")
     @SendTo("/topic/chat/{sessionId}")
@@ -89,7 +90,7 @@ public class ChatController {
         long totalUsers = userRepository.count();
         long totalBookings = bookingRepository.count();
         long totalDestinations = destinationRepository.count();
-        long totalPackages = packageRepository.count();
+        long totalPackages = tourPackageRepository.count(); // 🚀 මෙතනත් අප්ඩේට් කළා!
         
         double totalRevenue = 1000280.0; 
 
