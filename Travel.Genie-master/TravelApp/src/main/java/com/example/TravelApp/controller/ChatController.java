@@ -28,7 +28,6 @@ public class ChatController {
     @Autowired
     private com.example.TravelApp.repository.DestinationRepository destinationRepository;
 
-    // 💡 ජාවා කම්පයිලර් එකට පැටලෙන්නේ නැති වෙන්න TourPackageRepository කියලා වෙනස් කළා මචං
     @Autowired
     private com.example.TravelApp.repository.TourPackageRepository tourPackageRepository;
 
@@ -90,9 +89,9 @@ public class ChatController {
         long totalUsers = userRepository.count();
         long totalBookings = bookingRepository.count();
         long totalDestinations = destinationRepository.count();
-        long totalPackages = tourPackageRepository.count(); // 🚀 මෙතනත් අප්ඩේට් කළා!
+        long totalPackages = tourPackageRepository.count();
         
-        double totalRevenue = 1000280.0; 
+        double totalRevenue = bookingRepository.getTotalRevenue(); 
 
         stats.put("totalUsers", totalUsers);
         stats.put("totalDestinations", totalDestinations);
