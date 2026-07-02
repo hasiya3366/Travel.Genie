@@ -1224,28 +1224,33 @@
     }
 
     // --- MASTER AUTO-UPDATE FUNCTION ---
-    function refreshAllCharts() {
-        fetch(STATS_API_URL)
-            .then(function (res) {
-                if (!res.ok) throw new Error('Stats endpoint not available (' + res.status + ')');
-                return res.json();
-            })
-            .then(function (data) {
-                applyFreshStatsToDom(data);
+  function refreshAllCharts() {
+    fetch(STATS_API_URL)
+        .then(function (res) {
+            if (!res.ok) throw new Error('Stats endpoint not available (' + res.status + ')');
+            return res.json();
+        })
+        .then(function (data) {
+            applyFreshStatsToDom(data);
+            
+            if (typeof dashboardChart !== 'undefined' && dashboardChart.data) {
                 dashboardChart.data.datasets[0].data = [
                     data.totalUsers, data.totalDestinations, data.totalPackages, data.totalBookings
                 ];
                 dashboardChart.update();
+            }
 
-                updateCategoryChart();
-                updateRevenueTrendChart(data.totalRevenue);
-            })
-            .catch(function (err) {
-                console.warn('[auto-update] ' + err.message + ' — falling back to DOM-only refresh.');
-                updateCategoryChart();
+            if (typeof updateCategoryChart === 'function') updateCategoryChart();
+            if (typeof updateRevenueTrendChart === 'function') updateRevenueTrendChart(data.totalRevenue);
+        })
+        .catch(function (err) {
+            console.warn('[auto-update] ' + err.message + ' — falling back to DOM-only refresh.');
+            if (typeof updateCategoryChart === 'function') updateCategoryChart();
+            if (typeof currentStatsFromDom === 'function' && typeof updateRevenueTrendChart === 'function') {
                 updateRevenueTrendChart(currentStatsFromDom().totalRevenue);
-            });
-    }
+            }
+        });
+}
 
     function applyFreshStatsToDom(data) {
         if (data.totalUsers != null) document.getElementById("domTotalUsers").innerText = data.totalUsers;
