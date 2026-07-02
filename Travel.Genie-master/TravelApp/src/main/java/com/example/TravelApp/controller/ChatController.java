@@ -77,22 +77,24 @@ public class ChatController {
         return "admin-chat";
     }
 
-    @GetMapping("/admin/api/dashboard-stats")
-    @ResponseBody
-    public Map<String, Object> getRealDashboardStats() {
-        Map<String, Object> stats = new HashMap<>();
-        try {
-            stats.put("totalUsers", userRepository.count());
-            stats.put("totalBookings", bookingRepository.count());
-            stats.put("totalDestinations", destinationRepository.count());
-            stats.put("totalPackages", tourPackageRepository.count());
-            
-            Double revenue = bookingRepository.getTotalRevenue();
-            stats.put("totalRevenue", (revenue != null) ? revenue : 0.0);
-        } catch (Exception e) {
-            System.out.println("❌ Stats Error: " + e.getMessage());
-            stats.put("totalRevenue", 0.0);
-        }
-        return stats;
+  @GetMapping("/admin/api/dashboard-stats")
+@ResponseBody
+public Map<String, Object> getRealDashboardStats() {
+    Map<String, Object> stats = new HashMap<>();
+    try {
+        stats.put("totalUsers", userRepository.count());
+        stats.put("totalBookings", bookingRepository.count());
+        stats.put("totalDestinations", destinationRepository.count());
+        stats.put("totalPackages", tourPackageRepository.count());
+        
+        // 🚨 මෙතන කිසිම පරණ ගාණක් නැහැ, null ආවොත් 0.0 විතරයි දාන්නේ
+        Double revenue = bookingRepository.getTotalRevenue();
+        stats.put("totalRevenue", (revenue != null) ? revenue : 0.0);
+        
+    } catch (Exception e) {
+        // එරර් එකක් ආවොත් 0.0 යවනවා, හාඩ්කෝඩ් කරපු අගයක් දාන්නේ නැහැ
+        stats.put("totalRevenue", 0.0);
     }
+    return stats;
+}
 }
