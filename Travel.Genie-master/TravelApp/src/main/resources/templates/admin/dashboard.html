@@ -863,7 +863,7 @@
     // 📡 LIVE WORKSPACE STOMP ENGINE OBJECT CONFIGS
     let stompSupportClient = null;
     let globalQueueClient = null; 
-    let activeSessionToken = null; // මේක තමයි ඔයාගේ කේතයේ තියෙන currentSessionId එක
+    let activeSessionToken = null;
 
     document.addEventListener("DOMContentLoaded", function () {
         // --- 1. DARK LIGHT MODE SYSTEM SCRIPT ---
@@ -1051,36 +1051,34 @@
         }
     }
 
-    // 🚨 REQUESTED FUNCTION: END LIVE CHAT WITH CONFIRMATION BLOCK
+    // 🚨 UPDATED FUNCTION: CONFIRMATION WINDOW ALERT REMOVED
     function endChatSession() {
-        if(confirm("Are you sure you want to end this chat?")) {
-            if (activeSessionToken && stompSupportClient) {
-                // මැසේජ් එක යවනවා
-                stompSupportClient.send("/app/chat/" + activeSessionToken + "/sendMessage", {}, 
-                    JSON.stringify({
-                        sender: "Admin",
-                        content: "Chat ended. Thank you for connecting with us!",
-                        type: "LEAVE"
-                    })
-                );
-                
-                // වෙබ්සොකට් එක වසා දැමීම
-                setTimeout(function() {
-                    if (stompSupportClient) {
-                        stompSupportClient.disconnect();
-                        stompSupportClient = null;
-                    }
-                }, 500);
-                
-                // UI එක disable කරනවා
-                disableChatInput();
-                document.getElementById('endChatBtn').disabled = true; // බට්න් එක ආයේ ඔබන්න බැරි වෙන්න
-                document.getElementById('activeChannelBadge').innerText = "Chat Session Ended";
-            }
+        if (activeSessionToken && stompSupportClient) {
+            // මැසේජ් එක යවනවා
+            stompSupportClient.send("/app/chat/" + activeSessionToken + "/sendMessage", {}, 
+                JSON.stringify({
+                    sender: "Admin",
+                    content: "Chat ended. Thank you for connecting with us!",
+                    type: "LEAVE"
+                })
+            );
+            
+            // වෙබ්සොකට් එක වසා දැමීම
+            setTimeout(function() {
+                if (stompSupportClient) {
+                    stompSupportClient.disconnect();
+                    stompSupportClient = null;
+                }
+            }, 500);
+            
+            // UI එක disable කරනවා
+            disableChatInput();
+            document.getElementById('endChatBtn').disabled = true; // බට්න් එක ආයේ ඔබන්න බැරි වෙන්න
+            document.getElementById('activeChannelBadge').innerText = "Chat Session Ended";
         }
     }
 
-    // 🚨 REQUESTED FUNCTION: DISABLE INPUT CODES MAPPED WITH DOM ID
+    // 🚨 DISABLE INPUT CODES MAPPED WITH DOM ID
     function disableChatInput() {
         document.getElementById('adminWorkspaceInput').disabled = true;
         document.getElementById('adminWorkspaceSendBtn').disabled = true;
@@ -1100,7 +1098,7 @@
             bubbleElement.style.margin = '12px 0';
             bubbleElement.innerHTML = `<em>${msgObj.content}</em>`;
             
-            // පාරිභෝගිකයා තනිවම චැට් එකෙන් අයින් වුනොත් ඇඩ්මින්ගේ පැත්තත් disable කරමු
+            // පාරිභෝගිකයා තනිවම"@ චැට් එකෙන් අයින් වුනොත් ඇඩ්මින්ගේ පැත්තත් disable කරමු
             if (msgObj.type === 'LEAVE' && msgObj.sender !== "Admin") {
                 disableChatInput();
                 document.getElementById('endChatBtn').disabled = true;
