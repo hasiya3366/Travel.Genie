@@ -7,11 +7,16 @@ import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.messaging.simp.SimpMessageHeaderAccessor;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.GetMapping;
 
 @Controller
 public class ChatController {
 
-    // 🎯 යූසර් කෙනෙක් හෝ ඇඩ්මින් කෙනෙක් ලයිව් චැට් රූම් එකකට මැසේජ් එකක් යැව්වාම ක්‍රියාත්මක වෙනවා
+    // ==========================================
+    // 📡 1. WEBSOCKET REAL-TIME MESSAGING LOGIC
+    // ==========================================
+
+    // 🎯 යූසර් හෝ ඇඩ්මින් ලයිව් චැට් රූම් එකකට මැසේජ් එකක් යැව්වාම ක්‍රියාත්මක වෙනවා
     @MessageMapping("/chat/{sessionId}/sendMessage")
     @SendTo("/topic/chat/{sessionId}")
     public ChatMessage sendMessage(@DestinationVariable String sessionId, @Payload ChatMessage chatMessage) {
@@ -22,9 +27,26 @@ public class ChatController {
     @MessageMapping("/chat/{sessionId}/addUser")
     @SendTo("/topic/chat/{sessionId}")
     public ChatMessage addUser(@DestinationVariable String sessionId, @Payload ChatMessage chatMessage, SimpMessageHeaderAccessor headerAccessor) {
-        // සෙෂන් එක ඇතුළේ යූසර්ගේ නම තියාගන්නවා
-        headerAccessor.getSessionAttributes().put("username", chatMessage.getSender());
-        headerAccessor.getSessionAttributes().put("sessionId", sessionId);
+        if (headerAccessor.getSessionAttributes() != null) {
+            headerAccessor.getSessionAttributes().put("username", chatMessage.getSender());
+            headerAccessor.getSessionAttributes().put("sessionId", sessionId);
+        }
         return chatMessage;
+    }
+
+    // ==========================================
+    // 🌐 2. THYMELEAF VIEW PAGE MAPPINGS
+    // ==========================================
+
+    // 👤 කස්ටමර්ට පේන Live Support පිටුව ඕපන් කර ගැනීමට
+    @GetMapping("/support")
+    public String showCustomerSupportPage() {
+        return "support"; // templates/support.html එක රෙන්ඩර් කරයි
+    }
+
+    // 👑 ඇඩ්මින්ට පේන Live Support Dashboard පිටුව ඕපන් කර ගැනීමට
+    @GetMapping("/admin/support")
+    public String showAdminSupportPage() {
+        return "admin-chat"; // templates/admin-chat.html එක රෙන්ඩර් කරයි
     }
 }
