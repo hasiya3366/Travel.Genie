@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>TravelGenie — Admin Live Support Dashboard</title>
+    <style>
+        body { background-color: #0d1614; color: #ffffff; font-family: 'Segoe UI', sans-serif; margin: 40px; display: flex; gap: 20px; }
+        .panel { background: #14221f; border-radius: 12px; padding: 20px; border: 1px solid #1a2e29; }
+        .queue-panel { width: 30%; }
+        .chat-panel { width: 70%; }
+        .session-item { padding: 10px; background: #1e3a34; margin-bottom: 5px; border-radius: 4px; cursor: pointer; display: flex; justify-content: space-between; }
+        .chat-messages { height: 350px; overflow-y: auto; border: 1px solid #1a2e29; background: #0d1614; padding: 10px; margin-bottom: 10px; border-radius: 6px; }
+        .message { margin-bottom: 10px; padding: 8px; border-radius: 6px; max-width: 80%; }
+        .customer-msg { background: #1e3a34; margin-right: auto; text-align: left; }
+        .admin-msg { background: #2a4d44; margin-left: auto; text-align: right; }
+        input[type="text"] { width: 80%; padding: 10px; background: #14221f; border: 1px solid #1a2e29; color: white; border-radius: 4px; }
+        button { padding: 10px 15px; background: #00bfa5; border: none; color: black; font-weight: bold; cursor: pointer; border-radius: 4px; }
+    </style>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/sockjs-client/1.5.1/sockjs.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/stomp.js/2.3.3/stomp.min.js"></script>
+</head>
+<body>
+
+<div class="panel queue-panel">
+    <h3>📥 Active Support Tickets</h3>
+    <div id="queueList">
+        <!-- 💡 ටෙස්ට් කරන්න ලේසි වෙන්න අපි එක Fake Session එකක් දාමු, පස්සේ මේක Dynamic කරමු -->
+        <div class="session-item">
+            <span>Customer: Hasindu</span>
+            <button onclick="acceptChat('SESSION_12345')">Accept</button>
+        </div>
+    </div>
+</div>
+
+<div class="panel chat-panel">
+    <h3>💬 Live Support Workspace</h3>
+    <div id="activeSessionId" style="color: #888; font-size: 12px; margin-bottom: 10px;">No active chat selected</div>
+    
+    <div class="chat-messages" id="adminChatMessages"></div>
+    
+    <input type="text" id="adminMessageInput" placeholder="Reply to customer..." disabled>
+    <button id="adminSendBtn" onclick="sendAdminMessage()" disabled>Reply</button>
+</div>
+
+<script>
+    let stompClient = null;
+    let currentSessionId = null;
+    const adminName = "Admin_Malith"; // 👤 ඇඩ්මින්ගේ නම
+
+    function acceptChat(sessionId) {
+        currentSessionId = sessionId;
+        document.getElementById('activeSessionId').innerText = "Active Channel: " + sessionId;
+        
+        const socket = new SockJS('/ws-support');
+        stompClient = Stomp.over(socket);
+        
+        stompClient.connect({}, function (frame) {
+            // 📡 කස්ටමර් ඉන්න රූම් එකටම ඇඩ්මින් වයර් වෙනවා
+            stompClient.subscribe('/topic/chat/' + currentSessionId, function (response) {
+                showAdminMessage(JSON.parse(response.body));
+            });
+
+            // 📢 ඇඩ්මින් ජොයින් වුණා කියලා කස්ටමර්ට සිස්ටම් මැසේජ් එකක් යවනවා
+            const joinMessage = { sender: adminName, content: "Agent connected to session.", type: 'CHAT', sessionId: currentSessionId };
+            stompClient.send("/app/chat/" + currentSessionId + "/sendMessage", {}, JSON.stringify(joinMessage));
+
+            document.getElementById('adminMessageInput').disabled = false;
+            document.getElementById('adminSendBtn').disabled = false;
+        });
+    }
+
+    function sendAdminMessage() {
+        const content = document.getElementById('adminMessageInput').value.trim();
+        if(content && stompClient) {
+            const chatMessage = { sender: adminName, content: content, type: 'CHAT', sessionId: currentSessionId };
+            stompClient.send("/app/chat/" + currentSessionId + "/sendMessage", {}, JSON.stringify(chatMessage));
+            document.getElementById('adminMessageInput').value = '';
+        }
+    }
+
+    function showAdminMessage(message) {
+        const chatMessages = document.getElementById('adminChatMessages');
+        const messageElement = document.createElement('div');
+        
+        if (message.type === 'CHAT') {
+            if(message.sender === adminName) {
+                messageElement.classList.add('message', 'admin-msg');
+            } else {
+                messageElement.classList.add('message', 'customer-msg');
+            }
+            messageElement.innerText = message.sender + ": " + message.content;
+            chatMessages.appendChild(messageElement);
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+        }
+    }
+</script>
+</body>
+</html>
