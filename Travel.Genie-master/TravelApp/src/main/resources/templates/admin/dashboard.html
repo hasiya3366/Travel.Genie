@@ -1252,32 +1252,14 @@
         });
 }
 
-    // function applyFreshStatsToDom(data) {
-    //     if (data.totalUsers != null) document.getElementById("domTotalUsers").innerText = data.totalUsers;
-    //     if (data.totalDestinations != null) document.getElementById("domTotalDestinations").innerText = data.totalDestinations;
-    //     if (data.totalPackages != null) document.getElementById("domTotalPackages").innerText = data.totalPackages;
-    //     if (data.totalBookings != null) document.getElementById("domTotalBookings").innerText = data.totalBookings;
-    //     if (data.totalRevenue != null) {
-    //         document.getElementById("hiddenRevenue").value = data.totalRevenue;
-    //         document.getElementById("domRevenueDisplay").innerText = 'LKR ' + data.totalRevenue;
-    //     }
-    // }
 function applyFreshStatsToDom(data) {
-  
-    if (document.getElementById('domTotalUsers')) 
-        document.getElementById('domTotalUsers').innerText = data.totalUsers;
-    if (document.getElementById('domTotalDestinations')) 
-        document.getElementById('domTotalDestinations').innerText = data.totalDestinations;
-    if (document.getElementById('domTotalPackages')) 
-        document.getElementById('domTotalPackages').innerText = data.totalPackages;
-    if (document.getElementById('domTotalBookings')) 
-        document.getElementById('domTotalBookings').innerText = data.totalBookings;
-
-  
+    // ... Users, Bookings ටික අදාළ කරගන්න ...
+    
+    // 💰 රිවෙනියු එක ලයිව් අප්ඩේට් වෙන්න ඕනේ පරණ අගයන් මුකුත් නැතුව:
     const revenueDisplay = document.getElementById("domRevenueDisplay");
     if (revenueDisplay) {
-
-        revenueDisplay.innerText = 'LKR ' + data.totalRevenue.toLocaleString();
+        // API එකෙන් එන අගයම කෙළින්ම පෙන්වනවා
+        revenueDisplay.innerText = 'LKR ' + Number(data.totalRevenue).toLocaleString(undefined, {minimumFractionDigits: 2});
     }
 }
     // CSV Export Script
