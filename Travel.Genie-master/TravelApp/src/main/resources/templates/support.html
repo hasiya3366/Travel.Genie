@@ -9,17 +9,17 @@
     
     <style>
         :root {
-            --bg-body: #ffffff;
+            --bg-body: #f8fafc;
             --bg-container: #ffffff;
-            --bg-chat-box: #fafafa;
+            --bg-chat-box: #fdfdfd;
             --teal-main: #009688;
             --teal-glow: #00bfa5;
-            --text-main: #1a2a26;
+            --text-main: #0f172a;
             --text-muted: #64748b;
             --border-color: #e2e8f0;
-            --customer-bubble: #009688;
-            --admin-bubble: #f1f5f9;
-            --danger-glow: #e74c3c;
+            --customer-bubble: linear-gradient(135deg, #009688, #00bfa5);
+            --admin-bubble: #ffffff;
+            --danger-glow: #ef4444;
         }
 
         * {
@@ -37,40 +37,47 @@
             align-items: center;
             min-height: 100vh;
             padding: 20px;
+            background-image: radial-gradient(rgba(0, 150, 136, 0.03) 1px, transparent 0);
+            background-size: 24px 24px;
         }
 
         .chat-container { 
             width: 100%;
             max-width: 520px; 
             background: var(--bg-container); 
-            border-radius: 24px; 
-            padding: 30px; 
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05); 
-            border: 1px solid var(--border-color); 
+            border-radius: 28px; 
+            padding: 35px; 
+            box-shadow: 0 20px 40px -15px rgba(15, 23, 42, 0.06), 0 0 0 1px rgba(0, 150, 136, 0.05); 
             display: flex;
             flex-direction: column;
-            gap: 20px;
+            gap: 24px;
+            position: relative;
         }
 
         .chat-header {
             display: flex;
             flex-direction: column;
-            gap: 6px;
+            gap: 8px;
             border-bottom: 1px solid var(--border-color);
-            padding-bottom: 15px;
+            padding-bottom: 20px;
         }
 
         .chat-header h2 {
-            font-size: 22px;
+            font-size: 20px;
             font-weight: 700;
             color: var(--text-main);
             display: flex;
             align-items: center;
-            gap: 10px;
+            gap: 12px;
+            letter-spacing: -0.5px;
         }
 
         .chat-header h2 i {
             color: var(--teal-main);
+            background: rgba(0, 150, 136, 0.08);
+            padding: 10px;
+            border-radius: 14px;
+            font-size: 18px;
         }
 
         .chat-header h2 span {
@@ -80,10 +87,15 @@
         .status-badge-zone { 
             font-size: 13px; 
             font-weight: 500; 
-            color: var(--teal-main); 
+            color: var(--text-muted); 
             display: flex;
             align-items: center;
             gap: 8px;
+            background: #f1f5f9;
+            padding: 6px 14px;
+            border-radius: 20px;
+            width: fit-content;
+            margin-top: 4px;
         }
 
         .pulse-indicator {
@@ -91,115 +103,137 @@
             height: 8px;
             border-radius: 50%;
             background-color: var(--teal-glow);
-            animation: pulse-glow 1.5s infinite;
+            animation: pulse-glow 2s infinite;
         }
 
         @keyframes pulse-glow {
-            0% { box-shadow: 0 0 0 0 rgba(0, 191, 165, 0.4); }
-            70% { box-shadow: 0 0 0 6px rgba(0, 191, 165, 0); }
+            0% { box-shadow: 0 0 0 0 rgba(0, 191, 165, 0.5); }
+            70% { box-shadow: 0 0 0 8px rgba(0, 191, 165, 0); }
             100% { box-shadow: 0 0 0 0 rgba(0, 191, 165, 0); }
         }
 
         .chat-messages { 
-            height: 340px; 
+            height: 360px; 
             overflow-y: auto; 
             border: 1px solid var(--border-color); 
             background: var(--bg-chat-box); 
-            padding: 20px; 
-            border-radius: 16px; 
+            padding: 24px; 
+            border-radius: 20px; 
             display: flex;
             flex-direction: column;
-            gap: 12px;
+            gap: 14px;
+            scroll-behavior: smooth;
+            box-shadow: inset 0 2px 8px rgba(0,0,0,0.01);
         }
 
-        .chat-messages::-webkit-scrollbar { width: 6px; }
+        .chat-messages::-webkit-scrollbar { width: 5px; }
         .chat-messages::-webkit-scrollbar-track { background: transparent; }
-        .chat-messages::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
+        .chat-messages::-webkit-scrollbar-thumb { background: #e2e8f0; border-radius: 10px; }
 
         .message { 
-            padding: 12px 16px; 
-            border-radius: 16px; 
+            padding: 12px 18px; 
+            border-radius: 18px; 
             font-size: 14px;
-            line-height: 1.5;
-            max-width: 80%; 
+            line-height: 1.6;
+            max-width: 82%; 
             word-wrap: break-word;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.015);
         }
 
         .customer-msg { 
             background: var(--customer-bubble); 
             color: white;
             margin-left: auto; 
-            border-radius: 16px 16px 2px 16px;
-            text-align: left; 
-            box-shadow: 0 3px 10px rgba(0, 150, 136, 0.15);
+            border-radius: 18px 18px 4px 18px;
+            box-shadow: 0 4px 12px rgba(0, 150, 136, 0.15);
         }
 
         .admin-msg { 
             background: var(--admin-bubble); 
             color: var(--text-main);
             margin-right: auto; 
-            border-radius: 16px 16px 16px 2px;
-            text-align: left; 
+            border-radius: 18px 18px 18px 4px;
             border: 1px solid var(--border-color);
+            box-shadow: 0 4px 6px -1px rgba(0,0,0,0.01);
         }
 
         .system-msg { 
             background: #ffffff; 
             color: var(--text-muted);
-            margin: 5px auto; 
+            margin: 6px auto; 
             text-align: center; 
-            font-size: 12.5px; 
-            max-width: 100%; 
-            border-radius: 10px;
-            padding: 8px 16px;
+            font-size: 12px; 
+            max-width: 95%; 
+            border-radius: 12px;
+            padding: 8px 18px;
             border: 1px solid var(--border-color);
-            font-style: italic;
+            font-style: normal;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 8px;
         }
 
         .input-group {
             display: flex;
-            gap: 10px;
+            gap: 12px;
+            align-items: center;
         }
 
         input[type="text"] { 
             flex-grow: 1;
-            padding: 14px 18px; 
-            background: var(--bg-chat-box); 
+            padding: 14px 20px; 
+            background: #ffffff; 
             border: 1px solid var(--border-color); 
             color: var(--text-main); 
-            border-radius: 12px; 
+            border-radius: 16px; 
             outline: none;
             font-size: 14px;
-            transition: all 0.2s;
+            transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 0 2px 4px rgba(0,0,0,0.01);
         }
 
-        input[type="text"]:focus {
+        input[type="text"]:focus:not(:disabled) {
             border-color: var(--teal-main);
-            background: #ffffff;
-            box-shadow: 0 0 0 3px rgba(0, 150, 136, 0.1);
+            box-shadow: 0 0 0 4px rgba(0, 150, 136, 0.1);
         }
 
         button { 
-            padding: 0 24px; 
+            padding: 14px 28px; 
             background: var(--teal-main); 
             border: none; 
             color: white; 
             font-weight: 600; 
             font-size: 14px;
             cursor: pointer; 
-            border-radius: 12px; 
-            transition: all 0.2s;
+            border-radius: 16px; 
+            transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+            display: flex;
+            align-items: center;
+            gap: 8px;
         }
 
         button:hover:not(:disabled) { 
-            background: var(--teal-glow);
-            box-shadow: 0 4px 12px rgba(0, 191, 165, 0.2);
+            background: #00796b;
+            box-shadow: 0 6px 16px rgba(0, 150, 136, 0.25);
+            transform: translateY(-1px);
+        }
+
+        button:active:not(:disabled) {
+            transform: translateY(0);
         }
 
         button:disabled { 
-            background: #e2e8f0; 
+            background: #f1f5f9; 
             color: #94a3b8; 
             cursor: not-allowed; 
+            border: 1px solid var(--border-color);
+        }
+        
+        input[type="text"]:disabled {
+            background: #f8fafc;
+            color: #94a3b8;
+            cursor: not-allowed;
         }
     </style>
     
@@ -210,15 +244,15 @@
 
 <div class="chat-container">
     <div class="chat-header">
-        <h2><i class="fa-solid fa-leaf"></i> Travel<span>Genie</span> Support Matrix</h2>
+        <h2><i class="fa-solid fa-square-rss"></i> Travel<span>Genie</span> Support Matrix</h2>
         <div class="status-badge-zone">
             <div class="pulse-indicator" id="statusPulse"></div>
-            <span id="status">Status: Mapping sync coordinates...</span>
+            <span id="status">Mapping sync coordinates...</span>
         </div>
     </div>
     
     <div class="chat-messages" id="chatMessages">
-        <div class="message system-msg">Initialize dynamic support token route loop. Secured end-to-end bridge.</div>
+        <div class="message system-msg"><i class="fa-solid fa-shield-halved" style="color:var(--teal-main)"></i> Initialize dynamic support token route loop. Secured end-to-end bridge.</div>
     </div>
     
     <div class="input-group">
@@ -240,7 +274,7 @@
         stompClient.debug = null; 
         
         stompClient.connect({}, function (frame) {
-            document.getElementById('status').innerText = "Status: Connected! Waiting for support desk routing...";
+            document.getElementById('status').innerText = "Connected! Waiting for support desk routing...";
             
             stompClient.subscribe('/topic/chat/' + sessionId, function (response) {
                 onMessageReceived(JSON.parse(response.body));
@@ -278,7 +312,7 @@
         }
     }
 
-    // 🧬 YAWATHKALITHA KALA RECEIVED HUB ENGINE
+    // 🧬 RECEIVED HUB ENGINE (NO WINDOW ALERTS)
     function onMessageReceived(message) {
         const chatMessages = document.getElementById('chatMessages');
         const messageElement = document.createElement('div');
@@ -288,16 +322,18 @@
             
             if (message.type === 'JOIN' && message.sender === 'Admin') {
                 messageElement.innerHTML = `<i class="fa-solid fa-user-check" style="color: var(--teal-main);"></i> Support Agent connected to active secure stream.`;
-                document.getElementById('status').innerText = "Status: Live connected with Official Support Agent";
+                document.getElementById('status').innerText = "Live connected with Official Support Agent";
                 document.getElementById('statusPulse').style.backgroundColor = "#00bfa5";
             } 
             // 🚨 ADMIN CHAT EK CLOSE KALA VELAVE DI KRIAATHMAKA VANNAE
             else if (message.type === 'LEAVE') {
                 messageElement.className = 'message system-msg';
                 messageElement.style.color = 'var(--danger-glow)';
-                messageElement.innerHTML = `<i class="fa-solid fa-triangle-exclamation"></i> ${message.content}`;
+                messageElement.style.borderColor = 'rgba(239, 68, 68, 0.2)';
+                messageElement.style.background = '#fef2f2';
+                messageElement.innerHTML = `<i class="fa-solid fa-circle-exclamation"></i> ${message.content}`;
                 
-                document.getElementById('status').innerText = "Status: Session Terminated";
+                document.getElementById('status').innerText = "Session Terminated";
                 document.getElementById('statusPulse').style.animation = "none";
                 document.getElementById('statusPulse').style.backgroundColor = "var(--danger-glow)";
                 
@@ -314,7 +350,7 @@
                 }
             }
             else {
-                messageElement.innerText = message.content || "Support token successfully queued.";
+                messageElement.innerHTML = `<i class="fa-solid fa-spinner fa-spin" style="color: var(--teal-main)"></i> ${message.content || "Support token successfully queued."}`;
             }
         } 
         else if (message.content) {
@@ -323,8 +359,8 @@
                 messageElement.innerText = message.content;
             } else {
                 messageElement.className = 'message admin-msg';
-                messageElement.innerHTML = `<strong>Support Agent:</strong> ${message.content}`;
-                document.getElementById('status').innerText = "Status: Chat live with Support Agent (" + message.sender + ")";
+                messageElement.innerHTML = `<strong style="color:var(--teal-main); display:block; font-size:12px; margin-bottom:2px;">Support Agent</strong> ${message.content}`;
+                document.getElementById('status').innerText = "Chat live with Support Agent (" + message.sender + ")";
             }
         }
         
