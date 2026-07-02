@@ -278,6 +278,7 @@
         }
     }
 
+    // 🧬 YAWATHKALITHA KALA RECEIVED HUB ENGINE
     function onMessageReceived(message) {
         const chatMessages = document.getElementById('chatMessages');
         const messageElement = document.createElement('div');
@@ -290,18 +291,27 @@
                 document.getElementById('status').innerText = "Status: Live connected with Official Support Agent";
                 document.getElementById('statusPulse').style.backgroundColor = "#00bfa5";
             } 
+            // 🚨 ADMIN CHAT EK CLOSE KALA VELAVE DI KRIAATHMAKA VANNAE
             else if (message.type === 'LEAVE') {
                 messageElement.className = 'message system-msg';
                 messageElement.style.color = 'var(--danger-glow)';
                 messageElement.innerHTML = `<i class="fa-solid fa-triangle-exclamation"></i> ${message.content}`;
                 
-                document.getElementById('status').innerText = "Status: Request Declined";
+                document.getElementById('status').innerText = "Status: Session Terminated";
                 document.getElementById('statusPulse').style.animation = "none";
                 document.getElementById('statusPulse').style.backgroundColor = "var(--danger-glow)";
                 
+                // 1. චැට් එක සම්පූර්ණයෙන්ම ක්‍රියා විරහිත කිරීම
                 document.getElementById('messageInput').disabled = true;
                 document.getElementById('sendBtn').disabled = true;
-                document.getElementById('messageInput').placeholder = "Terminal bridge disconnected.";
+                
+                // 2. ප්ලේස්හෝල්ඩර් එක ඔයා ඉල්ලපු විදියටම යාවත්කාලීන කිරීම
+                document.getElementById('messageInput').placeholder = "Chat ended. Thank you for connecting with us!";
+                
+                // 3. වෙබ්සොකට් එක විසන්ධි කිරීම (Clean Up Connection)
+                if (stompClient) {
+                    stompClient.disconnect();
+                }
             }
             else {
                 messageElement.innerText = message.content || "Support token successfully queued.";
