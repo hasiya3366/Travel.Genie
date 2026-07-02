@@ -1262,23 +1262,22 @@
     //         document.getElementById("domRevenueDisplay").innerText = 'LKR ' + data.totalRevenue;
     //     }
     // }
-  function applyFreshStatsToDom(data) {
-    if (document.getElementById('totalUsers')) {
-        document.getElementById('totalUsers').innerText = data.totalUsers;
-    }
-    if (document.getElementById('totalDestinations')) {
-        document.getElementById('totalDestinations').innerText = data.totalDestinations;
-    }
-    if (document.getElementById('totalPackages')) {
-        document.getElementById('totalPackages').innerText = data.totalPackages;
-    }
-    if (document.getElementById('totalBookings')) {
-        document.getElementById('totalBookings').innerText = data.totalBookings;
-    }
+function applyFreshStatsToDom(data) {
+  
+    if (document.getElementById('domTotalUsers')) 
+        document.getElementById('domTotalUsers').innerText = data.totalUsers;
+    if (document.getElementById('domTotalDestinations')) 
+        document.getElementById('domTotalDestinations').innerText = data.totalDestinations;
+    if (document.getElementById('domTotalPackages')) 
+        document.getElementById('domTotalPackages').innerText = data.totalPackages;
+    if (document.getElementById('domTotalBookings')) 
+        document.getElementById('domTotalBookings').innerText = data.totalBookings;
 
-    const revenueElement = document.getElementById('totalRevenue'); 
-    if (revenueElement) {
-        revenueElement.innerText = "LKR " + data.totalRevenue.toLocaleString();
+  
+    const revenueDisplay = document.getElementById("domRevenueDisplay");
+    if (revenueDisplay) {
+
+        revenueDisplay.innerText = 'LKR ' + data.totalRevenue.toLocaleString();
     }
 }
     // CSV Export Script
