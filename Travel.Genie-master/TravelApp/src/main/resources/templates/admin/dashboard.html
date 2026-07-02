@@ -355,7 +355,7 @@
             100% { box-shadow: 0 0 0 0 rgba(22, 163, 74, 0); }
         }
 
-        /* 🎯 NEW: LIVE CHAT GRID LAYOUT DESIGN */
+        /* 🎯 LIVE CHAT GRID LAYOUT DESIGN */
         .live-workspace-grid {
             display: grid;
             grid-template-columns: 1fr 2fr;
@@ -709,17 +709,20 @@
             </div>
         </div>
 
-        <!-- 🎯 NEW: LIVE CUSTOMER SUPPORT WORKSPACE PANEL GRID -->
+        <!-- 🎯 LIVE CUSTOMER SUPPORT WORKSPACE PANEL GRID -->
         <div class="live-workspace-grid">
             <div class="chat-queue-box">
                 <div class="section-title" style="font-size: 16px;">
                     <i class="fa-solid fa-headset" style="color: #e67e22;"></i> Live Tickets Queue
                 </div>
                 <ul class="ticket-list" id="adminQueueList">
-                    <!-- Fake Ticket to match initial test criteria -->
-                    <div class="ticket-item">
+                    <!-- Initial Dynamic Row Container -->
+                    <div class="ticket-item" id="ticket-SESSION_12345" style="display: flex; justify-content: space-between; align-items: center; padding: 12px 16px; background-color: var(--table-th); border: 1px solid var(--border-color); border-radius: 12px; margin-bottom: 10px;">
                         <span style="font-size: 13px; font-weight: 500;"><i class="fa-solid fa-user"></i> Hasindu</span>
-                        <button class="btn-accept-chat" onclick="acceptLiveChat('SESSION_12345')">Accept</button>
+                        <div style="display: flex; gap: 8px;">
+                            <button class="btn-accept-chat" style="background-color: #009688; color: white; border: none; padding: 6px 12px; border-radius: 8px; cursor: pointer; font-weight: 600; font-size: 12px;" onclick="acceptLiveChat('SESSION_12345', 'Hasindu')">Accept</button>
+                            <button class="btn-reject-chat" style="background-color: #e74c3c; color: white; border: none; padding: 6px 12px; border-radius: 8px; cursor: pointer; font-weight: 600; font-size: 12px;" onclick="rejectLiveChat('SESSION_12345', 'Hasindu')">Reject</button>
+                        </div>
                     </div>
                 </ul>
             </div>
@@ -834,6 +837,7 @@
 
     // 📡 LIVE WORKSPACE STOMP ENGINE OBJECT CONFIGS
     let stompSupportClient = null;
+    let globalQueueClient = null; 
     let activeSessionToken = null;
 
     document.addEventListener("DOMContentLoaded", function () {
@@ -891,50 +895,128 @@
             showToast("System Core Live: Metrics successfully pulled!");
         }, 1200);
 
-        // --- 4. INITIAL CHART BUILD ---
+        // 🚀 4. GLOBAL RADAR STREAM ACTIVATION FOR LOGGED CUSTOMERS
+        initGlobalQueueListener();
+
+        // --- 5. INITIAL CHART BUILD ---
         initDashboardChart();
         initCategoryChart();
         initRevenueTrendChart();
 
-        // --- 5. AUTO-UPDATE LOOP FOR ALL 3 CHARTS ---
+        // --- 6. AUTO-UPDATE LOOP FOR ALL 3 CHARTS ---
         setInterval(refreshAllCharts, AUTO_UPDATE_INTERVAL_MS);
     });
 
     // =========================================================
-    // 🧬 NEW CORE ENGINE: WEBSOCKET ADMIN SYNC METHODS
+    // 🧬 GLOBAL RADAR STREAM FOR REAL-TIME INCOMING TICKETS
     // =========================================================
-    function acceptLiveChat(sessionId) {
-        activeSessionToken = sessionId;
-        document.getElementById('activeChannelBadge').innerHTML = `<span style="color:#00bfa5;"><i class="fa-solid fa-link"></i> Active Stream: ${sessionId}</span>`;
+    function initGlobalQueueListener() {
+        const queueSocket = new SockJS('/ws-support');
+        globalQueueClient = Stomp.over(queueSocket);
+        globalQueueClient.debug = null; 
+
+        globalQueueClient.connect({}, function (frame) {
+            globalQueueClient.subscribe('/topic/global-queue', function (response) {
+                const ticket = JSON.parse(response.body);
+                addNewTicketToQueueUI(ticket.username, ticket.sessionId);
+            });
+        });
+    }
+
+    function addNewTicketToQueueUI(username, sessionId) {
+        const queueList = document.getElementById('adminQueueList');
+        if (document.getElementById(`ticket-${sessionId}`)) return;
+
+        const ticketItem = document.createElement('div');
+        ticketItem.className = 'ticket-item';
+        ticketItem.id = `ticket-${sessionId}`;
+        ticketItem.style.display = 'flex';
+        ticketItem.style.justify = 'space-between';
+        ticketItem.style.alignItems = 'center';
+        ticketItem.style.padding = '12px 16px';
+        ticketItem.style.backgroundColor = 'var(--table-th)';
+        ticketItem.style.border = '1px solid var(--border-color)';
+        ticketItem.style.borderRadius = '12px';
+        ticketItem.style.marginBottom = '10px';
+
+        ticketItem.innerHTML = `
+            <span style="font-size: 13px; font-weight: 500;"><i class="fa-solid fa-user"></i> ${username}</span>
+            <div style="display: flex; gap: 8px;">
+                <button class="btn-accept-chat" style="background-color: #009688; color: white; border: none; padding: 6px 12px; border-radius: 8px; cursor: pointer; font-weight: 600; font-size: 12px;" onclick="acceptLiveChat('${sessionId}', '${username}')">Accept</button>
+                <button class="btn-reject-chat" style="background-color: #e74c3c; color: white; border: none; padding: 6px 12px; border-radius: 8px; cursor: pointer; font-weight: 600; font-size: 12px;" onclick="rejectLiveChat('${sessionId}', '${username}')">Reject</button>
+            </div>
+        `;
         
-        // Clear workspace body placeholder text
+        const emptyPlaceholder = queueList.querySelector('td[colspan="6"]');
+        if (emptyPlaceholder) emptyPlaceholder.closest('tr').remove();
+
+        queueList.appendChild(ticketItem);
+        showToast(`New support ticket received from ${username}!`);
+    }
+
+    // =========================================================
+    // 🧬 WORKSPACE CORE ENGINE: WEBSOCKET SYNC LOGICS
+    // =========================================================
+    function acceptLiveChat(sessionId, username) {
+        activeSessionToken = sessionId;
+        document.getElementById('activeChannelBadge').innerHTML = `<span style="color:#00bfa5;"><i class="fa-solid fa-link"></i> Active Stream: ${username}</span>`;
         document.getElementById('adminWorkspaceMsgLogs').innerHTML = '';
+
+        if (stompSupportClient) stompSupportClient.disconnect();
 
         const socketEndpoint = new SockJS('/ws-support');
         stompSupportClient = Stomp.over(socketEndpoint);
+        stompSupportClient.debug = null;
         
         stompSupportClient.connect({}, function (frame) {
-            showToast("Secure WebSocket stream bridged successfully!");
+            showToast(`Connected to ${username}'s workspace.`);
             
-            // Subscribe loop inside dynamic channel topic
             stompSupportClient.subscribe('/topic/chat/' + activeSessionToken, function (response) {
                 renderIncomingLiveBubble(JSON.parse(response.body));
             });
 
-            // Signal connection payload initialization - sender set to "Admin" to match DataLoader identity
-            const joinAlertPayload = { sender: "Admin", content: "Agent connected to workspace session.", type: 'CHAT', sessionId: activeSessionToken };
+            // Trigger real-time alert intercept on customer interface
+            const joinAlertPayload = { 
+                sender: "Admin", 
+                content: "You are successfully connected with TravelGenie Support Agent.", 
+                type: 'JOIN', 
+                sessionId: activeSessionToken 
+            };
             stompSupportClient.send("/app/chat/" + activeSessionToken + "/sendMessage", {}, JSON.stringify(joinAlertPayload));
 
-            // Enable elements inputs inside chat zone
             document.getElementById('adminWorkspaceInput').disabled = false;
             document.getElementById('adminWorkspaceSendBtn').disabled = false;
+            
+            const acceptedTicket = document.getElementById(`ticket-${sessionId}`);
+            if (acceptedTicket) acceptedTicket.remove();
+        });
+    }
+
+    function rejectLiveChat(sessionId, username) {
+        const rejectSocket = new SockJS('/ws-support');
+        const tempClient = Stomp.over(rejectSocket);
+        tempClient.debug = null;
+        
+        tempClient.connect({}, function() {
+            const rejectPayload = { 
+                sender: "Admin", 
+                content: "Your chat request was declined by the support desk.", 
+                type: 'LEAVE', 
+                sessionId: sessionId 
+            };
+            tempClient.send("/app/chat/" + sessionId + "/sendMessage", {}, JSON.stringify(rejectPayload));
+            
+            setTimeout(() => tempClient.disconnect(), 800);
+            showToast(`Ticket from ${username} rejected.`);
+            
+            const rejectedTicket = document.getElementById(`ticket-${sessionId}`);
+            if (rejectedTicket) rejectedTicket.remove();
         });
     }
 
     function transmitAdminLiveMessage() {
         const rawContent = document.getElementById('adminWorkspaceInput').value.trim();
         if(rawContent && stompSupportClient) {
-            // sender explicitly defined as "Admin" for seamless UI processing
             const outPayload = { sender: "Admin", content: rawContent, type: 'CHAT', sessionId: activeSessionToken };
             stompSupportClient.send("/app/chat/" + activeSessionToken + "/sendMessage", {}, JSON.stringify(outPayload));
             document.getElementById('adminWorkspaceInput').value = '';
@@ -945,14 +1027,21 @@
         const msgLogsContainer = document.getElementById('adminWorkspaceMsgLogs');
         const bubbleElement = document.createElement('div');
         
-        if (msgObj.type === 'CHAT') {
-            // Flexible string checking ensures that any variation of Admin (e.g., Admin_Malith, Admin) renders cleanly on the right
-            if(msgObj.sender && msgObj.sender.toLowerCase().includes('admin')) {
-                bubbleElement.classList.add('admin-msg-bubble');
+        if (msgObj.type === 'CHAT' || msgObj.type === 'JOIN' || msgObj.type === 'LEAVE') {
+            if (msgObj.type === 'JOIN' || msgObj.type === 'LEAVE') {
+                bubbleElement.style.textAlign = 'center';
+                bubbleElement.style.color = 'var(--text-muted)';
+                bubbleElement.style.fontSize = '12px';
+                bubbleElement.style.margin = '12px 0';
+                bubbleElement.innerHTML = `<em>${msgObj.content}</em>`;
             } else {
-                bubbleElement.classList.add('customer-msg-bubble');
+                if(msgObj.sender && msgObj.sender.toLowerCase().includes('admin')) {
+                    bubbleElement.className = 'admin-msg-bubble';
+                } else {
+                    bubbleElement.className = 'customer-msg-bubble';
+                }
+                bubbleElement.innerHTML = `<strong>${msgObj.sender}:</strong> ${msgObj.content}`;
             }
-            bubbleElement.innerHTML = `<strong>${msgObj.sender}:</strong> ${msgObj.content}`;
             msgLogsContainer.appendChild(bubbleElement);
             msgLogsContainer.scrollTop = msgLogsContainer.scrollHeight;
         }
@@ -1013,17 +1102,15 @@
     }
 
     // --- CHART #2: DOUGHNUT CHART ---
-    if (typeof getCategoryCountsFromTable !== 'function') {
-        window.getCategoryCountsFromTable = function() {
-            var counts = {};
-            var rows = document.querySelectorAll("#tableLogBody tr:not(#emptyRowPlaceholder)");
-            rows.forEach(function (row) {
-                var category = row.getAttribute("data-category") || (row.children[2] ? row.children[2].innerText.trim() : null);
-                if (!category) return;
-                counts[category] = (counts[category] || 0) + 1;
-            });
-            return counts;
-        };
+    function getCategoryCountsFromTable() {
+        var counts = {};
+        var rows = document.querySelectorAll("#tableLogBody tr:not(#emptyRowPlaceholder)");
+        rows.forEach(function (row) {
+            var category = row.getAttribute("data-category") || (row.children[2] ? row.children[2].innerText.trim() : null);
+            if (!category) return;
+            counts[category] = (counts[category] || 0) + 1;
+        });
+        return counts;
     }
 
     function initCategoryChart() {
@@ -1142,7 +1229,7 @@
         return hh + ':' + mm + ':' + ss;
     }
 
-    // --- 🎯 MASTER AUTO-UPDATE FUNCTION ---
+    // --- MASTER AUTO-UPDATE FUNCTION ---
     function refreshAllCharts() {
         fetch(STATS_API_URL)
             .then(function (res) {
