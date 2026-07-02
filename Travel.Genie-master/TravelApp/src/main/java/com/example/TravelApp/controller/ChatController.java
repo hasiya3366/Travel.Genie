@@ -43,7 +43,7 @@ public class ChatController {
     public String showCustomerSupportPage(HttpSession session, Model model) {
         Object loggedUser = session.getAttribute("username");
         
-        if (loggedInUser == null) {
+        if (loggedUser == null) {
             loggedUser = session.getAttribute("user");
         }
 
