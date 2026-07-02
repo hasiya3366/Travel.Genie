@@ -1,4 +1,5 @@
-package com.travelgenie.config;
+// package com.travelgenie.config;
+package com.example.TravelApp.config;
 
 import org.springframework.context.annotation.Configuration;
 import org.springframework.messaging.simp.config.MessageBrokerRegistry;
