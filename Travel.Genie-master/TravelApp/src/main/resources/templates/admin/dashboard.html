@@ -1252,14 +1252,39 @@
         });
 }
 
-function applyFreshStatsToDom(data) {
-    // ... Users, Bookings ටික අදාළ කරගන්න ...
+// function applyFreshStatsToDom(data) {
     
-    // 💰 රිවෙනියු එක ලයිව් අප්ඩේට් වෙන්න ඕනේ පරණ අගයන් මුකුත් නැතුව:
+//     const revenueDisplay = document.getElementById("domRevenueDisplay");
+//     if (revenueDisplay) {
+        
+//         revenueDisplay.innerText = 'LKR ' + Number(data.totalRevenue).toLocaleString(undefined, {minimumFractionDigits: 2});
+//     }
+// }
+    function applyFreshStatsToDom(data) {
+    // 1. Users, Destinations, Packages, Bookings (මේවා සාමාන්‍ය අගයන්)
+    if (document.getElementById('domTotalUsers')) 
+        document.getElementById('domTotalUsers').innerText = data.totalUsers;
+    if (document.getElementById('domTotalDestinations')) 
+        document.getElementById('domTotalDestinations').innerText = data.totalDestinations;
+    if (document.getElementById('domTotalPackages')) 
+        document.getElementById('domTotalPackages').innerText = data.totalPackages;
+    if (document.getElementById('domTotalBookings')) 
+        document.getElementById('domTotalBookings').innerText = data.totalBookings;
+
     const revenueDisplay = document.getElementById("domRevenueDisplay");
     if (revenueDisplay) {
-        // API එකෙන් එන අගයම කෙළින්ම පෙන්වනවා
-        revenueDisplay.innerText = 'LKR ' + Number(data.totalRevenue).toLocaleString(undefined, {minimumFractionDigits: 2});
+   
+        let formattedRevenue = Number(data.totalRevenue).toLocaleString('en-US', {
+            minimumFractionDigits: 2,
+            maximumFractionDigits: 2
+        });
+        
+        revenueDisplay.innerText = 'LKR ' + formattedRevenue;
+    }
+    
+    // Hidden field එකේ තියෙන අගයත් අප්ඩේට් කරමු
+    if (document.getElementById('hiddenRevenue')) {
+        document.getElementById('hiddenRevenue').value = data.totalRevenue;
     }
 }
     // CSV Export Script
