@@ -2,20 +2,206 @@
 <html xmlns:th="http://www.thymeleaf.org" lang="en">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>TravelGenie — Customer Live Support</title>
-    <!-- 🎨 Teal/Dark Minimalism theme එකට ගැලපෙන සරල CSS ටිකක් -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
     <style>
-        body { background-color: #0d1614; color: #ffffff; font-family: 'Segoe UI', sans-serif; margin: 40px; }
-        .chat-container { max-width: 500px; background: #14221f; border-radius: 12px; padding: 20px; box-shadow: 0 8px 32px rgba(0,0,0,0.4); border: 1px solid #1a2e29; }
-        .chat-messages { height: 300px; overflow-y: auto; border: 1px solid #1a2e29; background: #0d1614; padding: 10px; margin-bottom: 10px; border-radius: 6px; }
-        .message { margin-bottom: 10px; padding: 8px; border-radius: 6px; max-width: 80%; }
-        .customer-msg { background: #1e3a34; margin-left: auto; text-align: right; }
-        .admin-msg { background: #2a4d44; margin-right: auto; text-align: left; }
-        .system-msg { background: #333; margin: 5px auto; text-align: center; font-size: 12px; max-width: 100%; }
-        input[type="text"] { width: 75%; padding: 10px; background: #14221f; border: 1px solid #1a2e29; color: white; border-radius: 4px; }
-        button { padding: 10px 15px; background: #00bfa5; border: none; color: black; font-weight: bold; cursor: pointer; border-radius: 4px; }
-        button:disabled { background: #444; color: #888; }
+        /* 🎯 PREMIUM DARK/TEAL MINIMALISM THEME SYSTEM */
+        :root {
+            --bg-body: #0b1311;
+            --bg-container: #121e1b;
+            --bg-chat-box: #080f0d;
+            --teal-main: #009688;
+            --teal-glow: #00bfa5;
+            --text-main: #e2e8f0;
+            --text-muted: #94a3b8;
+            --border-color: #192a25;
+            --customer-bubble: #1e3a34;
+            --admin-bubble: #112d26;
+            --danger-glow: #e74c3c;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        body { 
+            background-color: var(--bg-body); 
+            color: var(--text-main); 
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .chat-container { 
+            width: 100%;
+            max-width: 520px; 
+            background: var(--bg-container); 
+            border-radius: 24px; 
+            padding: 30px; 
+            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.6); 
+            border: 1px solid var(--border-color); 
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .chat-header {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 15px;
+        }
+
+        .chat-header h2 {
+            font-size: 22px;
+            font-weight: 700;
+            color: var(--text-main);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .chat-header h2 i {
+            color: var(--teal-main);
+        }
+
+        .chat-header h2 span {
+            color: var(--teal-main);
+        }
+
+        .status-badge-zone { 
+            font-size: 13px; 
+            font-weight: 500; 
+            color: var(--teal-glow); 
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .pulse-indicator {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background-color: var(--teal-glow);
+            animation: pulse-glow 1.5s infinite;
+        }
+
+        @keyframes pulse-glow {
+            0% { box-shadow: 0 0 0 0 rgba(0, 191, 165, 0.5); }
+            70% { box-shadow: 0 0 0 6px rgba(0, 191, 165, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(0, 191, 165, 0); }
+        }
+
+        .chat-messages { 
+            height: 340px; 
+            overflow-y: auto; 
+            border: 1px solid var(--border-color); 
+            background: var(--bg-chat-box); 
+            padding: 20px; 
+            border-radius: 16px; 
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        /* Custom Scrollbar */
+        .chat-messages::-webkit-scrollbar { width: 6px; }
+        .chat-messages::-webkit-scrollbar-track { background: transparent; }
+        .chat-messages::-webkit-scrollbar-thumb { background: var(--border-color); border-radius: 10px; }
+
+        .message { 
+            padding: 12px 16px; 
+            border-radius: 16px; 
+            font-size: 14px;
+            line-height: 1.5;
+            max-width: 80%; 
+            word-wrap: break-word;
+        }
+
+        .customer-msg { 
+            background: var(--customer-bubble); 
+            color: white;
+            margin-left: auto; 
+            border-radius: 16px 16px 2px 16px;
+            text-align: left; 
+        }
+
+        .admin-msg { 
+            background: var(--admin-bubble); 
+            color: var(--text-main);
+            margin-right: auto; 
+            border-radius: 16px 16px 16px 2px;
+            text-align: left; 
+            border: 1px solid var(--border-color);
+        }
+
+        .system-msg { 
+            background: rgba(255, 255, 255, 0.03); 
+            color: var(--text-muted);
+            margin: 5px auto; 
+            text-align: center; 
+            font-size: 12.5px; 
+            max-width: 100%; 
+            border-radius: 10px;
+            padding: 8px 16px;
+            border: 1px solid rgba(255, 255, 255, 0.02);
+            font-style: italic;
+        }
+
+        .input-group {
+            display: flex;
+            gap: 10px;
+        }
+
+        input[type="text"] { 
+            flex-grow: 1;
+            padding: 14px 18px; 
+            background: var(--bg-chat-box); 
+            border: 1px solid var(--border-color); 
+            color: white; 
+            border-radius: 12px; 
+            outline: none;
+            font-size: 14px;
+            transition: border-color 0.2s;
+        }
+
+        input[type="text"]:focus {
+            border-color: var(--teal-main);
+        }
+
+        button { 
+            padding: 0 24px; 
+            background: var(--teal-main); 
+            border: none; 
+            color: white; 
+            font-weight: 600; 
+            font-size: 14px;
+            cursor: pointer; 
+            border-radius: 12px; 
+            transition: all 0.2s;
+        }
+
+        button:hover:not(:disabled) { 
+            background: var(--teal-glow);
+            box-shadow: 0 4px 12px rgba(0, 191, 165, 0.2);
+        }
+
+        button:disabled { 
+            background: #222; 
+            color: #555; 
+            cursor: not-allowed; 
+        }
     </style>
+    
     <!-- 📡 WebSocket Live Libraries -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/sockjs-client/1.5.1/sockjs.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/stomp.js/2.3.3/stomp.min.js"></script>
@@ -23,40 +209,60 @@
 <body>
 
 <div class="chat-container">
-    <h2>🧬 TravelGenie Live Support</h2>
-    <div id="status" style="color: #00bfa5; margin-bottom: 10px;">Status: Waiting to connect...</div>
-    
-    <div class="chat-messages" id="chatMessages">
-        <!-- ලයිව් මැසේජ් ලෝඩ් වෙන්නේ මෙතනට මචං -->
+    <div class="chat-header">
+        <h2><i class="fa-solid fa-leaf"></i> Travel<span>Genie</span> Support Matrix</h2>
+        <div class="status-badge-zone">
+            <div class="pulse-indicator" id="statusPulse"></div>
+            <span id="status">Status: Mapping sync coordinates...</span>
+        </div>
     </div>
     
-    <input type="text" id="messageInput" placeholder="Type your issue here..." disabled>
-    <button id="sendBtn" onclick="sendMessage()" disabled>Send</button>
+    <div class="chat-messages" id="chatMessages">
+        <div class="message system-msg">Initialize dynamic support token route loop. Secured end-to-end bridge.</div>
+    </div>
+    
+    <div class="input-group">
+        <input type="text" id="messageInput" placeholder="Type your issue matrix here..." disabled>
+        <button id="sendBtn" onclick="sendMessage()" disabled><i class="fa-solid fa-paper-plane"></i> Send</button>
+    </div>
 </div>
 
 <script th:inline="javascript">
     let stompClient = null;
-    // 💡 ටෙස්ට් කරන්න ලේසි වෙන්න Random Session ID එකක් හදනවා (ඩේටාබේස් ලොජික් එක පස්සේ දෙන්නම්)
+    // 💡 Dynamic session token allocation
     const sessionId = "SESSION_" + Math.floor(Math.random() * 100000);
-    // 👤 දැනට ලොග් වෙලා ඉන්න යූසර්ගේ නම (Thymeleaf වලින් ගන්න පුළුවන්, දැනට ටෙස්ට් එකට 'Hasindu' ගමු)
     const username = "Hasindu"; 
 
     function connect() {
         const socket = new SockJS('/ws-support');
         stompClient = Stomp.over(socket);
+        stompClient.debug = null; // Clean clean workspace console
         
         stompClient.connect({}, function (frame) {
-            document.getElementById('status').innerText = "Status: Connected! Waiting for an Agent...";
+            document.getElementById('status').innerText = "Status: Connected! Waiting for support desk routing...";
             
-            // 📡 මේ සෙෂන් එකට අදාළ ලයිව් චැට් රූම් එකට Subscribe වෙනවා
+            // 📡 1. Dynamic private communication tunnel mapping inside active session
             stompClient.subscribe('/topic/chat/' + sessionId, function (response) {
-                showWithMessage(JSON.parse(response.body));
+                onMessageReceived(JSON.parse(response.body));
             });
 
-            // 📥 සර්වර් එකට කියනවා මම ආවා (Join වුණා) කියලා
-            stompClient.send("/app/chat/" + sessionId + "/addUser", {}, JSON.stringify({sender: username, type: 'JOIN', sessionId: sessionId}));
+            // 📥 2. Real-time alert initialization trigger to broad network scope
+            stompClient.send("/app/chat/" + sessionId + "/addUser", {}, JSON.stringify({
+                sender: username, 
+                type: 'JOIN', 
+                sessionId: sessionId
+            }));
             
-            // මැසේජ් ටයිප් කරන්න ඉඩ දෙනවා
+            // 📡 3. 🎯 CRITICAL NEW: Global queue register radar system trigger
+            // This force pushes the active ticket straight into the admin's live view panel
+            setTimeout(() => {
+                stompClient.send("/app/chat/globalQueue", {}, JSON.stringify({
+                    username: username,
+                    sessionId: sessionId
+                }));
+            }, 500);
+            
+            // Enable interactive elements inputs inside lounge zone
             document.getElementById('messageInput').disabled = false;
             document.getElementById('sendBtn').disabled = false;
         });
@@ -76,28 +282,55 @@
         }
     }
 
-    function showWithMessage(message) {
+    function onMessageReceived(message) {
         const chatMessages = document.getElementById('chatMessages');
         const messageElement = document.createElement('div');
         
+        // 💡 1. System response logic intercept loop (JOIN Alert)
         if(message.type === 'JOIN') {
-            messageElement.classList.add('message', 'system-msg');
-            messageElement.innerText = message.sender + " requested support.";
-        } else if (message.type === 'CHAT') {
-            if(message.sender === username) {
-                messageElement.classList.add('message', 'customer-msg');
+            messageElement.className = 'message system-msg';
+            
+            if (message.sender === 'Admin') {
+                // 🤝 Admin accept කළාම කස්ටමර්ට වැටෙන ලස්සන සිස්ටම් එක මචං
+                messageElement.innerHTML = `<i class="fa-solid fa-user-check"></i> Support Agent connected to active secure stream.`;
+                document.getElementById('status').innerText = "Status: Live connected with Official Support Agent";
+                document.getElementById('statusPulse').style.backgroundColor = "#00bfa5";
             } else {
-                messageElement.classList.add('message', 'admin-msg');
-                document.getElementById('status').innerText = "Status: Connected with Admin (" + message.sender + ")";
+                messageElement.innerText = "Support token successfully queued into operational matrix.";
             }
-            messageElement.innerText = message.sender + ": " + message.content;
+        } 
+        // ❌ 2. Admin reject කළොත් කස්ටමර්ව දැනුවත් කරන සිස්ටම් එක (LEAVE Alert)
+        else if (message.type === 'LEAVE') {
+            messageElement.className = 'message system-msg';
+            messageElement.style.color = 'var(--danger-glow)';
+            messageElement.innerHTML = `<i class="fa-solid fa-triangle-exclamation"></i> ${message.content}`;
+            
+            document.getElementById('status').innerText = "Status: Request Declined";
+            document.getElementById('statusPulse').style.animation = "none";
+            document.getElementById('statusPulse').style.backgroundColor = "var(--danger-glow)";
+            
+            // Interaction terminal blocking safety protocols
+            document.getElementById('messageInput').disabled = true;
+            document.getElementById('sendBtn').disabled = true;
+            document.getElementById('messageInput').placeholder = "Terminal bridge disconnected.";
+        }
+        // 💬 3. Standard chat transmission processing block
+        else if (message.content) {
+            if(message.sender === username) {
+                messageElement.className = 'message customer-msg';
+                messageElement.innerText = message.content;
+            } else {
+                messageElement.className = 'message admin-msg';
+                messageElement.innerHTML = `<strong>Support Agent:</strong> ${message.content}`;
+                document.getElementById('status').innerText = "Status: Chat live with Support Agent (" + message.sender + ")";
+            }
         }
         
         chatMessages.appendChild(messageElement);
-        chatMessages.scrollTop = chatMessages.scrollHeight; // Auto scroll down
+        chatMessages.scrollTop = chatMessages.scrollHeight; // Auto secure scrolling focus tracking
     }
 
-    // 🔌 පේජ් එක ලෝඩ් වෙද්දීම WebSocket එක කනෙක්ට් කරනවා
+    // 🔌 Auto loop engine connection invocation on interface initial render
     window.onload = connect;
 </script>
 </body>
