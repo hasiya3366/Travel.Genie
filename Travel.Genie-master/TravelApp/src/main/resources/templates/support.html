@@ -8,7 +8,6 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
     <style>
-        /* 🎯 PREMIUM WHITE / LIGHT MINIMALISM THEME SYSTEM */
         :root {
             --bg-body: #ffffff;
             --bg-container: #ffffff;
@@ -113,7 +112,6 @@
             gap: 12px;
         }
 
-        /* Custom Scrollbar */
         .chat-messages::-webkit-scrollbar { width: 6px; }
         .chat-messages::-webkit-scrollbar-track { background: transparent; }
         .chat-messages::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
@@ -205,7 +203,6 @@
         }
     </style>
     
-    <!-- 📡 WebSocket Live Libraries -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/sockjs-client/1.5.1/sockjs.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/stomp.js/2.3.3/stomp.min.js"></script>
 </head>
@@ -232,13 +229,10 @@
 
 <script th:inline="javascript">
     let stompClient = null;
-    
-    // 💡 Dynamic session token allocation
     const sessionId = "SESSION_" + Math.floor(Math.random() * 100000);
     
-    // 👤 Thymeleaf Security Dynamic Intercept Loop
-    const loggedInUser = /*[[${#authentication != null ? #authentication.name : null}]]*/ null;
-    const username = (loggedInUser && loggedInUser !== 'anonymousUser') ? loggedInUser : "Traveler_" + Math.floor(Math.random() * 1000); 
+    const loggedInUser = /*[[${realName}]]*/ null;
+    const username = loggedInUser ? loggedInUser : "Traveler_" + Math.floor(Math.random() * 1000); 
 
     function connect() {
         const socket = new SockJS('/ws-support');
@@ -248,19 +242,16 @@
         stompClient.connect({}, function (frame) {
             document.getElementById('status').innerText = "Status: Connected! Waiting for support desk routing...";
             
-            // 📡 1. Dynamic private communication tunnel mapping
             stompClient.subscribe('/topic/chat/' + sessionId, function (response) {
                 onMessageReceived(JSON.parse(response.body));
             });
 
-            // 📥 2. Real-time alert initialization trigger
             stompClient.send("/app/chat/" + sessionId + "/addUser", {}, JSON.stringify({
                 sender: username, 
                 type: 'JOIN', 
                 sessionId: sessionId
             }));
             
-            // 📡 3. Global queue register radar system trigger
             setTimeout(() => {
                 stompClient.send("/app/chat/globalQueue", {}, JSON.stringify({
                     username: username,
@@ -291,7 +282,6 @@
         const chatMessages = document.getElementById('chatMessages');
         const messageElement = document.createElement('div');
         
-        // 💡 1. System response logic intercept loop (JOIN / LEAVE)
         if (message.type === 'JOIN' || message.type === 'LEAVE' || (message.content && message.content.includes('connected'))) {
             messageElement.className = 'message system-msg';
             
@@ -317,7 +307,6 @@
                 messageElement.innerText = message.content || "Support token successfully queued.";
             }
         } 
-        // 💬 2. Standard chat transmission processing block
         else if (message.content) {
             if(message.sender === username) {
                 messageElement.className = 'message customer-msg';
