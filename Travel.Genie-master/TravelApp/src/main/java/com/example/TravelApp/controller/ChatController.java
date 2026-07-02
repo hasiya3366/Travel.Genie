@@ -39,7 +39,7 @@ public class ChatController {
         return ticketJson;
     }
 
-   @GetMapping("/support")
+    @GetMapping("/support")
     public String showCustomerSupportPage(HttpSession session, Model model) {
         Object loggedUser = session.getAttribute("username");
         
@@ -48,11 +48,9 @@ public class ChatController {
         }
 
         if (loggedUser != null) {
-           
             if (loggedUser instanceof com.example.TravelApp.model.User) {
                 com.example.TravelApp.model.User u = (com.example.TravelApp.model.User) loggedUser;
-             
-                model.addAttribute("realName", u.getUsername());
+                model.addAttribute("realName", u.getName());
             } else {
                 model.addAttribute("realName", loggedUser.toString());
             }
