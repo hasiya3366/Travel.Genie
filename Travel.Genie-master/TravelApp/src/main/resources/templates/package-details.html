@@ -125,13 +125,14 @@
                     </div>
                 </div>
 
-                <a th:href="@{/book/{id}(id=${package.id})}" class="button">Proceed with Booking</a>
+                <!-- 🔐 FIXED AUTHENTICATION BOOKING MODULE -->
+                <input type="hidden" id="authCheck" th:value="${session.userRole != null ? 'true' : 'false'}" />
+                <button type="button" class="button" th:attr="data-package-id=${package.id}" onclick="checkAuthAndProceed(this)">Proceed with Booking</button>
             </div>
 
-            <!-- 🎯 FIXED REVIEW INPUT MODULE -->
+            <!-- 🎯 REVIEW INPUT MODULE -->
             <div class="review-input-box">
                 <h3>Leave a Review</h3>
-                <!-- Session එකේ userRole චෙක් කරන ලොජික් එක 100% ක් නිවැරදි කලා මචං -->
                 <form th:if="${session.userRole != null}" th:action="@{/packages/review/add}" method="post">
                     <input type="hidden" name="packageId" th:value="${package.id}" />
                     
@@ -187,6 +188,20 @@
 </footer>
 
 <script>
+    // 🔐 Booking Authentication Handler
+    function checkAuthAndProceed(buttonElement) {
+        var isLoggedIn = document.getElementById("authCheck").value === "true";
+        var packageId = buttonElement.getAttribute("data-package-id");
+
+        if (!isLoggedIn) {
+            alert("Please log in to proceed with your booking!");
+            window.location.href = "/login";
+        } else {
+            window.location.href = "/book/" + packageId;
+        }
+    }
+
+    // 🌦️ Weather API Handler
     document.addEventListener('DOMContentLoaded', async () => {
         const card = document.getElementById('weather-card');
         if (!card) return;
