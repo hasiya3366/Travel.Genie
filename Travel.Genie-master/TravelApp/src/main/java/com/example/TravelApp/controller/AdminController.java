@@ -4,11 +4,14 @@ import com.example.TravelApp.model.*;
 import com.example.TravelApp.repository.BookingRepository;
 import com.example.TravelApp.service.*;
 import jakarta.servlet.http.HttpSession;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Controller
 @RequestMapping("/admin")
@@ -44,21 +47,64 @@ public class AdminController {
             return "redirect:/login";
         }
 
-        // Fetch dashboard statistics parameters
+        List<Booking> allBookingsList = bookingService.findAll();
+        
+        // Active Processed Orders Count (Excluding CANCELLED)
+        long activeBookingsCount = allBookingsList.stream()
+                .filter(b -> !"CANCELLED".equalsIgnoreCase(b.getStatus()))
+                .count();
+
+        // Counter Parameter Mapping Workspace
         model.addAttribute("totalUsers", userService.findAll().size());
         model.addAttribute("totalDestinations", destinationService.findAll().size());
         model.addAttribute("totalPackages", tourPackageService.findAll().size());
-        model.addAttribute("totalBookings", bookingService.findAll().size());
+        model.addAttribute("totalBookings", activeBookingsCount); // Mapped to active orders only
         
-        // Fetch accurate total revenue excluding cancelled metrics on first page refresh
+        // Accurate total revenue calculation excluding cancelled metrics
         Double revenue = bookingRepository.getTotalRevenue();
         model.addAttribute("totalRevenue", revenue != null ? revenue : 0.0);
         
-        // Render tour packages dataset inside layout workspace log table
+        // Render tour packages dataset layout data matrix
         List<TourPackage> allPackages = tourPackageService.findAll();
         model.addAttribute("bookings", allPackages); 
 
         return "admin/dashboard";
+    }
+
+    // 🎯 NEW: LIVE AUTO-UPDATE REFRESH API INTEGRATION WITH CANCELLED COUNTER MATRIX
+    @GetMapping("/api/dashboard-stats")
+    @ResponseBody
+    public ResponseEntity<Map<String, Object>> getLiveDashboardStats(HttpSession session) {
+        Map<String, Object> stats = new HashMap<>();
+        
+        if (!isAdmin(session)) {
+            stats.put("error", "Unauthorized access configuration mapping.");
+            return ResponseEntity.status(403).body(stats);
+        }
+
+        List<Booking> allBookingsList = bookingService.findAll();
+        
+        // Count Active processed orders (Excluding CANCELLED)
+        long activeBookingsCount = allBookingsList.stream()
+                .filter(b -> !"CANCELLED".equalsIgnoreCase(b.getStatus()))
+                .count();
+
+        // Count Cancelled orders explicitly for the Premium Bar Chart Matrix
+        long cancelledBookingsCount = allBookingsList.stream()
+                .filter(b -> "CANCELLED".equalsIgnoreCase(b.getStatus()))
+                .count();
+
+        Double revenue = bookingRepository.getTotalRevenue();
+
+        // Build Payload Map Response
+        stats.put("totalUsers", userService.findAll().size());
+        stats.put("totalDestinations", destinationService.findAll().size());
+        stats.put("totalPackages", tourPackageService.findAll().size());
+        stats.put("totalBookings", activeBookingsCount); 
+        stats.put("totalCancelled", cancelledBookingsCount); // Mapped for Chart option 1
+        stats.put("totalRevenue", revenue != null ? revenue : 0.0);
+
+        return ResponseEntity.ok(stats);
     }
 
     // ==========================================
@@ -156,15 +202,6 @@ public class AdminController {
         return "redirect:/admin/users";
     }
 
-    @PostMapping("/users/delete/{id}")
-    public String deleteUser(@PathVariable Long id, HttpSession session) {
-        if (!isAdmin(session)) {
-            return "redirect:/login";
-        }
-        userService.deleteById(id);
-        return "redirect:/admin/users";
-    }
-
     // ==========================================
     // DESTINATIONS SECTION
     // ==========================================
@@ -197,53 +234,6 @@ public class AdminController {
 
         Destination dest = new Destination(name, country, category, description, imageUrl, price, rating);
         destinationService.save(dest);
-        return "redirect:/admin/destinations";
-    }
-
-    @GetMapping("/destinations/edit/{id}")
-    public String editDestinationForm(@PathVariable Long id, HttpSession session, Model model) {
-        if (!isAdmin(session)) {
-            return "redirect:/login";
-        }
-        var dest = destinationService.findById(id);
-        if (dest.isPresent()) {
-            model.addAttribute("destination", dest.get());
-            return "admin/destinations-form";
-        }
-        return "redirect:/admin/destinations";
-    }
-
-    @PostMapping("/destinations/edit/{id}")
-    public String editDestination(@PathVariable Long id, @RequestParam String name,
-                                  @RequestParam String country, @RequestParam String category,
-                                  @RequestParam String description, @RequestParam String imageUrl,
-                                  @RequestParam Double price, @RequestParam Double rating,
-                                  HttpSession session) {
-        if (!isAdmin(session)) {
-            return "redirect:/login";
-        }
-
-        var dest = destinationService.findById(id);
-        if (dest.isPresent()) {
-            Destination d = dest.get();
-            d.setName(name);
-            d.setCountry(country);
-            d.setCategory(category);
-            d.setDescription(description);
-            d.setImageUrl(imageUrl);
-            d.setPrice(price);
-            d.setRating(rating);
-            destinationService.save(d);
-        }
-        return "redirect:/admin/destinations";
-    }
-
-    @PostMapping("/destinations/delete/{id}")
-    public String deleteDestination(@PathVariable Long id, HttpSession session) {
-        if (!isAdmin(session)) {
-            return "redirect:/login";
-        }
-        destinationService.deleteById(id);
         return "redirect:/admin/destinations";
     }
 
