@@ -179,6 +179,7 @@ public class BookingController {
         double totalPrice = (basePrice * booking.getTravelers()) + extraHotelAndTransCost + extraFoodCostTotal;
 
         booking.setTotalPrice(totalPrice);
+        booking.setTotalPrice(totalPrice);
         bookingService.save(booking);
 
         model.addAttribute("booking", booking);
@@ -243,30 +244,38 @@ public class BookingController {
                 .body(new InputStreamResource(bis));
     }
 
-    // 🎯 FIXED: Secure booking history loop filtered by active user session parameters
+    // 🎯 SECURED: Deep checking user session attributes to resolve image_80ffc1.png rendering error
     @GetMapping("/bookings")
     public String bookingHistory(HttpSession session, Model model) {
-        Object loggedUserEmail = session.getAttribute("userEmail");
-        if (loggedUserEmail == null) {
-            loggedUserEmail = session.getAttribute("username"); 
+        String userEmail = null;
+
+        if (session.getAttribute("userEmail") != null) {
+            userEmail = session.getAttribute("userEmail").toString();
+        } else if (session.getAttribute("username") != null) {
+            userEmail = session.getAttribute("username").toString();
+        } else if (session.getAttribute("user") != null) {
+            Object userObj = session.getAttribute("user");
+            if (userObj instanceof com.example.TravelApp.model.User) {
+                userEmail = ((com.example.TravelApp.model.User) userObj).getEmail();
+            } else {
+                userEmail = userObj.toString();
+            }
         }
 
-        if (loggedUserEmail == null) {
+        if (userEmail == null || userEmail.trim().isEmpty()) {
             model.addAttribute("bookings", List.of());
             model.addAttribute("userEmail", null);
             return "booking-history";
         }
 
-        String userEmail = loggedUserEmail.toString();
-        Optional<User> user = userService.findByEmail(userEmail);
-        
-        if (user.isEmpty()) {
+        Optional<User> userOpt = userService.findByEmail(userEmail);
+        if (userOpt.isEmpty()) {
             model.addAttribute("bookings", List.of());
             model.addAttribute("userEmail", userEmail);
             return "booking-history";
         }
         
-        List<Booking> bookings = bookingService.findByUser(user.get());
+        List<Booking> bookings = bookingService.findByUser(userOpt.get());
         model.addAttribute("bookings", bookings);
         model.addAttribute("userEmail", userEmail);
         return "booking-history";
