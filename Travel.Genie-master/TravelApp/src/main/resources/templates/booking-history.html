@@ -53,7 +53,7 @@
             padding: 0 20px;
         }
 
-        /* --- FIXED FIXED NAVBAR LAYOUT WRAPPER --- */
+        /* --- FIXED NAVBAR LAYOUT WRAPPER --- */
         .site-header {
             background-color: var(--bg-card);
             border-bottom: 1px solid var(--border-color);
@@ -118,6 +118,7 @@
             display: flex;
             align-items: center;
             gap: 6px;
+            margin-left: 5px;
         }
 
         .nav-logout-btn {
@@ -137,7 +138,6 @@
             padding: 8px;
             border-radius: 10px;
         }
-        .theme-toggle-btn:hover { background-color: rgba(0, 150, 136, 0.05); }
 
         /* --- MAIN CONTAINER AREA --- */
         main {
@@ -155,51 +155,55 @@
             color: var(--text-title);
         }
 
-        /* --- PREMIUM AUTH REQUIREMENT ALERT BOX --- */
+        /* --- FIXED FIXED PREMIUM LOGIN BOX --- */
         .auth-error-box {
             background-color: var(--bg-card);
             border: 1px solid var(--border-color);
             border-radius: 24px;
-            padding: 50px 30px;
+            padding: 40px 30px;
             text-align: center;
-            max-width: 550px;
+            max-width: 500px;
             margin: 40px auto;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.02);
+            box-shadow: 0 4px 25px rgba(0,0,0,0.02);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
         }
 
         .auth-error-box i {
-            font-size: 56px;
+            font-size: 48px;
             color: #e67e22;
-            margin-bottom: 20px;
+            margin-bottom: 15px;
             display: block;
         }
 
         .auth-error-box h3 {
-            font-size: 22px;
+            font-size: 20px;
             font-weight: 600;
             color: var(--text-main);
-            margin-bottom: 12px;
+            margin-bottom: 10px;
         }
 
         .auth-error-box p {
-            font-size: 14px;
+            font-size: 13.5px;
             color: var(--text-muted);
-            margin-bottom: 25px;
-            line-height: 1.6;
+            margin-bottom: 20px;
+            line-height: 1.5;
         }
 
         .btn-login-redirect {
             background-color: #00a88f;
             color: white;
             text-decoration: none;
-            padding: 12px 32px;
-            border-radius: 12px;
+            padding: 10px 24px;
+            border-radius: 10px;
             font-weight: 600;
-            font-size: 15px;
+            font-size: 14.5px;
             display: inline-flex;
             align-items: center;
             gap: 8px;
-            box-shadow: 0 4px 12px rgba(0, 168, 143, 0.2);
+            box-shadow: 0 4px 10px rgba(0, 168, 143, 0.15);
             transition: background-color 0.2s, transform 0.2s;
         }
         .btn-login-redirect:hover {
@@ -289,14 +293,14 @@
             </button>
 
             <!-- Inline Profile Status Mapping Area -->
-            <span th:if="${session.user != null || session.userEmail != null}" class="user-greeting">
+            <span th:if="${session.user != null || session.userEmail != null || session.username != null}" class="user-greeting">
                 <i class="fa-solid fa-circle-user" style="color: #00a88f;"></i> 
-                <span th:text="${session.userName != null ? session.userName : 'Profile Matrix'}">User</span>
+                <span th:text="${session.userName != null ? session.userName : (session.userEmail != null ? session.userEmail : 'Active Profile')}">User</span>
             </span>
-            <a th:if="${session.user != null || session.userEmail != null}" th:href="@{/logout}" class="nav-logout-btn">
+            <a th:if="${session.user != null || session.userEmail != null || session.username != null}" th:href="@{/logout}" class="nav-logout-btn">
                 <i class="fa-solid fa-right-from-bracket"></i> Logout
             </a>
-            <a th:if="${session.user == null && session.userEmail == null}" th:href="@{/login}" style="color: #009688; font-weight: 600;">
+            <a th:if="${session.user == null && session.userEmail == null && session.username == null}" th:href="@{/login}" style="color: #009688; font-weight: 600;">
                 <i class="fa-solid fa-user"></i> Login
             </a>
         </nav>
