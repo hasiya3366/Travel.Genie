@@ -80,10 +80,7 @@
             padding-left: 10px;
         }
         [data-theme="dark"] .sidebar .logo { color: #52b788; }
-
-        .sidebar .logo span {
-            color: #009688;
-        }
+        .sidebar .logo span { color: #009688; }
 
         .menu-links {
             display: flex;
@@ -154,12 +151,8 @@
             font-size: 15px;
             transition: color 0.2s;
         }
+        .top-nav a:hover { color: #009688; }
 
-        .top-nav a:hover {
-            color: #009688;
-        }
-
-        /* 🎯 DARK MODE TOGGLE BUTTON STYLE */
         .theme-toggle-btn {
             background: none;
             border: none;
@@ -169,9 +162,7 @@
             padding: 4px 8px;
             border-radius: 8px;
         }
-        .theme-toggle-btn:hover {
-            background-color: rgba(0, 150, 136, 0.1);
-        }
+        .theme-toggle-btn:hover { background-color: rgba(0, 150, 136, 0.1); }
 
         .page-subtitle {
             font-size: 13px;
@@ -195,7 +186,6 @@
             color: var(--text-title);
         }
 
-        /* --- QUICK ACTIONS TOP BUTTONS --- */
         .top-actions {
             display: flex;
             gap: 12px;
@@ -218,12 +208,8 @@
             color: white;
             box-shadow: 0 4px 10px rgba(0, 168, 143, 0.15);
         }
+        .btn-teal:hover { background-color: #008f7a; }
 
-        .btn-teal:hover {
-            background-color: #008f7a;
-        }
-
-        /* --- METRICS CARDS GRID --- */
         .stats-grid {
             display: grid;
             grid-template-columns: repeat(4, 1fr);
@@ -269,7 +255,6 @@
             margin-top: 4px;
         }
 
-        /* --- TOTAL REVENUE PREMIUM WIDGET --- */
         .revenue-card {
             background-color: #00a88f;
             color: white;
@@ -306,7 +291,6 @@
             backdrop-filter: blur(5px);
         }
 
-        /* --- PREMIUM CHART CONTAINER --- */
         .chart-container {
             background-color: var(--bg-card);
             border-radius: 24px;
@@ -316,7 +300,6 @@
             margin-bottom: 40px;
         }
 
-        /* --- GRID FOR THE TWO EXTRA CHARTS SIDE-BY-SIDE --- */
         .charts-grid-2 {
             display: grid;
             grid-template-columns: 1fr 1fr;
@@ -324,11 +307,8 @@
             margin-bottom: 40px;
         }
 
-        .charts-grid-2 .chart-container {
-            margin-bottom: 0;
-        }
+        .charts-grid-2 .chart-container { margin-bottom: 0; }
 
-        /* --- LIVE INDICATOR DOT FOR AUTO-UPDATING CHARTS --- */
         .live-indicator {
             display: inline-flex;
             align-items: center;
@@ -355,23 +335,13 @@
             100% { box-shadow: 0 0 0 0 rgba(22, 163, 74, 0); }
         }
 
-        /* 🎯 LIVE CHAT GRID LAYOUT DESIGN */
         .live-workspace-grid {
             display: grid;
             grid-template-columns: 1fr 2fr;
             gap: 25px;
             margin-bottom: 40px;
         }
-        .chat-queue-box {
-            background-color: var(--bg-card);
-            border: 1px solid var(--border-color);
-            border-radius: 24px;
-            padding: 25px;
-            height: 480px;
-            display: flex;
-            flex-direction: column;
-        }
-        .chat-box-area {
+        .chat-queue-box, .chat-box-area {
             background-color: var(--bg-card);
             border: 1px solid var(--border-color);
             border-radius: 24px;
@@ -461,9 +431,8 @@
             font-weight: 600;
             cursor: pointer;
         }
-        .btn-chat-reply:hover { background-color: #d35400; }
+        .btn-chat-reply:hover { background-color: #e67e22; }
         
-        /* 🚨 END CHAT BUTTON PREMIUM STYLES */
         .btn-end-chat {
             background-color: red;
             color: white;
@@ -481,20 +450,13 @@
             transition: background-color 0.2s;
         }
         .btn-end-chat:hover { background-color: #cc0000; }
-        .btn-end-chat:disabled {
+        .btn-end-chat:disabled, .btn-chat-reply:disabled, .chat-input-wrapper input:disabled {
             background-color: var(--table-th);
             color: var(--text-muted);
             cursor: not-allowed;
             border: 1px solid var(--border-color);
         }
 
-        .btn-chat-reply:disabled, .chat-input-wrapper input:disabled {
-            background-color: var(--table-th);
-            color: var(--text-muted);
-            cursor: not-allowed;
-        }
-
-        /* --- MODERN TABLE CARD --- */
         .section-container {
             background-color: var(--bg-card);
             border-radius: 24px;
@@ -513,12 +475,8 @@
             align-items: center;
             gap: 10px;
         }
+        .section-title i { color: #009688; }
 
-        .section-title i {
-            color: #009688;
-        }
-
-        /* --- REAL-TIME SEARCH BOX FILTER INPUT STYLE --- */
         .search-wrapper {
             margin-bottom: 20px;
             position: relative;
@@ -577,7 +535,6 @@
         .status-success { background-color: #d1e7dd; color: #0f5132; }
         .status-pending { background-color: #fff3cd; color: #664d03; }
 
-        /* --- BOTTOM QUICK ACTIONS GRID --- */
         .quick-actions-grid {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
@@ -601,11 +558,7 @@
             transition: all 0.2s ease;
         }
 
-        .btn-action-card i {
-            font-size: 22px;
-            color: #009688;
-        }
-
+        .btn-action-card i { font-size: 22px; color: #009688; }
         .btn-action-card:hover {
             border-color: #009688;
             transform: translateY(-2px);
@@ -613,7 +566,6 @@
             color: #009688;
         }
 
-        /* --- TOAST NOTIFICATION CORNER WIDGET BOX --- */
         .toast-box {
             position: fixed;
             bottom: 25px;
@@ -632,13 +584,8 @@
             transform: translateY(150%);
             transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
         }
-        .toast-box.show {
-            transform: translateY(0);
-        }
-        .toast-box i {
-            font-size: 18px;
-            color: #2ecc71;
-        }
+        .toast-box.show { transform: translateY(0); }
+        .toast-box i { font-size: 18px; color: #2ecc71; }
 
         @media (max-width: 1024px) {
             .stats-grid { grid-template-columns: repeat(2, 1fr); }
@@ -717,7 +664,8 @@
         <div class="revenue-card">
             <div class="revenue-info">
                 <h3>Total Estimated Earnings</h3>
-                <p id="domRevenueDisplay" th:text="${totalRevenue != null ? 'LKR ' + totalRevenue : 'LKR 0.00'}">LKR 0.00</p>
+                <!-- 🚨 පරණ th:text එක වෙනුවට refresh වෙද්දීත් JS එකෙන්ම ලස්සනට පාලනය කරන්න ID එක පිරිසිදු කලා බෝක්කා -->
+                <p id="domRevenueDisplay">LKR 0.00</p>
                 <input type="hidden" id="hiddenRevenue" th:value="${totalRevenue != null ? totalRevenue : '0'}" />
             </div>
        
@@ -892,19 +840,17 @@
 
         // --- 2. REAL-TIME SEARCH BOX FILTER LOGIC ---
         var searchInput = document.getElementById("tableSearchInput");
-        searchInput.addEventListener("keyup", function() {
-            var value = this.value.toLowerCase().trim();
-            var rows = document.querySelectorAll("#tableLogBody tr:not(#emptyRowPlaceholder)");
+        if (searchInput) {
+            searchInput.addEventListener("keyup", function() {
+                var value = this.value.toLowerCase().trim();
+                var rows = document.querySelectorAll("#tableLogBody tr:not(#emptyRowPlaceholder)");
 
-            rows.forEach(function(row) {
-                var text = row.textContent.toLowerCase();
-                if (text.indexOf(value) > -1) {
-                    row.style.display = "";
-                } else {
-                    row.style.display = "none";
-                }
+                rows.forEach(function(row) {
+                    var text = row.textContent.toLowerCase();
+                    row.style.display = text.indexOf(value) > -1 ? "" : "none";
+                });
             });
-        });
+        }
 
         // --- 3. LIVE POPUP TOAST NOTIFIER SYSTEM FUNCTION ---
         window.showToast = function(msg) {
@@ -915,6 +861,10 @@
                 toast.classList.remove("show");
             }, 3500);
         };
+
+        // 🚨 NEW: පේජ් එක ලෝඩ් වෙද්දීම Total Revenue එක ලස්සනට LKR format එකට හදාගන්නවා මචං
+        const initialRevenue = document.getElementById("hiddenRevenue").value;
+        updateRevenueDisplayUI(initialRevenue);
 
         setTimeout(function() {
             showToast("System Core Live: Metrics successfully pulled!");
@@ -955,19 +905,11 @@
         const ticketItem = document.createElement('div');
         ticketItem.className = 'ticket-item';
         ticketItem.id = `ticket-${sessionId}`;
-        ticketItem.style.display = 'flex';
-        ticketItem.style.justify = 'space-between';
-        ticketItem.style.alignItems = 'center';
-        ticketItem.style.padding = '12px 16px';
-        ticketItem.style.backgroundColor = 'var(--table-th)';
-        ticketItem.style.border = '1px solid var(--border-color)';
-        ticketItem.style.borderRadius = '12px';
-        ticketItem.style.marginBottom = '10px';
 
         ticketItem.innerHTML = `
             <span style="font-size: 13px; font-weight: 500;"><i class="fa-solid fa-user"></i> ${username}</span>
             <div style="display: flex; gap: 8px;">
-                <button class="btn-accept-chat" style="background-color: #009688; color: white; border: none; padding: 6px 12px; border-radius: 8px; cursor: pointer; font-weight: 600; font-size: 12px;" onclick="acceptLiveChat('${sessionId}', '${username}')">Accept</button>
+                <button class="btn-accept-chat" onclick="acceptLiveChat('${sessionId}', '${username}')">Accept</button>
                 <button class="btn-reject-chat" style="background-color: #e74c3c; color: white; border: none; padding: 6px 12px; border-radius: 8px; cursor: pointer; font-weight: 600; font-size: 12px;" onclick="rejectLiveChat('${sessionId}', '${username}')">Reject</button>
             </div>
         `;
@@ -1000,7 +942,6 @@
                 renderIncomingLiveBubble(JSON.parse(response.body));
             });
 
-            // Trigger real-time alert intercept on customer interface
             const joinAlertPayload = { 
                 sender: "Admin", 
                 content: "You are successfully connected with TravelGenie Support Agent.", 
@@ -1009,7 +950,6 @@
             };
             stompSupportClient.send("/app/chat/" + activeSessionToken + "/sendMessage", {}, JSON.stringify(joinAlertPayload));
 
-            // Enable inputs and end chat button
             document.getElementById('adminWorkspaceInput').disabled = false;
             document.getElementById('adminWorkspaceInput').placeholder = "Enter secure response matrix...";
             document.getElementById('adminWorkspaceSendBtn').disabled = false;
@@ -1051,10 +991,8 @@
         }
     }
 
-    // 🚨 UPDATED FUNCTION: CONFIRMATION WINDOW ALERT REMOVED
     function endChatSession() {
         if (activeSessionToken && stompSupportClient) {
-            // මැසේජ් එක යවනවා
             stompSupportClient.send("/app/chat/" + activeSessionToken + "/sendMessage", {}, 
                 JSON.stringify({
                     sender: "Admin",
@@ -1063,7 +1001,6 @@
                 })
             );
             
-            // වෙබ්සොකට් එක වසා දැමීම
             setTimeout(function() {
                 if (stompSupportClient) {
                     stompSupportClient.disconnect();
@@ -1071,14 +1008,12 @@
                 }
             }, 500);
             
-            // UI එක disable කරනවා
             disableChatInput();
-            document.getElementById('endChatBtn').disabled = true; // බට්න් එක ආයේ ඔබන්න බැරි වෙන්න
+            document.getElementById('endChatBtn').disabled = true;
             document.getElementById('activeChannelBadge').innerText = "Chat Session Ended";
         }
     }
 
-    // 🚨 DISABLE INPUT CODES MAPPED WITH DOM ID
     function disableChatInput() {
         document.getElementById('adminWorkspaceInput').disabled = true;
         document.getElementById('adminWorkspaceSendBtn').disabled = true;
@@ -1098,7 +1033,6 @@
             bubbleElement.style.margin = '12px 0';
             bubbleElement.innerHTML = `<em>${msgObj.content}</em>`;
             
-            // පාරිභෝගිකයා තනිවම"@ චැට් එකෙන් අයින් වුනොත් ඇඩ්මින්ගේ පැත්තත් disable කරමු
             if (msgObj.type === 'LEAVE' && msgObj.sender !== "Admin") {
                 disableChatInput();
                 document.getElementById('endChatBtn').disabled = true;
@@ -1211,7 +1145,6 @@
             options: {
                 responsive: true,
                 maintainAspectRatio: false,
-                cutout: '65%',
                 plugins: {
                     legend: {
                         position: 'bottom',
@@ -1249,7 +1182,7 @@
                 labels: revenueHistory.map(function (p) { return p.label; }),
                 datasets: [{
                     label: 'Revenue (LKR)',
-                    data: revenueHistory.map(function (p) { return p.value; }),
+                    data: [stats.totalRevenue],
                     fill: true,
                     tension: 0.35,
                     backgroundColor: 'rgba(0, 168, 143, 0.12)',
@@ -1329,6 +1262,18 @@
             });
     }
 
+    // 🚨 NEW REVENUE RENDERING REFACTORING UTILITY
+    function updateRevenueDisplayUI(value) {
+        const revenueDisplay = document.getElementById("domRevenueDisplay");
+        if (revenueDisplay) {
+            let formattedRevenue = Number(value).toLocaleString('en-US', {
+                minimumFractionDigits: 2,
+                maximumFractionDigits: 2
+            });
+            revenueDisplay.innerText = 'LKR ' + formattedRevenue;
+        }
+    }
+
     function applyFreshStatsToDom(data) {
         if (document.getElementById('domTotalUsers')) 
             document.getElementById('domTotalUsers').innerText = data.totalUsers;
@@ -1339,14 +1284,8 @@
         if (document.getElementById('domTotalBookings')) 
             document.getElementById('domTotalBookings').innerText = data.totalBookings;
 
-        const revenueDisplay = document.getElementById("domRevenueDisplay");
-        if (revenueDisplay) {
-            let formattedRevenue = Number(data.totalRevenue).toLocaleString('en-US', {
-                minimumFractionDigits: 2,
-                maximumFractionDigits: 2
-            });
-            revenueDisplay.innerText = 'LKR ' + formattedRevenue;
-        }
+        // 🚨 Auto-update වෙද්දීත් මෙතනින් අපේ UI format function එක කෝල් වෙනවා
+        updateRevenueDisplayUI(data.totalRevenue);
         
         if (document.getElementById('hiddenRevenue')) {
             document.getElementById('hiddenRevenue').value = data.totalRevenue;
