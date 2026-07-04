@@ -1,7 +1,7 @@
 package com.example.TravelApp.controller;
 
 import com.example.TravelApp.model.*;
-import com.example.TravelApp.repository.BookingRepository; 
+import com.example.TravelApp.repository.BookingRepository;
 import com.example.TravelApp.service.*;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.stereotype.Controller;
@@ -20,7 +20,7 @@ public class AdminController {
     private final BookingService bookingService;
     private final ReviewService reviewService;
     private final HotelService hotelService; 
-    private final BookingRepository bookingRepository; 
+    private final BookingRepository bookingRepository;
 
     public AdminController(UserService userService, DestinationService destinationService,
                            TourPackageService tourPackageService, BookingService bookingService,
@@ -31,7 +31,7 @@ public class AdminController {
         this.bookingService = bookingService;
         this.reviewService = reviewService;
         this.hotelService = hotelService;
-        this.bookingRepository = bookingRepository; 
+        this.bookingRepository = bookingRepository;
     }
 
     private boolean isAdmin(HttpSession session) {
@@ -44,24 +44,26 @@ public class AdminController {
             return "redirect:/login";
         }
 
-  
+        // Fetch dashboard statistics parameters
         model.addAttribute("totalUsers", userService.findAll().size());
         model.addAttribute("totalDestinations", destinationService.findAll().size());
         model.addAttribute("totalPackages", tourPackageService.findAll().size());
         model.addAttribute("totalBookings", bookingService.findAll().size());
         
- ං
+        // Fetch accurate total revenue excluding cancelled metrics on first page refresh
         Double revenue = bookingRepository.getTotalRevenue();
         model.addAttribute("totalRevenue", revenue != null ? revenue : 0.0);
         
-        
+        // Render tour packages dataset inside layout workspace log table
         List<TourPackage> allPackages = tourPackageService.findAll();
         model.addAttribute("bookings", allPackages); 
 
         return "admin/dashboard";
     }
 
-
+    // ==========================================
+    // HOTELS MANAGEMENT SECTION
+    // ==========================================
 
     @GetMapping("/hotels/add")
     public String showAddHotelForm(HttpSession session, Model model) {
@@ -86,7 +88,9 @@ public class AdminController {
         return "redirect:/admin/packages"; 
     }
 
-
+    // ==========================================
+    // USERS SECTION
+    // ==========================================
 
     @GetMapping("/users")
     public String listUsers(HttpSession session, Model model) {
@@ -161,6 +165,9 @@ public class AdminController {
         return "redirect:/admin/users";
     }
 
+    // ==========================================
+    // DESTINATIONS SECTION
+    // ==========================================
 
     @GetMapping("/destinations")
     public String listDestinations(HttpSession session, Model model) {
