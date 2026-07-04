@@ -11,6 +11,7 @@ import com.example.TravelApp.service.UserService;
 import com.example.TravelApp.service.PdfService; 
 
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpSession;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
@@ -43,7 +44,6 @@ public class BookingController {
         this.pdfService = pdfService;
     }
 
-
     @PostMapping("/admin/api/bookings/cancel/{id}")
     @ResponseBody
     public ResponseEntity<Map<String, Object>> adminCancelBooking(@PathVariable Long id) {
@@ -71,7 +71,6 @@ public class BookingController {
             return ResponseEntity.status(500).body(response);
         }
     }
-
 
     @GetMapping({"/book/{packageId}", "/book/{packageId}/"})
     public String bookPackage(@PathVariable Long packageId, Model model) {
@@ -244,14 +243,29 @@ public class BookingController {
                 .body(new InputStreamResource(bis));
     }
 
+    // 🎯 FIXED: Secure booking history loop filtered by active user session parameters
     @GetMapping("/bookings")
-    public String bookingHistory(@RequestParam String userEmail, Model model) {
+    public String bookingHistory(HttpSession session, Model model) {
+        Object loggedUserEmail = session.getAttribute("userEmail");
+        if (loggedUserEmail == null) {
+            loggedUserEmail = session.getAttribute("username"); 
+        }
+
+        if (loggedUserEmail == null) {
+            model.addAttribute("bookings", List.of());
+            model.addAttribute("userEmail", null);
+            return "booking-history";
+        }
+
+        String userEmail = loggedUserEmail.toString();
         Optional<User> user = userService.findByEmail(userEmail);
+        
         if (user.isEmpty()) {
             model.addAttribute("bookings", List.of());
             model.addAttribute("userEmail", userEmail);
             return "booking-history";
         }
+        
         List<Booking> bookings = bookingService.findByUser(user.get());
         model.addAttribute("bookings", bookings);
         model.addAttribute("userEmail", userEmail);
