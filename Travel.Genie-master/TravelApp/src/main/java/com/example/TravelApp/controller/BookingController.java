@@ -43,7 +43,36 @@ public class BookingController {
         this.pdfService = pdfService;
     }
 
-    // 🎯 පැකේජ් එකක් බුක් කරන මුල් පිටුව පෙන්වීම
+
+    @PostMapping("/admin/api/bookings/cancel/{id}")
+    @ResponseBody
+    public ResponseEntity<Map<String, Object>> adminCancelBooking(@PathVariable Long id) {
+        Map<String, Object> response = new HashMap<>();
+        try {
+            Optional<Booking> optionalBooking = bookingService.findById(id);
+            
+            if (optionalBooking.isPresent()) {
+                Booking booking = optionalBooking.get();
+                
+                booking.setStatus("CANCELLED");
+                bookingService.save(booking); 
+                
+                response.put("success", true);
+                response.put("message", "Booking status successfully mapped to CANCELLED.");
+                return ResponseEntity.ok(response);
+            } else {
+                response.put("success", false);
+                response.put("message", "Booking reference not found in the database.");
+                return ResponseEntity.status(404).body(response);
+            }
+        } catch (Exception e) {
+            response.put("success", false);
+            response.put("message", "An error occurred during status modification.");
+            return ResponseEntity.status(500).body(response);
+        }
+    }
+
+
     @GetMapping({"/book/{packageId}", "/book/{packageId}/"})
     public String bookPackage(@PathVariable Long packageId, Model model) {
         TourPackage tourPackage = tourPackageService.findById(packageId).orElse(null);
@@ -55,7 +84,6 @@ public class BookingController {
         return "book-package";
     }
 
-    // 🎯 බුකින් එක Form එකෙන් සබ්මිට් කරද්දී මිල ගණන් හදලා සේဝ် කරන තැන
     @PostMapping("/book")
     public String placeBooking(@ModelAttribute Booking booking,
                                @RequestParam Long packageId,
@@ -84,6 +112,8 @@ public class BookingController {
         User user = optionalUser.get();
         booking.setTourPackage(tourPackage);
         booking.setUser(user);
+        
+        booking.setStatus("CONFIRMED");
 
         double basePrice = tourPackage.getPrice();
         double extraPricePerNight = 0.0;
@@ -160,13 +190,11 @@ public class BookingController {
         return "booking-confirmation";
     }
 
-    // 🎯 PAYMENT SIMULATION PAGE
     @GetMapping("/book/payment")
     public String showPaymentPage() {
         return "payment"; 
     }
 
-    // 🎯 500 ERROR එක සම්පූර්ණයෙන්ම මකාදැමූ නිවැරදිම ONLINE RECEIPT ENDPOINT එක මචං
     @GetMapping("/book/receipt")
     public String showOnlineReceipt(HttpServletRequest request, Model model) {
         String packageName = request.getParameter("packageName");
@@ -177,17 +205,14 @@ public class BookingController {
         model.addAttribute("totalPrice", totalPrice != null ? totalPrice : "0.00");
         model.addAttribute("travelers", travelers != null ? travelers : "1");
         
-        // 📄 PDF එක ඩවුන්ලෝඩ් වෙද්දී සැබෑ දත්ත වැටෙන්න මෙතන Dynamic values සෙට් කලා බෝක්කා
         model.addAttribute("userEmail", "customer@travelgenie.com"); 
         model.addAttribute("travelDate", "2026-07-02");
         model.addAttribute("hotelName", "Standard Stay");
         model.addAttribute("vehicle", "Provided");
 
-        // 🌿 ඔයාගේ receipt.html එක කෙළින්ම templates/ ඇතුළේ තියෙන නිසා "receipt" පමණක් ලබාදෙමු!
         return "receipt"; 
     }
 
-    // 📄 INVOICE PDF DOWNLOAD ENDPOINT
     @GetMapping("/booking/download-receipt")
     public ResponseEntity<InputStreamResource> downloadReceipt(
             @RequestParam String email,
@@ -219,7 +244,6 @@ public class BookingController {
                 .body(new InputStreamResource(bis));
     }
 
-    // 🎯 යූසර්ගේ පැරණි Booking History පෙන්වන පිටුව
     @GetMapping("/bookings")
     public String bookingHistory(@RequestParam String userEmail, Model model) {
         Optional<User> user = userService.findByEmail(userEmail);
