@@ -1,6 +1,7 @@
 package com.example.TravelApp.controller;
 
 import com.example.TravelApp.model.*;
+import com.example.TravelApp.repository.BookingRepository; 
 import com.example.TravelApp.service.*;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.stereotype.Controller;
@@ -19,16 +20,18 @@ public class AdminController {
     private final BookingService bookingService;
     private final ReviewService reviewService;
     private final HotelService hotelService; 
+    private final BookingRepository bookingRepository; 
 
     public AdminController(UserService userService, DestinationService destinationService,
                            TourPackageService tourPackageService, BookingService bookingService,
-                           ReviewService reviewService, HotelService hotelService) {
+                           ReviewService reviewService, HotelService hotelService, BookingRepository bookingRepository) {
         this.userService = userService;
         this.destinationService = destinationService;
         this.tourPackageService = tourPackageService;
         this.bookingService = bookingService;
         this.reviewService = reviewService;
         this.hotelService = hotelService;
+        this.bookingRepository = bookingRepository; 
     }
 
     private boolean isAdmin(HttpSession session) {
@@ -41,23 +44,24 @@ public class AdminController {
             return "redirect:/login";
         }
 
-        // 📊 Dashboard Counter Cards වලට අවශ්‍ය දත්ත
+  
         model.addAttribute("totalUsers", userService.findAll().size());
         model.addAttribute("totalDestinations", destinationService.findAll().size());
         model.addAttribute("totalPackages", tourPackageService.findAll().size());
         model.addAttribute("totalBookings", bookingService.findAll().size());
-        model.addAttribute("totalRevenue", bookingService.findAll().stream().mapToDouble(Booking::getTotalPrice).sum());
         
-        // 🎯 ඩෑෂ්බෝඩ් එකේ ටේබල් එකට බුකින්ස් වෙනුවට, අලුතින් දාන Tour Packages ඔක්කොම ලෝඩ් කරලා පාස් කරනවා බෝක්කා
+ ං
+        Double revenue = bookingRepository.getTotalRevenue();
+        model.addAttribute("totalRevenue", revenue != null ? revenue : 0.0);
+        
+        
         List<TourPackage> allPackages = tourPackageService.findAll();
         model.addAttribute("bookings", allPackages); 
 
         return "admin/dashboard";
     }
 
-    // ==========================================
-    // 🏨 HOTELS MANAGEMENT SECTION
-    // ==========================================
+
 
     @GetMapping("/hotels/add")
     public String showAddHotelForm(HttpSession session, Model model) {
@@ -82,9 +86,7 @@ public class AdminController {
         return "redirect:/admin/packages"; 
     }
 
-    // ==========================================
-    // USERS SECTION
-    // ==========================================
+
 
     @GetMapping("/users")
     public String listUsers(HttpSession session, Model model) {
@@ -159,9 +161,6 @@ public class AdminController {
         return "redirect:/admin/users";
     }
 
-    // ==========================================
-    // DESTINATIONS SECTION
-    // ==========================================
 
     @GetMapping("/destinations")
     public String listDestinations(HttpSession session, Model model) {
