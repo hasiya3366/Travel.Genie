@@ -25,7 +25,7 @@
 
         /* 🎯 2. DYNAMIC THEME VARIABLES SYSTEM */
         :root {
-            --bg-body: #f3fbf8; /* ඔයාගේ ලස්සන ලා කොළ/සුදු පසුබිම */
+            --bg-body: #f3fbf8; 
             --bg-card: white;
             --bg-sidebar: #e8f5e9;
             --text-main: #2c3e50;
@@ -165,7 +165,7 @@
         .page-title-row { margin-bottom: 30px; }
         .page-title-row h2 { font-size: 36px; font-weight: 700; color: var(--text-title); }
 
-        /* 🔍 PREMIUM REAL-TIME SEARCH BOX FILTER INPUT STYLE */
+        /* --- SEARCH BOX --- */
         .search-wrapper {
             margin-bottom: 20px;
             position: relative;
@@ -239,6 +239,35 @@
         .status-confirmed, .status-approved { background-color: #d1e7dd; color: #0f5132; }
         .status-pending, .status-processing { background-color: #fff3cd; color: #664d03; }
         .status-cancelled, .status-rejected { background-color: #f8d7da; color: #842029; }
+
+        /* 🚨 CANCEL BUTTON WORKSPACE STYLING */
+        .btn-cancel {
+            background-color: #fee2e2;
+            color: #dc2626;
+            border: 1px solid #fca5a5;
+            padding: 6px 14px;
+            border-radius: 10px;
+            font-size: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            transition: all 0.2s ease;
+        }
+        .btn-cancel:hover:not(:disabled) {
+            background-color: #dc2626;
+            color: white;
+            border-color: #dc2626;
+            box-shadow: 0 4px 10px rgba(220, 38, 38, 0.15);
+        }
+        .btn-cancel:disabled {
+            background-color: #f1f5f9;
+            color: #94a3b8;
+            border-color: #e2e8f0;
+            cursor: not-allowed;
+            opacity: 0.6;
+        }
     </style>
 </head>
 <body>
@@ -298,6 +327,7 @@
                             <th>Travelers</th>
                             <th>Total Price</th>
                             <th>Status Badge</th>
+                            <th style="text-align: center;">Actions</th> <!-- 🎯 NEW ACTIONS COLUMN HEAD -->
                         </tr>
                     </thead>
                     <tbody id="bookingTableBody">
@@ -309,12 +339,26 @@
                             <td th:text="${booking.travelers + ' Person(s)'}">2 Travelers</td>
                             <td th:text="${'LKR ' + booking.totalPrice}" style="font-weight: 600; color: #009688;">LKR 25,000.00</td>
                             <td>
-                                <span th:class="${'status-badge status-' + booking.status.toLowerCase()}" th:text="${booking.status}">Confirmed</span>
+                                <!-- 🚨 Id එකක් එකතු කලා dynamic විදියට badge එක මාරු කරන්න -->
+                                <span th:id="'status-' + ${booking.id}" 
+                                      th:class="${'status-badge status-' + booking.status.toLowerCase()}" 
+                                      th:text="${booking.status}">Confirmed</span>
+                            </td>
+                            <td style="text-align: center;">
+                                <!-- 🎯 DYNAMIC CANCEL MODULE WORKSPACE BUTTON -->
+                                <button type="button" 
+                                        th:id="'cancel-btn-' + ${booking.id}"
+                                        class="btn-cancel" 
+                                        th:attr="data-booking-id=${booking.id}" 
+                                        th:disabled="${booking.status == 'CANCELLED'}"
+                                        onclick="cancelBookingMapping(this)">
+                                    <i class="fa-solid fa-rectangle-xmark"></i> Cancel
+                                </button>
                             </td>
                         </tr>
                         
                         <tr th:if="${bookings == null or #lists.isEmpty(bookings)}" id="emptyRowPlaceholder">
-                            <td colspan="7" style="text-align: center; color: #64748b; padding: 30px 0;">
+                            <td colspan="8" style="text-align: center; color: #64748b; padding: 30px 0;">
                                 <i class="fa-solid fa-folder-open" style="display:block; font-size: 28px; margin-bottom: 10px; color: #cbd5e1;"></i>
                                 No active customer bookings found in the database.
                             </td>
@@ -327,6 +371,42 @@
 
     <!-- 🎯 5. REAL-TIME SEARCH BOX FILTER & THEME TOGGLE LOGIC JAVASCRIPT -->
     <script>
+        // 🚨 NEW: AJAX CANCEL BOOKING LOGIC PIPELINE
+        function cancelBookingMapping(buttonElement) {
+            var bookingId = buttonElement.getAttribute("data-booking-id");
+            
+            if (confirm("Are you sure you want to cancel booking #" + bookingId + "?")) {
+                // බටන් එක මුලින්ම disable කරනවා double clicks නැති කරන්න
+                buttonElement.disabled = true;
+                
+                // 🔐 Fetch API එකෙන් බැක්එන්ඩ් එකට Request එකක් යවනවා
+                fetch("/admin/api/bookings/cancel/" + bookingId, {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json"
+                    }
+                })
+                .then(function(response) {
+                    if (response.ok) {
+                        // 1. UI එකේ Status Badge එක ලයිව් අප්ඩේට් කරනවා
+                        var badge = document.getElementById("status-" + bookingId);
+                        if (badge) {
+                            badge.textContent = "CANCELLED";
+                            badge.className = "status-badge status-cancelled";
+                        }
+                    } else {
+                        alert("Failed to cancel the booking. Please try again.");
+                        buttonElement.disabled = false;
+                    }
+                })
+                .catch(function(error) {
+                    console.error("Error:", error);
+                    alert("An error occurred while communicating with the server.");
+                    buttonElement.disabled = false;
+                });
+            }
+        }
+
         document.addEventListener("DOMContentLoaded", function () {
             // --- 1. DARK LIGHT MODE SWITCHER ENGINE ---
             var toggleBtn = document.getElementById("themeToggleBtn");
