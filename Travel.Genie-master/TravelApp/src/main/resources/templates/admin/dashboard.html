@@ -664,7 +664,6 @@
         <div class="revenue-card">
             <div class="revenue-info">
                 <h3>Total Estimated Earnings</h3>
-                <!-- 🚨 පරණ th:text එක වෙනුවට refresh වෙද්දීත් JS එකෙන්ම ලස්සනට පාලනය කරන්න ID එක පිරිසිදු කලා බෝක්කා -->
                 <p id="domRevenueDisplay">LKR 0.00</p>
                 <input type="hidden" id="hiddenRevenue" th:value="${totalRevenue != null ? totalRevenue : '0'}" />
             </div>
@@ -808,13 +807,11 @@
     var dashboardChart, categoryChart, revenueTrendChart;
     var revenueHistory = []; 
 
-    // 📡 LIVE WORKSPACE STOMP ENGINE OBJECT CONFIGS
     let stompSupportClient = null;
     let globalQueueClient = null; 
     let activeSessionToken = null;
 
     document.addEventListener("DOMContentLoaded", function () {
-        // --- 1. DARK LIGHT MODE SYSTEM SCRIPT ---
         var toggleBtn = document.getElementById("themeToggleBtn");
         var currentTheme = localStorage.getItem("theme") || "light";
 
@@ -838,7 +835,6 @@
             }
         });
 
-        // --- 2. REAL-TIME SEARCH BOX FILTER LOGIC ---
         var searchInput = document.getElementById("tableSearchInput");
         if (searchInput) {
             searchInput.addEventListener("keyup", function() {
@@ -852,7 +848,6 @@
             });
         }
 
-        // --- 3. LIVE POPUP TOAST NOTIFIER SYSTEM FUNCTION ---
         window.showToast = function(msg) {
             var toast = document.getElementById("liveAdminToast");
             document.getElementById("toastMessageText").innerText = msg;
@@ -862,7 +857,6 @@
             }, 3500);
         };
 
-        // 🚨 NEW: පේජ් එක ලෝඩ් වෙද්දීම Total Revenue එක ලස්සනට LKR format එකට හදාගන්නවා මචං
         const initialRevenue = document.getElementById("hiddenRevenue").value;
         updateRevenueDisplayUI(initialRevenue);
 
@@ -870,21 +864,15 @@
             showToast("System Core Live: Metrics successfully pulled!");
         }, 1200);
 
-        // 🚀 4. GLOBAL RADAR STREAM ACTIVATION FOR LOGGED CUSTOMERS
         initGlobalQueueListener();
 
-        // --- 5. INITIAL CHART BUILD ---
         initDashboardChart();
         initCategoryChart();
         initRevenueTrendChart();
 
-        // --- 6. AUTO-UPDATE LOOP FOR ALL 3 CHARTS ---
         setInterval(refreshAllCharts, AUTO_UPDATE_INTERVAL_MS);
     });
 
-    // =========================================================
-    // 🧬 GLOBAL RADAR STREAM FOR REAL-TIME INCOMING TICKETS
-    // =========================================================
     function initGlobalQueueListener() {
         const queueSocket = new SockJS('/ws-support');
         globalQueueClient = Stomp.over(queueSocket);
@@ -921,9 +909,6 @@
         showToast(`New support ticket received from ${username}!`);
     }
 
-    // =========================================================
-    // 🧬 WORKSPACE CORE ENGINE: WEBSOCKET SYNC LOGICS
-    // =========================================================
     function acceptLiveChat(sessionId, username) {
         activeSessionToken = sessionId;
         document.getElementById('activeChannelBadge').innerHTML = `<span style="color:#00bfa5;"><i class="fa-solid fa-link"></i> Active Stream: ${username}</span>`;
@@ -1058,6 +1043,7 @@
             totalDestinations: parseInt(document.getElementById("domTotalDestinations").innerText) || 0,
             totalPackages: parseInt(document.getElementById("domTotalPackages").innerText) || 0,
             totalBookings: parseInt(document.getElementById("domTotalBookings").innerText) || 0,
+            totalCancelled: 0,
             totalRevenue: parseFloat(document.getElementById("hiddenRevenue").value) || 0
         };
     }
@@ -1069,20 +1055,21 @@
         dashboardChart = new Chart(ctx, {
             type: 'bar',
             data: {
-                labels: ['Total Users', 'Active Locations', 'Live Offerings', 'Processed Orders'],
+                labels: ['Total Users', 'Active Locations', 'Live Offerings', 'Processed Orders', 'Cancelled Orders'],
                 datasets: [{
                     label: 'System Metrics (Volume)',
-                    data: [stats.totalUsers, stats.totalDestinations, stats.totalPackages, stats.totalBookings],
+                    data: [stats.totalUsers, stats.totalDestinations, stats.totalPackages, stats.totalBookings, stats.totalCancelled],
                     backgroundColor: [
                         'rgba(46, 204, 113, 0.25)',
                         'rgba(155, 89, 182, 0.25)',
                         'rgba(230, 126, 34, 0.25)',
-                        'rgba(52, 152, 219, 0.25)'
+                        'rgba(52, 152, 219, 0.25)',
+                        'rgba(231, 76, 60, 0.25)'
                     ],
-                    borderColor: ['#2ecc71', '#9b59b6', '#e67e22', '#3498db'],
+                    borderColor: ['#2ecc71', '#9b59b6', '#e67e22', '#3498db', '#e74c3c'],
                     borderWidth: 2,
                     borderRadius: 8,
-                    barThickness: 45
+                    barThickness: 40
                 }]
             },
             options: {
@@ -1245,7 +1232,7 @@
                 
                 if (typeof dashboardChart !== 'undefined' && dashboardChart.data) {
                     dashboardChart.data.datasets[0].data = [
-                        data.totalUsers, data.totalDestinations, data.totalPackages, data.totalBookings
+                        data.totalUsers, data.totalDestinations, data.totalPackages, data.totalBookings, data.totalCancelled
                     ];
                     dashboardChart.update();
                 }
@@ -1262,7 +1249,6 @@
             });
     }
 
-    // 🚨 NEW REVENUE RENDERING REFACTORING UTILITY
     function updateRevenueDisplayUI(value) {
         const revenueDisplay = document.getElementById("domRevenueDisplay");
         if (revenueDisplay) {
@@ -1284,7 +1270,6 @@
         if (document.getElementById('domTotalBookings')) 
             document.getElementById('domTotalBookings').innerText = data.totalBookings;
 
-        // 🚨 Auto-update වෙද්දීත් මෙතනින් අපේ UI format function එක කෝල් වෙනවා
         updateRevenueDisplayUI(data.totalRevenue);
         
         if (document.getElementById('hiddenRevenue')) {
@@ -1305,7 +1290,6 @@
         var csvFile = new Blob([csv.join("\n")], {type: "text/csv"});
         var downloadLink = document.createElement("a");
         downloadLink.download = filename;
-        downloadLink.href = window.URL.createObjectURL(csvFile);
         downloadLink.style.display = "none";
         document.body.appendChild(downloadLink);
         downloadLink.click();
