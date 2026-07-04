@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>TravelGenie — Sri Lanka Adventures</title>
-    <!-- Font Awesome and Poppins Font Integration -->
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
@@ -22,11 +21,11 @@
             overflow-x: hidden;
         }
 
-        /* --- NAVBAR STYLE (100% MATCH WITH OTHER PAGES) --- */
+        /* --- PREMIUM INLINE FIXED NAVBAR SYSTEM --- */
         .site-header {
             background-color: white;
             border-bottom: 1px solid rgba(0, 150, 136, 0.1);
-            padding: 15px 0;
+            padding: 12px 0;
             position: sticky;
             top: 0;
             z-index: 100;
@@ -35,9 +34,10 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            max-width: 1200px;
+            max-width: 1400px;
             margin: 0 auto;
             padding: 0 20px;
+            gap: 15px;
         }
         .brand {
             font-size: 24px;
@@ -46,38 +46,56 @@
             text-decoration: none;
             display: flex;
             align-items: center;
-            gap: 8px;
+            gap: 6px;
+            white-space: nowrap;
         }
         .brand-icon { color: #009688; }
+        
         nav {
             display: flex;
             align-items: center;
+            gap: 10px;
+            flex-wrap: nowrap;
         }
+        
         nav a {
             color: #475569;
             text-decoration: none;
             font-weight: 500;
-            font-size: 15px;
-            margin-left: 20px;
-            transition: color 0.2s;
+            font-size: 14px;
+            transition: color 0.2s, background-color 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            white-space: nowrap;
+            padding: 8px 10px;
+            border-radius: 8px;
+        }
+        nav a:hover { 
+            color: #009688; 
+            background-color: rgba(0, 150, 136, 0.05);
+        }
+        
+        .user-greeting {
+            font-size: 13px;
+            color: #2c3e50;
+            padding: 6px 12px;
+            background-color: #f1f5f9;
+            border-radius: 20px;
+            border: 1px solid #e2e8f0;
+            white-space: nowrap;
             display: flex;
             align-items: center;
             gap: 6px;
+            margin-left: 5px;
         }
-        nav a:hover { color: #009688; }
         
-        .user-greeting {
-            font-size: 14px;
-            color: #475569;
-            margin-left: 20px;
-        }
         .nav-logout-btn {
-            margin-left: 15px;
             color: #e74c3c !important;
             font-weight: 600;
         }
         .nav-logout-btn:hover {
-            color: #c0392b !important;
+            background-color: rgba(231, 76, 60, 0.05) !important;
         }
 
         /* --- IMMERSIVE HERO VIDEO SECTION --- */
@@ -337,19 +355,22 @@
             width: 100%;
         }
 
-        /* --- CHATBOT WIDGET HIDDEN FIX --- */
         .need-help, #need-help, .needhelp-btn, [class*="need-help"] {
             display: none !important;
             visibility: hidden !important;
         }
 
-        @media (max-width: 768px) {
+        @media (max-width: 1024px) {
             .header-inner {
                 flex-direction: column;
-                gap: 10px;
+                gap: 12px;
                 text-align: center;
             }
-            nav a { margin: 10px 10px; }
+            nav {
+                flex-wrap: wrap;
+                justify-content: center;
+                gap: 6px;
+            }
             .section { padding: 50px 20px; }
         }
     </style>
@@ -375,26 +396,24 @@
             <a th:href="@{/}" style="color: #009688; font-weight: 600;"><i class="fa-solid fa-house"></i> Home</a>
             <a th:href="@{/destinations}"><i class="fa-solid fa-map-location-dot"></i> Destinations</a>
             <a th:href="@{/packages}"><i class="fa-solid fa-cubes"></i> Packages</a>
-            
-            <!-- 🎯 NEW: Dynamic My Bookings Navigation Link with Session Mapping -->
-            <a th:href="@{/bookings(userEmail=${session.userEmail != null ? session.userEmail : (session.username != null ? session.username : '')})}">
-                <i class="fa-solid fa-suitcase-rolling"></i> My Bookings
-            </a>
-            
+            <a th:href="@{/bookings}"><i class="fa-solid fa-suitcase-rolling"></i> My Bookings</a>
             <a th:href="@{/about}"><i class="fa-solid fa-circle-info"></i> About</a>
             <a th:href="@{/contact}"><i class="fa-solid fa-envelope"></i> Contact</a>
+            <a th:href="@{/admin}"><i class="fa-solid fa-lock"></i> Admin</a>
 
-            <span th:if="${session.user != null}" class="user-greeting">Welcome, <strong th:text="${session.userName}"></strong></span>
-            <a th:if="${session.user != null}" th:href="@{/logout}" class="nav-logout-btn">
+            <span th:if="${session.user != null || session.userEmail != null}" class="user-greeting">
+                <i class="fa-solid fa-circle-user" style="color: #00a88f;"></i>
+                <span th:text="${session.userName != null ? session.userName : 'Profile'}">User</span>
+            </span>
+            <a th:if="${session.user != null || session.userEmail != null}" th:href="@{/logout}" class="nav-logout-btn">
                 <i class="fa-solid fa-right-from-bracket"></i> Logout
             </a>
-            <a th:if="${session.user == null}" th:href="@{/login}"><i class="fa-solid fa-user"></i> Login</a>
+            <a th:if="${session.user == null && session.userEmail == null}" th:href="@{/login}"><i class="fa-solid fa-user"></i> Login</a>
         </nav>
     </div>
 </header>
 
 <main>
-    <!-- Background Video Hero Module -->
     <section class="hero">
         <video autoplay muted loop playsinline>
             <source src="/videos/srilanka-promo.mp4" type="video/mp4">
@@ -413,7 +432,6 @@
         </div>
     </section>
 
-    <!-- Handpicked Adventure Highlights -->
     <section class="section">
         <div class="section-heading">
             <span>Signature Experiences</span>
@@ -440,7 +458,6 @@
         </div>
     </section>
 
-    <!-- Dynamic Popular Destinations Section (Premium Content Grid) -->
     <section class="section destinations-section">
         <div class="section-heading">
             <span>Popular Destinations</span>
@@ -471,7 +488,6 @@
     </div>
 </footer>
 
-<!-- Dynamic Integration Framework Footer Fragment Link -->
 <div th:replace="~{fragments :: chatbot}"></div>
 
 </body>
