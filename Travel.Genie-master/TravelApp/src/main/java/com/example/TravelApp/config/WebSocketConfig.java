@@ -18,7 +18,6 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
 
     @Override
     public void registerStompEndpoints(StompEndpointRegistry registry) {
-        // 🌐 setAllowedOriginPatterns("*") එක දැම්මම ඕනෑම ලයිව් URL එකකින් එන කනෙක්ෂන් සර්වර් එකෙන් බාරගන්නවා මචං!
         registry.addEndpoint("/ws-support")
                 .setAllowedOriginPatterns("*")
                 .withSockJS();
