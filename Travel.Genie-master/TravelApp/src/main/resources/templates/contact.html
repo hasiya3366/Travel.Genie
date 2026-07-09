@@ -17,15 +17,15 @@
         }
 
         body {
-            background-color: #f3fbf8; /* Premium ලා කොළ/සුදු පසුබිම */
+            background-color: #f3fbf8; 
             color: #2c3e50;
         }
 
-        /* --- NAVBAR STYLE --- */
+        /* --- PREMIUM INLINE FIXED NAVBAR SYSTEM --- */
         .site-header {
             background-color: white;
             border-bottom: 1px solid rgba(0, 150, 136, 0.1);
-            padding: 15px 0;
+            padding: 12px 0;
             position: sticky;
             top: 0;
             z-index: 100;
@@ -34,9 +34,10 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            max-width: 1200px;
+            max-width: 1400px;
             margin: 0 auto;
             padding: 0 20px;
+            gap: 15px;
         }
         .brand {
             font-size: 24px;
@@ -45,35 +46,73 @@
             text-decoration: none;
             display: flex;
             align-items: center;
-            gap: 8px;
+            gap: 6px;
+            white-space: nowrap;
         }
         .brand-icon { color: #009688; }
+        
+        nav {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            flex-wrap: nowrap;
+        }
+        
         nav a {
             color: #475569;
             text-decoration: none;
             font-weight: 500;
-            font-size: 15px;
-            margin-left: 20px;
-            transition: color 0.2s;
+            font-size: 14px;
+            transition: color 0.2s, background-color 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            white-space: nowrap;
+            padding: 8px 10px;
+            border-radius: 8px;
         }
-        nav a:hover { color: #009688; }
+        nav a:hover, nav a.active { 
+            color: #009688; 
+            background-color: rgba(0, 150, 136, 0.05);
+        }
+        
+        .user-greeting {
+            font-size: 13px;
+            color: #2c3e50;
+            padding: 6px 12px;
+            background-color: #f1f5f9;
+            border-radius: 20px;
+            border: 1px solid #e2e8f0;
+            white-space: nowrap;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            margin-left: 5px;
+        }
+        
+        .nav-logout-btn {
+            color: #e74c3c !important;
+            font-weight: 600;
+        }
+        .nav-logout-btn:hover {
+            background-color: rgba(231, 76, 60, 0.05) !important;
+        }
 
-        /* --- HERO HEADER SECTION --- */
-        .contact-hero {
-            background: linear-gradient(rgba(0, 74, 66, 0.85), rgba(0, 150, 136, 0.7));
+        /* --- HERO HEADER SECTION (100% DESTINATION PROPERTY MATCH) --- */
+        .destinations-hero {
+            background: linear-gradient(rgba(0, 74, 66, 0.85), rgba(0, 150, 136, 0.7)), url('https://images.unsplash.com/photo-1546708973-b339540b5162?w=1600&auto=format&fit=crop&q=80') center/cover no-repeat;
             color: white;
             text-align: center;
-            padding: 50px 20px;
+            padding: 60px 20px;
             margin-bottom: 40px;
-            width: 100%;
         }
-        .contact-hero h2 {
-            font-size: clamp(1.8rem, 4vw, 2.5rem);
+        .destinations-hero h2 {
+            font-size: 2.5rem;
             font-weight: 700;
             margin-bottom: 10px;
         }
-        .contact-hero p {
-            font-size: clamp(0.95rem, 2vw, 1.1rem);
+        .destinations-hero p {
+            font-size: 1.1rem;
             opacity: 0.9;
             max-width: 600px;
             margin: 0 auto;
@@ -81,7 +120,7 @@
 
         /* --- SPLIT GRID LAYOUT --- */
         .main-container {
-            max-width: 1200px;
+            max-width: 1400px;
             margin: 0 auto;
             padding: 0 20px 60px 20px;
             display: grid;
@@ -90,7 +129,6 @@
             width: 100%;
         }
 
-        /* --- RIGHT SIDE COLUMN FOR CARDS --- */
         .sidebar-column {
             display: flex;
             flex-direction: column;
@@ -136,7 +174,7 @@
             background-color: white;
         }
         .btn-submit {
-            background-color: #e67e22; /* Premium Accent Orange */
+            background-color: #e67e22; 
             color: white;
             border: none;
             padding: 14px;
@@ -188,9 +226,9 @@
             line-height: 1.6;
         }
 
-        /* ✨ 🎯 LIVE CHAT SUPPORT CARD DESIGN ✨ */
+        /* --- LIVE CHAT SUPPORT CARD DESIGN --- */
         .live-chat-card {
-            border: 2px solid #009688; /* Premium Teal Outline Border */
+            border: 2px solid #009688; 
             background: linear-gradient(145deg, #ffffff, #fdfdfd);
         }
         .live-chat-card p {
@@ -200,7 +238,7 @@
             margin-bottom: 20px;
         }
         .btn-live-chat {
-            background-color: #1e293b; /* Premium Dark Contrast Slate Blue */
+            background-color: #1e293b; 
             color: #ffffff;
             display: flex;
             align-items: center;
@@ -218,22 +256,21 @@
             cursor: pointer;
         }
         .btn-live-chat:hover {
-            background-color: #009688; /* Hover එකේදී අපේ කොළ පාටට හැරෙනවා */
+            background-color: #009688; 
             transform: translateY(-2px);
             box-shadow: 0 6px 18px rgba(0, 150, 136, 0.3);
             color: white;
         }
         .chat-pulse-icon {
             color: #00bfa5;
-            animation: pulse 1.5s infinite;
+            animation: pulse-indicator-loop 1.5s infinite;
         }
-        @keyframes pulse {
+        @keyframes pulse-indicator-loop {
             0% { opacity: 0.4; }
             50% { opacity: 1; }
             100% { opacity: 0.4; }
         }
 
-        /* 🚨 Inline Chat Error Message Styling */
         .chat-auth-error-msg {
             color: #dc2626;
             font-size: 13.5px;
@@ -282,47 +319,63 @@
             width: 100%;
         }
 
-        @media (max-width: 768px) {
+        @media (max-width: 1024px) {
             .main-container {
                 grid-template-columns: 1fr;
                 gap: 30px;
             }
             .header-inner {
                 flex-direction: column;
-                gap: 10px;
+                gap: 12px;
                 text-align: center;
             }
-            nav a { margin: 0 10px; }
+            nav {
+                flex-wrap: wrap;
+                justify-content: center;
+                gap: 6px;
+            }
         }
     </style>
 </head>
 <body>
 
 <header class="site-header">
-    <div class="header-inner">
+    <div class="container header-inner">
         <a class="brand" th:href="@{/}">
             <span class="brand-icon">🌿</span>
             <span>TravelGenie</span>
         </a>
         <nav>
-            <a th:href="@{/}">Home</a>
-            <a th:href="@{/destinations}">Destinations</a>
-            <a th:href="@{/packages}">Packages</a>
-            <a th:href="@{/about}">About</a>
-            <a th:href="@{/contact}" style="color: #009688; font-weight: 600;">Contact</a>
+            <a th:href="@{/}"><i class="fa-solid fa-house"></i> Home</a>
+            <a th:href="@{/destinations}"><i class="fa-solid fa-map-location-dot"></i> Destinations</a>
+            <a th:href="@{/packages}"><i class="fa-solid fa-cubes"></i> Packages</a>
+            <a th:href="@{/bookings}"><i class="fa-solid fa-suitcase-rolling"></i> My Bookings</a>
+            <a th:href="@{/about}"><i class="fa-solid fa-circle-info"></i> About</a>
+            <a th:href="@{/contact}" class="active"><i class="fa-solid fa-envelope"></i> Contact</a>
+
+            <span th:if="${session.user != null || session.userEmail != null || session.username != null}" class="user-greeting">
+                <i class="fa-solid fa-circle-user" style="color: #00a88f;"></i>
+                <span th:text="${session.userName != null ? session.userName : 'Profile'}">User</span>
+            </span>
+            <a th:if="${session.user != null || session.userEmail != null || session.username != null}" th:href="@{/logout}" class="nav-logout-btn">
+                <i class="fa-solid fa-right-from-bracket"></i> Logout
+            </a>
+            <a th:if="${session.user == null && session.userEmail == null && session.username == null}" th:href="@{/login}"><i class="fa-solid fa-user"></i> Login</a>
         </nav>
     </div>
 </header>
 
+<header class="site-header" style="display:none;"></header>
+
 <main>
-    <section class="contact-hero">
+    <!-- Top Banner Section (100% Matching Destination HTML Mapping Architecture) -->
+    <section class="destinations-hero">
         <h2>Contact Our Expedition Experts</h2>
         <p>Have inquiries regarding tailored routes, booking verification, or custom itineraries? Send us a message below.</p>
     </section>
 
     <div class="main-container">
         
-        <!-- වම් පැත්තේ Form Card එක -->
         <section class="form-card">
             <div th:if="${success}" class="alert-success" th:text="${success}"></div>
             <div th:if="${error}" class="alert-error" th:text="${error}"></div>
@@ -349,27 +402,23 @@
             </form>
         </section>
 
-    
         <div class="sidebar-column">
             
             <section class="live-chat-card">
                 <h3><i class="fa-solid fa-headset"></i> Customer Support Hub</h3>
                 <p>Need urgent technical resolutions or live agent booking validations? Connect instantaneously with our verification workspace.</p>
                 
-            
                 <div id="chatAuthError" class="chat-auth-error-msg">
                     <i class="fa-solid fa-circle-exclamation"></i> Please log in to connect with live support!
                 </div>
 
-                <!-- 🔐 Login Checker Fields -->
-                <input type="hidden" id="authCheck" th:value="${session.userRole != null ? 'true' : 'false'}" />
+                <input type="hidden" id="authCheck" th:value="${session.user != null || session.userEmail != null || session.username != null ? 'true' : 'false'}" />
                 
                 <button type="button" class="btn-live-chat" onclick="checkChatAuthAndProceed()">
                     <i class="fa-solid fa-circle-dot chat-pulse-icon"></i> 💬 Chat with Support
                 </button>
             </section>
 
-            <!-- FAQ CARD -->
             <section class="faq-card">
                 <h3>Frequently Asked Questions</h3>
                 
@@ -397,21 +446,18 @@
 </footer>
 
 <script>
-
     function checkChatAuthAndProceed() {
         var isLoggedIn = document.getElementById("authCheck").value === "true";
         var errorDiv = document.getElementById("chatAuthError");
 
         if (!isLoggedIn) {
- 
+            errorDiv.style.withAnimation = "none";
             errorDiv.style.display = "block";
             
- 
             setTimeout(function() {
                 window.location.href = "/login";
             }, 1500);
         } else {
-     
             window.location.href = "/support";
         }
     }
