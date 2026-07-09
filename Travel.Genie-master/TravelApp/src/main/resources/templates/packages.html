@@ -1,64 +1,9 @@
-<!-- <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" th:href="@{/css/styles.css}">
-</head>
-<body>
-<header class="site-header">
-    <div class="container header-inner">
-        <h1><a th:href="@{/}">TravelGenie</a></h1>
-        <nav>
-            <a th:href="@{/}">Home</a>
-            <a th:href="@{/destinations}">Destinations</a>
-            <a th:href="@{/packages}">Packages</a>
-            <a th:href="@{/about}">About</a>
-            <a th:href="@{/contact}">Contact</a>
-            <a th:href="@{/admin}">Admin</a>
-        </nav>
-    </div>
-</header>
-<main class="container">
-    <section class="page-heading">
-        <h2>Tour Packages</h2>
-        <div class="filter-row">
-            <a th:href="@{/packages}">All</a>
-            <a th:href="@{/packages(category='Beach')}">Beach</a>
-            <a th:href="@{/packages(category='Mountain')}">Mountain</a>
-            <a th:href="@{/packages(category='Adventure')}">Adventure</a>
-            <a th:href="@{/packages(category='Cultural')}">Cultural</a>
-        </div>
-    </section>
-    <section class="card-grid">
-        <div class="card" th:each="pkg : ${packages}">
-            <img th:src="${pkg.imageUrl}" alt="Package image"/>
-            <div class="card-body">
-                <h4 th:text="${pkg.name}"></h4>
-                <p th:text="${pkg.description}"></p>
-                <p>Category: <strong th:text="${pkg.category}"></strong></p>
-                <p>Price: <strong th:text="${pkg.price}"></strong> LKR</p>
-                <a th:href="@{/packages/{id}(id=${pkg.id})}" class="button">View Details</a>
-            </div>
-        </div>
-    </section>
-</main>
-<footer class="site-footer">
-    <div class="container">
-        <p>© 2026 TravelGenie. All Rights Reserved.</p>
-    </div>
-    <div th:replace="fragments :: chatbot"></div>
-</footer>
-</body>
-</html> -->
-
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org" lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Tour Packages — TravelGenie Premium</title>
-    <link rel="stylesheet" th:href="@{/css/styles.css}">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
@@ -71,15 +16,15 @@
         }
 
         body {
-            background-color: #f3fbf8; /* Premium ලා කොළ/සුදු පසුබිම */
+            background-color: #f3fbf8; 
             color: #2c3e50;
         }
 
-        /* --- NAVBAR STYLE --- */
+        /* --- PREMIUM INLINE FIXED NAVBAR SYSTEM --- */
         .site-header {
             background-color: white;
             border-bottom: 1px solid rgba(0, 150, 136, 0.1);
-            padding: 15px 0;
+            padding: 12px 0;
             position: sticky;
             top: 0;
             z-index: 100;
@@ -88,9 +33,10 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            max-width: 1200px;
+            max-width: 1400px;
             margin: 0 auto;
             padding: 0 20px;
+            gap: 15px;
         }
         .brand {
             font-size: 24px;
@@ -99,26 +45,66 @@
             text-decoration: none;
             display: flex;
             align-items: center;
-            gap: 8px;
+            gap: 6px;
+            white-space: nowrap;
         }
         .brand-icon { color: #009688; }
+        
+        nav {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            flex-wrap: nowrap;
+        }
+        
         nav a {
             color: #475569;
             text-decoration: none;
             font-weight: 500;
-            font-size: 15px;
-            margin-left: 20px;
-            transition: color 0.2s;
+            font-size: 14px;
+            transition: color 0.2s, background-color 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            white-space: nowrap;
+            padding: 8px 10px;
+            border-radius: 8px;
         }
-        nav a:hover { color: #009688; }
+        nav a:hover, nav a.active { 
+            color: #009688; 
+            background-color: rgba(0, 150, 136, 0.05);
+        }
+        
+        .user-greeting {
+            font-size: 13px;
+            color: #2c3e50;
+            padding: 6px 12px;
+            background-color: #f1f5f9;
+            border-radius: 20px;
+            border: 1px solid #e2e8f0;
+            white-space: nowrap;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            margin-left: 5px;
+        }
+        
+        .nav-logout-btn {
+            color: #e74c3c !important;
+            font-weight: 600;
+        }
+        .nav-logout-btn:hover {
+            background-color: rgba(231, 76, 60, 0.05) !important;
+        }
 
-        /* --- HERO HEADER SECTION --- */
+        /* --- IMMERSIVE PACKAGES HERO BANNER MODULE --- */
         .packages-hero {
-            background: linear-gradient(rgba(0, 74, 66, 0.85), rgba(0, 150, 136, 0.7));
+            background: linear-gradient(rgba(0, 74, 66, 0.85), rgba(0, 150, 136, 0.7)), 
+                        url('https://images.unsplash.com/photo-1588598130619-469a5647b28b?w=1600&auto=format&fit=crop&q=80') center/cover no-repeat;
             color: white;
             text-align: center;
-            padding: 50px 20px;
-            margin-bottom: 30px;
+            padding: 60px 20px;
+            margin-bottom: 40px;
             width: 100%;
         }
         .packages-hero h2 {
@@ -131,14 +117,17 @@
             opacity: 0.9;
             max-width: 600px;
             margin: 0 auto;
+            line-height: 1.6;
         }
 
-        /* --- MODERN FILTER TABS STYLE (ඔයාගේ මුල්ම CATEGORIES ටික) --- */
+        /* --- MODERN FILTER TABS ROW STYLE --- */
         .filter-section {
-            max-width: 1200px;
-            margin: 0 auto 30px auto;
+            max-width: 1400px;
+            margin: -25px auto 35px auto;
             padding: 0 20px;
             text-align: center;
+            position: relative;
+            z-index: 10;
         }
         .filter-row {
             display: flex;
@@ -147,37 +136,43 @@
             flex-wrap: wrap;
             background: white;
             padding: 15px;
-            border-radius: 12px;
-            box-shadow: 0 4px 20px rgba(0, 150, 136, 0.05);
+            border-radius: 16px;
+            box-shadow: 0 10px 30px rgba(0, 150, 136, 0.06);
             border: 1px solid rgba(0, 150, 136, 0.1);
         }
-        .filter-row a {
+        .filter-tab-btn {
             color: #475569;
             text-decoration: none;
-            padding: 10px 22px;
+            padding: 10px 24px;
             border-radius: 30px;
             font-weight: 600;
             font-size: 14px;
             background-color: #f8fafc;
             border: 1px solid #e2e8f0;
-            transition: all 0.3s ease;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            outline: none;
         }
-        .filter-row a:hover {
+        .filter-tab-btn:hover, .filter-tab-btn.active {
             background-color: #009688;
             color: white;
             border-color: #009688;
+            box-shadow: 0 4px 10px rgba(0, 150, 136, 0.15);
         }
 
-        /* --- CARDS GRID PATTERN (100% DESTINATION MATCH) --- */
+        /* --- PACKAGES GRID ENVIRONMENT LAYOUT --- */
         .main-container {
-            max-width: 1200px;
+            max-width: 1400px;
             margin: 0 auto;
             padding: 0 20px 60px 20px;
             width: 100%;
         }
         .card-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
             gap: 30px;
             width: 100%;
         }
@@ -221,6 +216,7 @@
             border-radius: 20px;
             font-size: 12px;
             font-weight: 600;
+            text-transform: capitalize;
         }
         .card-body {
             padding: 25px;
@@ -286,6 +282,8 @@
             padding: 60px 20px;
             color: #64748b;
             width: 100%;
+            display: none;
+            grid-column: 1 / -1;
         }
 
         .site-footer {
@@ -308,11 +306,21 @@
             <span>TravelGenie</span>
         </a>
         <nav>
-            <a th:href="@{/}">Home</a>
-            <a th:href="@{/destinations}">Destinations</a>
-            <a th:href="@{/packages}" style="color: #009688; font-weight: 600;">Packages</a>
-            <a th:href="@{/about}">About</a>
-            <a th:href="@{/contact}">Contact</a>
+            <a th:href="@{/}"><i class="fa-solid fa-house"></i> Home</a>
+            <a th:href="@{/destinations}"><i class="fa-solid fa-map-location-dot"></i> Destinations</a>
+            <a th:href="@{/packages}" class="active"><i class="fa-solid fa-cubes"></i> Packages</a>
+            <a th:href="@{/bookings}"><i class="fa-solid fa-suitcase-rolling"></i> My Bookings</a>
+            <a th:href="@{/about}"><i class="fa-solid fa-circle-info"></i> About</a>
+            <a th:href="@{/contact}"><i class="fa-solid fa-envelope"></i> Contact</a>
+
+            <span th:if="${session.user != null || session.userEmail != null || session.username != null}" class="user-greeting">
+                <i class="fa-solid fa-circle-user" style="color: #00a88f;"></i>
+                <span th:text="${session.userName != null ? session.userName : 'Profile'}">User</span>
+            </span>
+            <a th:if="${session.user != null || session.userEmail != null || session.username != null}" th:href="@{/logout}" class="nav-logout-btn">
+                <i class="fa-solid fa-right-from-bracket"></i> Logout
+            </a>
+            <a th:if="${session.user == null && session.userEmail == null && session.username == null}" th:href="@{/login}"><i class="fa-solid fa-user"></i> Login</a>
         </nav>
     </div>
 </header>
@@ -323,19 +331,21 @@
         <p>Choose your dream plan layout, specially designed with luxury itineraries, routes, and verified stays.</p>
     </section>
 
+    <!-- UI Filter Tab Architecture Mapped -->
     <section class="filter-section">
         <div class="filter-row">
-            <a th:href="@{/packages}"><i class="fa-solid fa-globe"></i> All</a>
-            <a th:href="@{/packages(category='Beach')}"><i class="fa-solid fa-umbrella-beach"></i> Beach</a>
-            <a th:href="@{/packages(category='Mountain')}"><i class="fa-solid fa-mountain"></i> Mountain</a>
-            <a th:href="@{/packages(category='Adventure')}"><i class="fa-solid fa-person-hiking"></i> Adventure</a>
-            <a th:href="@{/packages(category='Cultural')}"><i class="fa-solid fa-landmark"></i> Cultural</a>
+            <button class="filter-tab-btn active" onclick="applyClientPackageFilter('all', this)"><i class="fa-solid fa-globe"></i> All Packages</button>
+            <button class="filter-tab-btn" onclick="applyClientPackageFilter('beach', this)"><i class="fa-solid fa-umbrella-beach"></i> Beach Escapes</button>
+            <button class="filter-tab-btn" onclick="applyClientPackageFilter('mountain', this)"><i class="fa-solid fa-mountain"></i> Mountain Highlands</button>
+            <button class="filter-tab-btn" onclick="applyClientPackageFilter('adventure', this)"><i class="fa-solid fa-person-hiking"></i> Adventure Tours</button>
+            <button class="filter-tab-btn" onclick="applyClientPackageFilter('cultural', this)"><i class="fa-solid fa-landmark"></i> Cultural Heritage</button>
         </div>
     </section>
 
     <div class="main-container">
-        <section class="card-grid">
-            <article class="package-card" th:each="pkg : ${packages}">
+        <section class="card-grid" id="packageCardGrid">
+            
+            <article class="package-card" th:each="pkg : ${packages}" th:attr="data-category=${#strings.toLowerCase(pkg.category)}, data-name=${#strings.toLowerCase(pkg.name)}">
                 <div class="card-image-wrapper">
                     <img th:src="${pkg.imageUrl}" alt="Package image" onerror="this.src='https://images.unsplash.com/photo-1546708973-b339540b5162?w=600&auto=format&fit=crop&q=60'"/>
                     <span class="category-badge" th:text="${pkg.category}">Category</span>
@@ -350,19 +360,19 @@
                     
                     <div class="card-footer-row">
                         <div class="card-price">
-                            From <strong>LKR <span th:text="${pkg.price}">0</span></strong>
+                            From <strong>LKR <span th:text="${#numbers.formatDecimal(pkg.price, 1, 'COMMA', 2, 'POINT')}">0.00</span></strong>
                         </div>
-                        
                         <a th:href="@{/packages/{id}(id=${pkg.id})}" class="btn-details">View Details</a>
                     </div>
                 </div>
             </article>
-        </section>
 
-        <div class="empty-state" th:if="${#lists.isEmpty(packages)}">
-            <i class="fa-solid fa-cubes" style="font-size: 40px; color: #009688; margin-bottom: 15px; display: block;"></i>
-            <p>No custom packages found matching your criteria.</p>
-        </div>
+            <div class="empty-state" id="packageEmptyState">
+                <i class="fa-solid fa-cubes" style="font-size: 40px; color: #009688; margin-bottom: 15px; display: block;"></i>
+                <p>No verified tour packages found matching your criteria loop matrix.</p>
+            </div>
+
+        </section>
     </div>
 </main>
 
@@ -372,6 +382,67 @@
     </div>
     <div th:replace="~{fragments :: chatbot}"></div>
 </footer>
+
+<script>
+    // 🎯 Dynamic Live Search Param Framework Resolver on Dom Load
+    document.addEventListener("DOMContentLoaded", function () {
+        const urlParams = new URLSearchParams(window.location.search);
+        const searchQuery = urlParams.get('search');
+        
+        if (searchQuery) {
+            const parsedQuery = searchQuery.toLowerCase().trim();
+            const cards = document.querySelectorAll("#packageCardGrid .package-card");
+            let count = 0;
+
+            cards.forEach(card => {
+                const pkgName = card.getAttribute("data-name") || "";
+                if (pkgName.includes(parsedQuery)) {
+                    card.style.display = "flex";
+                    count++;
+                } else {
+                    card.style.display = "none";
+                }
+            });
+
+            const emptyState = document.getElementById("packageEmptyState");
+            if (count === 0) {
+                emptyState.style.display = "block";
+            } else {
+                emptyState.style.display = "none";
+            }
+
+            // Unset active statuses on tabs for query matrix override representation
+            document.querySelectorAll(".filter-row .filter-tab-btn").forEach(btn => btn.classList.remove("active"));
+        }
+    });
+
+    // 🎯 Client Side Non-blocking Real-time Tab Filters
+    function applyClientPackageFilter(category, buttonElement) {
+        // Toggle tab highlights
+        document.querySelectorAll(".filter-row .filter-tab-btn").forEach(btn => btn.classList.remove("active"));
+        buttonElement.classList.add("active");
+
+        const cards = document.querySelectorAll("#packageCardGrid .package-card");
+        let visibleCount = 0;
+
+        cards.forEach(card => {
+            const cardCategory = card.getAttribute("data-category") || "";
+            if (category === 'all' || cardCategory.includes(category)) {
+                card.style.display = "flex";
+                visibleCount++;
+            } else {
+                card.style.display = "none";
+            }
+        });
+
+        const emptyState = document.getElementById("packageEmptyState");
+        if (visibleCount === 0) {
+            emptyState.style.display = "block";
+        } else {
+            emptyState.style.display = "none";
+        }
+    }
+</script>
 
 </body>
 </html>
