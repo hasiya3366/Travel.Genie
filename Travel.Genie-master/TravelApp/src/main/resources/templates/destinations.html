@@ -1,66 +1,9 @@
-<!-- <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" th:href="@{/css/styles.css}">
-    <title>Destinations - TravelGenie</title>
-</head>
-<body>
-<header class="site-header">
-    <div class="container header-inner">
-        <h1><a th:href="@{/}">TravelGenie</a></h1>
-        <nav>
-            <a th:href="@{/}">Home</a>
-            <a th:href="@{/destinations}">Destinations</a>
-            <a th:href="@{/packages}">Packages</a>
-            <a th:href="@{/about}">About</a>
-            <a th:href="@{/contact}">Contact</a>
-            <a th:href="@{/admin}">Admin</a>
-        </nav>
-    </div>
-</header>
-<main class="container">
-    <section class="page-heading">
-        <h2>Destinations</h2>
-        <form method="get" action="/destinations" class="filter-form">
-            <input type="text" name="country" placeholder="Search by country"/>
-            <input type="text" name="category" placeholder="Category"/>
-            <input type="number" name="minPrice" placeholder="Min price" step="0.01"/>
-            <input type="number" name="maxPrice" placeholder="Max price" step="0.01"/>
-            <button type="submit">Filter</button>
-        </form>
-    </section>
-    <section class="card-grid">
-        <div class="card" th:each="destination : ${destinations}">
-            <img th:src="${destination.imageUrl}" alt="Destination image"/>
-            <div class="card-body">
-                <h4 th:text="${destination.name}"></h4>
-                <p><strong th:text="${destination.country}"></strong> • <span th:text="${destination.category}"></span></p>
-                <p th:text="${destination.description}"></p>
-                <p>From <strong th:text="${destination.price}"></strong> USD</p>
-
-                <a th:href="@{'/destination/' + ${destination.id}}" style="display: inline-block; background-color: #0f766e; color: white; padding: 8px 16px; border-radius: 6px; text-decoration: none; font-size: 14px; font-weight: 600; margin-top: 10px;">View Details</a>
-            </div>
-        </div>
-    </section>
-</main>
-<footer class="site-footer">
-    <div class="container">
-        <p>© 2026 TravelGenie. All Rights Reserved.</p>
-    </div>
-    <div th:replace="fragments :: chatbot"></div>
-</footer>
-</body>
-</html> -->
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org" lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Destinations — TravelGenie Premium</title>
-    <link rel="stylesheet" th:href="@{/css/styles.css}">
-    <!-- Font Awesome සහ Poppins Font එක එකතු කළා -->
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
@@ -73,15 +16,15 @@
         }
 
         body {
-            background-color: #f3fbf8; /* Home page එකේ ලා කොළ/සුදු පසුබිම */
+            background-color: #f3fbf8; 
             color: #2c3e50;
         }
 
-        /* --- NAVBAR STYLE (Home එකට සමානයි) --- */
+        /* --- PREMIUM INLINE FIXED NAVBAR SYSTEM --- */
         .site-header {
             background-color: white;
             border-bottom: 1px solid rgba(0, 150, 136, 0.1);
-            padding: 15px 0;
+            padding: 12px 0;
             position: sticky;
             top: 0;
             z-index: 100;
@@ -90,9 +33,10 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            max-width: 1200px;
+            max-width: 1400px;
             margin: 0 auto;
             padding: 0 20px;
+            gap: 15px;
         }
         .brand {
             font-size: 24px;
@@ -101,22 +45,61 @@
             text-decoration: none;
             display: flex;
             align-items: center;
-            gap: 8px;
+            gap: 6px;
+            white-space: nowrap;
         }
         .brand-icon { color: #009688; }
-        nav th\:block, nav a {
+        
+        nav {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            flex-wrap: nowrap;
+        }
+        
+        nav a {
             color: #475569;
             text-decoration: none;
             font-weight: 500;
-            font-size: 15px;
-            margin-left: 20px;
-            transition: color 0.2s;
+            font-size: 14px;
+            transition: color 0.2s, background-color 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            white-space: nowrap;
+            padding: 8px 10px;
+            border-radius: 8px;
         }
-        nav a:hover { color: #009688; }
+        nav a:hover, nav a.active { 
+            color: #009688; 
+            background-color: rgba(0, 150, 136, 0.05);
+        }
+        
+        .user-greeting {
+            font-size: 13px;
+            color: #2c3e50;
+            padding: 6px 12px;
+            background-color: #f1f5f9;
+            border-radius: 20px;
+            border: 1px solid #e2e8f0;
+            white-space: nowrap;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            margin-left: 5px;
+        }
+        
+        .nav-logout-btn {
+            color: #e74c3c !important;
+            font-weight: 600;
+        }
+        .nav-logout-btn:hover {
+            background-color: rgba(231, 76, 60, 0.05) !important;
+        }
 
         /* --- HERO HEADER SECTION --- */
         .destinations-hero {
-            background: linear-gradient(rgba(0, 74, 66, 0.85), rgba(0, 150, 136, 0.7)), url('/images/srilanka-bg.jpg') center/cover no-repeat;
+            background: linear-gradient(rgba(0, 74, 66, 0.85), rgba(0, 150, 136, 0.7)), url('https://images.unsplash.com/photo-1546708973-b339540b5162?w=1600&auto=format&fit=crop&q=80') center/cover no-repeat;
             color: white;
             text-align: center;
             padding: 60px 20px;
@@ -136,7 +119,7 @@
 
         /* --- FILTER FORM STYLE (MODERN & PREMIUM) --- */
         .filter-section {
-            max-width: 1200px;
+            max-width: 1400px;
             margin: -30px auto 40px auto;
             padding: 0 20px;
             position: relative;
@@ -148,7 +131,7 @@
             border-radius: 16px;
             box-shadow: 0 10px 30px rgba(0, 150, 136, 0.08);
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)) 120px;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
             gap: 15px;
             align-items: center;
             border: 1px solid rgba(0, 150, 136, 0.1);
@@ -164,34 +147,24 @@
             color: #009688;
             text-transform: uppercase;
         }
-        .filter-form input {
+        .filter-form input, .filter-form select {
             padding: 12px 16px;
             border: 1px solid #e2e8f0;
             border-radius: 8px;
             font-size: 14px;
             color: #334155;
             outline: none;
+            background-color: white;
             transition: border 0.2s;
+            width: 100%;
         }
-        .filter-form input:focus {
+        .filter-form input:focus, .filter-form select:focus {
             border-color: #009688;
         }
-        .btn-filter {
-            background-color: #e67e22; /* Home Page Accent Orange */
-            color: white;
-            border: none;
-            padding: 14px;
-            border-radius: 8px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: background 0.2s;
-            margin-top: 17px;
-        }
-        .btn-filter:hover { background-color: #d35400; }
 
         /* --- CARDS GRID PATTERN --- */
         .main-container {
-            max-width: 1200px;
+            max-width: 1400px;
             margin: 0 auto;
             padding: 0 20px 60px 20px;
         }
@@ -238,6 +211,7 @@
             border-radius: 20px;
             font-size: 12px;
             font-weight: 500;
+            text-transform: capitalize;
         }
         .card-body {
             padding: 25px;
@@ -302,14 +276,18 @@
             text-align: center;
             padding: 60px 20px;
             color: #64748b;
+            display: none;
+            width: 100%;
+            grid-column: 1 / -1;
         }
         .empty-state i {
             font-size: 40px;
             color: #009688;
             margin-bottom: 15px;
+            display: block;
         }
 
-        /* --- FOOTER & CHATBOT WIDGET RESET --- */
+        /* --- FOOTER --- */
         .site-footer {
             background-color: white;
             padding: 30px 0;
@@ -322,22 +300,48 @@
             display: none !important;
             visibility: hidden !important;
         }
+
+        @media (max-width: 1024px) {
+            .header-inner {
+                flex-direction: column;
+                gap: 12px;
+                text-align: center;
+            }
+            nav {
+                flex-wrap: wrap;
+                justify-content: center;
+                gap: 6px;
+            }
+            .filter-form {
+                grid-template-columns: 1fr;
+            }
+        }
     </style>
 </head>
 <body>
 
 <header class="site-header">
-    <div class="header-inner">
+    <div class="container header-inner">
         <a class="brand" th:href="@{/}">
             <span class="brand-icon">🌿</span>
             <span>TravelGenie</span>
         </a>
         <nav>
-            <a th:href="@{/}">Home</a>
-            <a th:href="@{/destinations}" style="color: #009688; font-weight: 600;">Destinations</a>
-            <a th:href="@{/packages}">Packages</a>
-            <a th:href="@{/about}">About</a>
-            <a th:href="@{/contact}">Contact</a>
+            <a th:href="@{/}"><i class="fa-solid fa-house"></i> Home</a>
+            <a th:href="@{/destinations}" class="active"><i class="fa-solid fa-map-location-dot"></i> Destinations</a>
+            <a th:href="@{/packages}"><i class="fa-solid fa-cubes"></i> Packages</a>
+            <a th:href="@{/bookings}"><i class="fa-solid fa-suitcase-rolling"></i> My Bookings</a>
+            <a th:href="@{/about}"><i class="fa-solid fa-circle-info"></i> About</a>
+            <a th:href="@{/contact}"><i class="fa-solid fa-envelope"></i> Contact</a>
+
+            <span th:if="${session.user != null || session.userEmail != null || session.username != null}" class="user-greeting">
+                <i class="fa-solid fa-circle-user" style="color: #00a88f;"></i>
+                <span th:text="${session.userName != null ? session.userName : 'Profile'}">User</span>
+            </span>
+            <a th:if="${session.user != null || session.userEmail != null || session.username != null}" th:href="@{/logout}" class="nav-logout-btn">
+                <i class="fa-solid fa-right-from-bracket"></i> Logout
+            </a>
+            <a th:if="${session.user == null && session.userEmail == null && session.username == null}" th:href="@{/login}"><i class="fa-solid fa-user"></i> Login</a>
         </nav>
     </div>
 </header>
@@ -349,59 +353,69 @@
         <p>Find the perfect getaways in Sri Lanka, custom-tailored to suit your adventure style and budget preferences.</p>
     </section>
 
-    <!-- Filter Form -->
+    <!-- Filter Form Framework -->
     <section class="filter-section">
-        <form method="get" action="/destinations" class="filter-form">
+        <div class="filter-form">
             <div class="filter-group">
                 <label>Location / Country</label>
-                <input type="text" name="country" placeholder="e.g. Sri Lanka"/>
+                <input type="text" id="filterCountry" placeholder="e.g. Sri Lanka" oninput="executeLiveFilterMatrix()"/>
             </div>
             <div class="filter-group">
-                <label>Category</label>
-                <input type="text" name="category" placeholder="e.g. Beach, Culture"/>
+                <label>Category Selection</label>
+                <select id="filterCategory" onchange="executeLiveFilterMatrix()">
+                    <option value="">All Categories</option>
+                    <option value="beach">Beach Escapes</option>
+                    <option value="mountain">Mountain Highlands</option>
+                    <option value="cultural">Cultural Heritage</option>
+                    <option value="adventure">Adventure Tours</option>
+                </select>
             </div>
             <div class="filter-group">
                 <label>Min Price (LKR)</label>
-                <input type="number" name="minPrice" placeholder="Min" step="0.01"/>
+                <input type="number" id="filterMinPrice" placeholder="Min" step="0.01" oninput="executeLiveFilterMatrix()"/>
             </div>
             <div class="filter-group">
                 <label>Max Price (LKR)</label>
-                <input type="number" name="maxPrice" placeholder="Max" step="0.01"/>
+                <input type="number" id="filterMaxPrice" placeholder="Max" step="0.01" oninput="executeLiveFilterMatrix()"/>
             </div>
-            <button type="submit" class="btn-filter">Filter</button>
-        </form>
+        </div>
     </section>
 
     <!-- Cards Layout -->
     <div class="main-container">
-        <section class="card-grid">
-            <article class="destination-card" th:each="destination : ${destinations}">
+        <section class="card-grid" id="destinationCardGrid">
+            
+            <article class="destination-card" th:each="destination : ${destinations}" 
+                     th:attr="data-country=${#strings.toLowerCase(destination.country)}, data-category=${#strings.toLowerCase(destination.category)}, data-price=${destination.price}">
                 <div class="card-image-wrapper">
-                    <img th:src="${destination.imageUrl}" alt="Destination image" onerror="this.src='/images/dest-bali.svg'"/>
+                    <img th:src="${destination.imageUrl}" alt="Destination image" onerror="this.src='https://images.unsplash.com/photo-1546708973-b339540b5162?w=600&auto=format&fit=crop&q=60'"/>
                     <span class="category-badge" th:text="${destination.category}">Category</span>
                 </div>
                 <div class="card-body">
                     <div class="card-location">
                         <i class="fa-solid fa-location-dot"></i> <span th:text="${destination.country}">Sri Lanka</span>
                     </div>
-                    <h4 th:text="${destination.name}">Destination Name</h4>
+                    <h4 class="card-title-text" th:text="${destination.name}">Destination Name</h4>
                     <p class="card-desc" th:text="${destination.description}">A premium travel destination waiting for your arrival.</p>
                     
                     <div class="card-footer-row">
                         <div class="card-price">
-                            From <strong>LKR<span th:text="${destination.price}">0</span></strong>
+                            From <strong>LKR <span th:text="${#numbers.formatDecimal(destination.price, 1, 'COMMA', 2, 'POINT')}">0.00</span></strong>
+                        </td>
                         </div>
                         <a th:href="@{'/destination/' + ${destination.id}}" class="btn-details">View Details</a>
                     </div>
                 </div>
             </article>
-        </section>
 
-        <!-- No data handling fallback -->
-        <div class="empty-state" th:if="${#lists.isEmpty(destinations)}">
-            <i class="fa-solid fa-map-location-dot"></i>
-            <p>No destinations found matching your criteria. Try adjusting the filters!</p>
-        </div>
+            <!-- Embedded dynamic empty fallback message state -->
+            <div class="empty-state" id="filterEmptyState">
+                <i class="fa-solid fa-map-location-dot"></i>
+                <h3>No Hidden Paradises Found</h3>
+                <p>No destinations matched your criteria framework. Try adjusting the query fields or dropdown variables!</p>
+            </div>
+
+        </section>
     </div>
 </main>
 
@@ -411,6 +425,42 @@
     </div>
     <div th:replace="~{fragments :: chatbot}"></div>
 </footer>
+
+<script>
+    function executeLiveFilterMatrix() {
+        const countryQuery = document.getElementById("filterCountry").value.toLowerCase().trim();
+        const categoryQuery = document.getElementById("filterCategory").value.toLowerCase();
+        const minPriceQuery = parseFloat(document.getElementById("filterMinPrice").value) || 0;
+        const maxPriceQuery = parseFloat(document.getElementById("filterMaxPrice").value) || Infinity;
+
+        const cards = document.querySelectorAll("#destinationCardGrid .destination-card");
+        let visibleCount = 0;
+
+        cards.forEach(card => {
+            const cardCountry = card.getAttribute("data-country") || "";
+            const cardCategory = card.getAttribute("data-category") || "";
+            const cardPrice = parseFloat(card.getAttribute("data-price")) || 0;
+
+            const matchesCountry = cardCountry.includes(countryQuery);
+            const matchesCategory = categoryQuery === "" || cardCategory.includes(categoryQuery);
+            const matchesPrice = cardPrice >= minPriceQuery && cardPrice <= maxPriceQuery;
+
+            if (matchesCountry && matchesCategory && matchesPrice) {
+                card.style.display = "flex";
+                visibleCount++;
+            } else {
+                card.style.display = "none";
+            }
+        });
+
+        const emptyState = document.getElementById("filterEmptyState");
+        if (visibleCount === 0) {
+            emptyState.style.display = "block";
+        } else {
+            emptyState.style.display = "none";
+        }
+    }
+</script>
 
 </body>
 </html>
