@@ -376,12 +376,19 @@
     </style>
 
     <script>
+        // function onSearch() {
+        //     const q = document.getElementById('q').value.trim();
+        //     if (q) {
+        //         window.location.href = '/destinations?search=' + encodeURIComponent(q);
+        //     }
+        // }
         function onSearch() {
-            const q = document.getElementById('q').value.trim();
-            if (q) {
-                window.location.href = '/destinations?search=' + encodeURIComponent(q);
-            }
-        }
+    const q = document.getElementById('q').value.trim();
+    if (q) {
+        // Redirects directly to the packages search endpoint safely
+        window.location.href = '/packages?search=' + encodeURIComponent(q);
+    }
+}
     </script>
 </head>
 <body>
