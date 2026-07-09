@@ -97,33 +97,30 @@
             background-color: rgba(231, 76, 60, 0.05) !important;
         }
 
-        /* --- IMMERSIVE PACKAGES HERO BANNER MODULE --- */
-        .packages-hero {
-            background: linear-gradient(rgba(0, 74, 66, 0.85), rgba(0, 150, 136, 0.7)), 
-                        url('https://images.unsplash.com/photo-1588598130619-469a5647b28b?w=1600&auto=format&fit=crop&q=80') center/cover no-repeat;
+        /* --- HERO HEADER SECTION (100% DESTINATION PROPERTY MATCH) --- */
+        .destinations-hero {
+            background: linear-gradient(rgba(0, 74, 66, 0.85), rgba(0, 150, 136, 0.7)), url('https://images.unsplash.com/photo-1546708973-b339540b5162?w=1600&auto=format&fit=crop&q=80') center/cover no-repeat;
             color: white;
             text-align: center;
             padding: 60px 20px;
             margin-bottom: 40px;
-            width: 100%;
         }
-        .packages-hero h2 {
-            font-size: clamp(1.8rem, 4vw, 2.5rem);
+        .destinations-hero h2 {
+            font-size: 2.5rem;
             font-weight: 700;
             margin-bottom: 10px;
         }
-        .packages-hero p {
-            font-size: clamp(0.95rem, 2vw, 1.1rem);
+        .destinations-hero p {
+            font-size: 1.1rem;
             opacity: 0.9;
             max-width: 600px;
             margin: 0 auto;
-            line-height: 1.6;
         }
 
         /* --- MODERN FILTER TABS ROW STYLE --- */
         .filter-section {
             max-width: 1400px;
-            margin: -25px auto 35px auto;
+            margin: -30px auto 40px auto;
             padding: 0 20px;
             text-align: center;
             position: relative;
@@ -295,12 +292,25 @@
             color: #64748b;
             width: 100%;
         }
+        
+        @media (max-width: 1024px) {
+            .header-inner {
+                flex-direction: column;
+                gap: 12px;
+                text-align: center;
+            }
+            nav {
+                flex-wrap: wrap;
+                justify-content: center;
+                gap: 6px;
+            }
+        }
     </style>
 </head>
 <body>
 
 <header class="site-header">
-    <div class="header-inner">
+    <div class="container header-inner">
         <a class="brand" th:href="@{/}">
             <span class="brand-icon">🌿</span>
             <span>TravelGenie</span>
@@ -326,12 +336,12 @@
 </header>
 
 <main>
-<section class="packages-hero" style="background: linear-gradient(rgba(0, 74, 66, 0.85), rgba(0, 150, 136, 0.7)), url('/images/srilanka-bg.jpg') center/cover no-repeat !important;">
-    <h2>Curated Sri Lanka Tour Packages</h2>
-    <p>Choose your dream plan layout, specially designed with luxury itineraries, routes, and verified stays.</p>
-</section>
+    <!-- Top Banner Section (100% Matching Destination HTML Mapping Architecture) -->
+    <section class="destinations-hero">
+        <h2>Curated Sri Lanka Tour Packages</h2>
+        <p>Choose your dream plan layout, specially designed with luxury itineraries, routes, and verified stays.</p>
+    </section>
 
-    <!-- UI Filter Tab Architecture Mapped -->
     <section class="filter-section">
         <div class="filter-row">
             <button class="filter-tab-btn active" onclick="applyClientPackageFilter('all', this)"><i class="fa-solid fa-globe"></i> All Packages</button>
@@ -384,7 +394,6 @@
 </footer>
 
 <script>
-    // 🎯 Dynamic Live Search Param Framework Resolver on Dom Load
     document.addEventListener("DOMContentLoaded", function () {
         const urlParams = new URLSearchParams(window.location.search);
         const searchQuery = urlParams.get('search');
@@ -411,14 +420,11 @@
                 emptyState.style.display = "none";
             }
 
-            // Unset active statuses on tabs for query matrix override representation
             document.querySelectorAll(".filter-row .filter-tab-btn").forEach(btn => btn.classList.remove("active"));
         }
     });
 
-    // 🎯 Client Side Non-blocking Real-time Tab Filters
     function applyClientPackageFilter(category, buttonElement) {
-        // Toggle tab highlights
         document.querySelectorAll(".filter-row .filter-tab-btn").forEach(btn => btn.classList.remove("active"));
         buttonElement.classList.add("active");
 
