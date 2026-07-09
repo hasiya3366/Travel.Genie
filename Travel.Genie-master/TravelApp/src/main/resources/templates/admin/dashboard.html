@@ -9,7 +9,6 @@
 
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     
-    <!-- 📡 WEBSOCKET LIVE LIBRARIES ADDED -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/sockjs-client/1.5.1/sockjs.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/stomp.js/2.3.3/stomp.min.js"></script>
 
@@ -683,7 +682,6 @@
             </div>
         </div>
 
-        <!-- 🎯 LIVE CUSTOMER SUPPORT WORKSPACE PANEL GRID -->
         <div class="live-workspace-grid">
             <div class="chat-queue-box">
                 <div class="section-title" style="font-size: 16px;">
@@ -705,7 +703,6 @@
                     </div>
                 </div>
 
-                <!-- 📢 END CHAT BUTTON PLACEMENT -->
                 <button class="btn-end-chat" id="endChatBtn" onclick="endChatSession()" disabled>
                     <i class="fa-solid fa-phone-slash"></i> End Chat
                 </button>
@@ -1277,22 +1274,40 @@
         }
     }
 
-    // CSV Export Script
+    // 🎯 REFACTORED SECURE CSV REPORT GENERATOR ENGINE
     function exportTableToCSV(filename) {
         var csv = [];
         var rows = document.querySelectorAll("#bookingsTable tr");
+        
         for (var i = 0; i < rows.length; i++) {
-            var row = [], cols = rows[i].querySelectorAll("td, th");
-            for (var j = 0; j < cols.length; j++)
-                row.push('"' + cols[j].innerText.trim() + '"');
+            var row = [];
+            // Target header th cells or standard td content rows explicitly
+            var cols = rows[i].querySelectorAll("th, td");
+            
+            for (var j = 0; j < cols.length; j++) {
+                var cleanText = cols[j].innerText.trim();
+                
+                // Remove dynamic currency text prefix or inner commas to preserve spreadsheet alignment mapping
+                cleanText = cleanText.replace("LKR", "").replace(/,/g, "").trim();
+                
+                row.push('"' + cleanText + '"');
+            }
             csv.push(row.join(","));
         }
-        var csvFile = new Blob([csv.join("\n")], {type: "text/csv"});
+        
+        // Build clean layout data blob binary and launch hidden anchor download bridge stream
+        var csvFile = new Blob([csv.join("\n")], { type: "text/csv;charset=utf-8;" });
         var downloadLink = document.createElement("a");
         downloadLink.download = filename;
+        downloadLink.href = window.URL.createObjectURL(csvFile);
         downloadLink.style.display = "none";
         document.body.appendChild(downloadLink);
         downloadLink.click();
+        document.body.removeChild(downloadLink);
+        
+        if (typeof showToast === 'function') {
+            showToast("Report successfully compiled and downloaded!");
+        }
     }
 </script>
 
