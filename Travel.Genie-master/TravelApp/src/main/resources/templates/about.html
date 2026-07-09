@@ -1,56 +1,3 @@
-<!-- <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" th:href="@{/css/styles.css}">
-</head>
-<body>
-<header class="site-header">
-    <div class="container header-inner">
-        <h1><a th:href="@{/}">TravelGenie</a></h1>
-        <nav>
-            <a th:href="@{/}">Home</a>
-            <a th:href="@{/destinations}">Destinations</a>
-            <a th:href="@{/packages}">Packages</a>
-            <a th:href="@{/about}">About</a>
-            <a th:href="@{/contact}">Contact</a>
-        </nav>
-    </div>
-</header>
-<main class="container">
-    <section class="page-heading">
-        <h2>About TravelGenie</h2>
-        <p>TravelGenie is a modern travel and tour booking platform that allows users to explore breathtaking destinations, browse a wide range of travel packages, make secure online bookings, track booking history, read authentic traveler reviews, and enjoy a seamless experience while planning unforgettable journeys across Sri Lanka.</p>
-    </section>
-    <section class="content-card">
-        <h3>Why choose us?</h3>
-        <ul>
-            <li>
-    <strong>Seamless & Secure Booking Experience:</strong> 
-    Discover the ultimate convenience with a highly intuitive, user-friendly reservation system optimized for desktops, tablets, and smartphones. Users can effortlessly explore detailed tour packages—complete with high-quality images, structured itineraries, clear pricing, and inclusions—while managing their entire journey through a secure account portal. From advanced search filters based on budget, duration, and category, to a convenient booking history that tracks upcoming and past reservations, the entire process is designed for a frictionless, end-to-end booking experience.
-</li>
-
-<li>
-    <strong>AI-Powered Recommendations & Real-Time Travel Insights:</strong> 
-    Plan your trips with absolute precision and confidence. Our platform delivers hyper-personalized travel package recommendations tailored specifically to your unique preferences, budget, and destination interests. To ensure you are fully prepared, TravelGenie integrates real-time weather updates directly into the destination pages, providing current conditions alongside comprehensive travel guides, local highlights, activities, and essential travel tips.
-</li>
-
-<li>
-    <strong>Verified Community Trust & Dedicated Customer Support:</strong> 
-    Travel with peace of mind knowing you are backed by authentic ratings and transparent reviews from verified travelers, helping you make highly informed choices. Whether you are embark on interactive destination explorations to discover the hidden gems of Sri Lanka or finalizing your booking details, our quick and reliable customer inquiry system ensures that our dedicated support team is always just a click away, ready to assist you whenever needed.
-</li>
-        </ul>
-    </section>
-</main>
-<footer class="site-footer">
-    <div class="container">
-        <p>© 2026 TravelGenie. All Rights Reserved.</p>
-    </div>
-    <div th:replace="fragments :: chatbot"></div>
-</footer>
-</body>
-</html> -->
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org" lang="en">
 <head>
@@ -70,15 +17,15 @@
         }
 
         body {
-            background-color: #f3fbf8; /* Premium ලා කොළ/සුදු පසුබිම */
+            background-color: #f3fbf8; 
             color: #2c3e50;
         }
 
-        /* --- NAVBAR STYLE --- */
+        /* --- PREMIUM INLINE FIXED NAVBAR SYSTEM --- */
         .site-header {
             background-color: white;
             border-bottom: 1px solid rgba(0, 150, 136, 0.1);
-            padding: 15px 0;
+            padding: 12px 0;
             position: sticky;
             top: 0;
             z-index: 100;
@@ -87,9 +34,10 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            max-width: 1200px;
+            max-width: 1400px;
             margin: 0 auto;
             padding: 0 20px;
+            gap: 15px;
         }
         .brand {
             font-size: 24px;
@@ -98,35 +46,74 @@
             text-decoration: none;
             display: flex;
             align-items: center;
-            gap: 8px;
+            gap: 6px;
+            white-space: nowrap;
         }
         .brand-icon { color: #009688; }
+        
+        nav {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            flex-wrap: nowrap;
+        }
+        
         nav a {
             color: #475569;
             text-decoration: none;
             font-weight: 500;
-            font-size: 15px;
-            margin-left: 20px;
-            transition: color 0.2s;
+            font-size: 14px;
+            transition: color 0.2s, background-color 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            white-space: nowrap;
+            padding: 8px 10px;
+            border-radius: 8px;
         }
-        nav a:hover { color: #009688; }
+        nav a:hover, nav a.active { 
+            color: #009688; 
+            background-color: rgba(0, 150, 136, 0.05);
+        }
+        
+        .user-greeting {
+            font-size: 13px;
+            color: #2c3e50;
+            padding: 6px 12px;
+            background-color: #f1f5f9;
+            border-radius: 20px;
+            border: 1px solid #e2e8f0;
+            white-space: nowrap;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            margin-left: 5px;
+        }
+        
+        .nav-logout-btn {
+            color: #e74c3c !important;
+            font-weight: 600;
+        }
+        .nav-logout-btn:hover {
+            background-color: rgba(231, 76, 60, 0.05) !important;
+        }
 
-        /* --- HERO HEADER SECTION --- */
-        .about-hero {
-            background: linear-gradient(rgba(0, 74, 66, 0.85), rgba(0, 150, 136, 0.7));
+        /* --- HERO HEADER SECTION (100% DESTINATION PROPERTY MATCH) --- */
+        .destinations-hero {
+            background: linear-gradient(rgba(0, 74, 66, 0.85), rgba(0, 150, 136, 0.7)), url('https://images.unsplash.com/photo-1546708973-b339540b5162?w=1600&auto=format&fit=crop&q=80') center/cover no-repeat;
             color: white;
             text-align: center;
             padding: 60px 20px;
             margin-bottom: 40px;
             width: 100%;
         }
-        .about-hero h2 {
-            font-size: clamp(1.8rem, 4vw, 2.5rem);
+        .destinations-hero h2 {
+            font-size: 2.5rem;
             font-weight: 700;
             margin-bottom: 15px;
         }
-        .about-hero p {
-            font-size: clamp(0.95rem, 2vw, 1.1rem);
+        .destinations-hero p {
+            font-size: 1.1rem;
             opacity: 0.95;
             max-width: 800px;
             margin: 0 auto;
@@ -135,7 +122,7 @@
 
         /* --- CONTENT STRUCTURE --- */
         .main-container {
-            max-width: 1200px;
+            max-width: 1400px;
             margin: 0 auto;
             padding: 0 20px 60px 20px;
             width: 100%;
@@ -161,11 +148,11 @@
             transform: translateX(-50%);
             width: 60px;
             height: 3px;
-            background-color: #e67e22; /* Premium Orange Accent */
-            border-radius: 2px;
+            background-color: #e67e22; 
+            border-radius: 20px;
         }
 
-        /* --- FEATURE LIST TO MODERN VERTICAL BLOCKS --- */
+        /* --- FEATURE CARD BLOCKS --- */
         .features-list {
             display: flex;
             flex-direction: column;
@@ -202,7 +189,6 @@
             border: 1px solid rgba(0, 150, 136, 0.1);
         }
         
-        /* Alternating icon backgrounds for micro visual dynamic depth */
         .feature-item-card:nth-child(2) .feature-icon-wrapper { background-color: #f3f0fa; color: #6f42c1; border-color: rgba(111, 66, 193, 0.1); }
         .feature-item-card:nth-child(3) .feature-icon-wrapper { background-color: #fef7ec; color: #e67e22; border-color: rgba(230, 126, 34, 0.1); }
 
@@ -231,16 +217,19 @@
             font-size: 14px;
             color: #64748b;
             width: 100%;
-            margin-top: 40px;
         }
 
-        @media (max-width: 768px) {
+        @media (max-width: 1024px) {
             .header-inner {
                 flex-direction: column;
-                gap: 10px;
+                gap: 12px;
                 text-align: center;
             }
-            nav a { margin: 0 10px; }
+            nav {
+                flex-wrap: wrap;
+                justify-content: center;
+                gap: 6px;
+            }
             .feature-item-card {
                 flex-direction: column;
                 gap: 15px;
@@ -252,23 +241,34 @@
 <body>
 
 <header class="site-header">
-    <div class="header-inner">
+    <div class="container header-inner">
         <a class="brand" th:href="@{/}">
             <span class="brand-icon">🌿</span>
             <span>TravelGenie</span>
         </a>
         <nav>
-            <a th:href="@{/}">Home</a>
-            <a th:href="@{/destinations}">Destinations</a>
-            <a th:href="@{/packages}">Packages</a>
-            <a th:href="@{/about}" style="color: #009688; font-weight: 600;">About</a>
-            <a th:href="@{/contact}">Contact</a>
+            <a th:href="@{/}"><i class="fa-solid fa-house"></i> Home</a>
+            <a th:href="@{/destinations}"><i class="fa-solid fa-map-location-dot"></i> Destinations</a>
+            <a th:href="@{/packages}"><i class="fa-solid fa-cubes"></i> Packages</a>
+            <a th:href="@{/bookings}"><i class="fa-solid fa-suitcase-rolling"></i> My Bookings</a>
+            <a th:href="@{/about}" class="active"><i class="fa-solid fa-circle-info"></i> About</a>
+            <a th:href="@{/contact}"><i class="fa-solid fa-envelope"></i> Contact</a>
+
+            <span th:if="${session.user != null || session.userEmail != null || session.username != null}" class="user-greeting">
+                <i class="fa-solid fa-circle-user" style="color: #00a88f;"></i>
+                <span th:text="${session.userName != null ? session.userName : 'Profile'}">User</span>
+            </span>
+            <a th:if="${session.user != null || session.userEmail != null || session.username != null}" th:href="@{/logout}" class="nav-logout-btn">
+                <i class="fa-solid fa-right-from-bracket"></i> Logout
+            </a>
+            <a th:if="${session.user == null && session.userEmail == null && session.username == null}" th:href="@{/login}"><i class="fa-solid fa-user"></i> Login</a>
         </nav>
     </div>
 </header>
 
 <main>
-    <section class="about-hero">
+    <!-- Top Banner Section (100% Matching Destination HTML Mapping Architecture) -->
+    <section class="destinations-hero">
         <h2>About TravelGenie</h2>
         <p>TravelGenie is a modern travel and tour booking platform that allows users to explore breathtaking destinations, browse a wide range of travel packages, make secure online bookings, track booking history, read authentic traveler reviews, and enjoy a seamless experience while planning unforgettable journeys across Sri Lanka.</p>
     </section>
